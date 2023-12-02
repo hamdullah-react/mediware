@@ -1,0 +1,34 @@
+{
+  "name": "billing-libs",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/billing/libs/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/billing/libs",
+        "tsConfig": "apps/billing/libs/tsconfig.lib.json",
+        "packageJson": "apps/billing/libs/package.json",
+        "main": "apps/billing/libs/src/index.ts",
+        "assets": ["apps/billing/libs/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs billing-libs {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/billing/libs/**/*.ts",
+          "apps/billing/libs/package.json"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

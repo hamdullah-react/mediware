@@ -1,0 +1,62 @@
+{
+  "name": "billing-web",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/billing/web/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/billing/web"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "billing-web:build",
+        "proxyConfig": "apps/billing/web/proxy.conf.json"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "billing-web:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "billing-web:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "billing-web:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "billing-web:build:development"
+        },
+        "production": {
+          "buildTarget": "billing-web:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "tags": []
+}

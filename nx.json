@@ -16,7 +16,8 @@
       ]
     },
     "e2e": {
-      "cache": true
+      "cache": true,
+      "inputs": ["default", "^production"]
     },
     "@nx/jest:jest": {
       "cache": true,
@@ -28,6 +29,22 @@
         "ci": {
           "ci": true,
           "codeCoverage": true
+        }
+      }
+    },
+    "@nx/vite:test": {
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "options": {
+        "passWithNoTests": true,
+        "reporters": ["default"]
+      }
+    },
+    "@nx/vite:build": {
+      "options": {
+        "reportCompressedSize": true,
+        "commonjsOptions": {
+          "transformMixedEsModules": true
         }
       }
     }
@@ -46,5 +63,22 @@
     ],
     "sharedGlobals": []
   },
-  "nxCloudAccessToken": "Y2Q2M2RkZTQtNjIzMS00NTYwLTgzOTUtYjhkMDBiNWI5YTA1fHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "NjZkNjIzMWEtYzk0OC00YzhjLTk1MzYtY2YyZjFiOTE3ZDVmfHJlYWQtd3JpdGU=",
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "style": "css",
+        "linter": "eslint",
+        "bundler": "webpack",
+        "babel": true
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  }
 }
