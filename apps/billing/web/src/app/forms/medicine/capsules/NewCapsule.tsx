@@ -8,12 +8,14 @@ import {
   useState,
 } from 'react';
 import { Button, Divider, Input, Spinner } from '@fluentui/react-components';
-import { BrandsCtx } from '../../../state/contexts/BrandsCtx';
+import { BrandListsCtx } from '../../../state/contexts/BrandsCtx';
 import Modal from '../../../shared/organisms/Modal';
 import InputField from '../../../shared/molecules/InputField';
 import NewMedicine from '../NewMedicine';
 import clsx from 'clsx';
 import { HttpClient, errorHandler } from '../../../utils/common';
+import { CapsuleListsCtx } from '../../../state/contexts/CapsulesCtx';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   isOpen?: boolean;
@@ -21,10 +23,12 @@ interface Props {
 }
 
 const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
   const [addingMedicine, setAddingMedicine] = useState(false);
   const [newBrandName, setNewBrandName] = useState('');
-  const [brands] = useContext(BrandsCtx);
+  const [brands] = useContext(BrandListsCtx);
   const [step, setStep] = useState(0);
   const [capsuleBrand, setCapsuleBrand] = useState<any>({});
   const [newMedicine, setNewMedicine] = useState({
@@ -47,6 +51,7 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
     quantity: '',
     medicineId: -1,
   });
+  const [, , getCapsules] = useContext(CapsuleListsCtx);
 
   const handleChangeMedicine = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,10 +111,14 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
       try {
         if (newCapsule.medicineId !== -1) {
           setIsLoading(true);
-          await HttpClient().post('/medicines/capsule', newCapsule);
+          await HttpClient().post('/medicines/capsules', newCapsule);
+          if (getCapsules) {
+            await getCapsules();
+          }
           setIsOpen(false);
           setAddingMedicine(false);
           setIsLoading(false);
+          navigate('..');
         } else {
           alert('Unfinished or unsaved details on previous page');
           setIsLoading(false);
@@ -119,7 +128,7 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
         errorHandler({ error });
       }
     },
-    [newCapsule, setIsOpen]
+    [getCapsules, navigate, newCapsule, setIsOpen]
   );
 
   return (
@@ -224,7 +233,7 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
                     name="usage"
                     onChange={handleChangeMedicine}
                     placeholder="Usage / directions"
-                    label="Side Effects"
+                    label="Usage"
                     required
                   />
 

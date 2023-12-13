@@ -1,13 +1,21 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../../utils/common';
 import Table from '../../../../shared/organisms/Table';
 import { Button, Input } from '@fluentui/react-components';
 import NewCapsule from '../../../../forms/medicine/capsules/NewCapsule';
+import { CapsuleListsCtx } from '../../../../state/contexts/CapsulesCtx';
 
 const Capsules = () => {
   const location = useLocation();
   const [isAdding, setIsAdding] = useState(false);
+  const [capsules] = useContext(CapsuleListsCtx);
   const [queryString, setQueryString] = useState('');
 
   const handleQueryChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -43,26 +51,8 @@ const Capsules = () => {
           </Button>
         </div>
       </div>
-      <div>
-        <Table
-          data={[
-            {
-              a: 'val',
-              b: 'val2',
-              c: 'object',
-            },
-            {
-              a: 'val',
-              b: 'val2',
-              c: 'val3',
-            },
-            {
-              a: 'val',
-              b: 'val2',
-              c: 'val3',
-            },
-          ]}
-        />
+      <div className="mt-14 max-h-[75vh] overflow-y-auto">
+        <Table data={capsules as object[]} />
       </div>
     </div>
   );

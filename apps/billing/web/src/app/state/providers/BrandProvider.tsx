@@ -1,8 +1,9 @@
+// FIXME
 /* eslint-disable no-restricted-globals */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode, useEffect, useState } from 'react';
 import { HttpClient, errorHandler } from '../../utils/common';
-import { BrandsCtx } from '../contexts/BrandsCtx';
+import { BrandListsCtx } from '../contexts/BrandsCtx';
 import LoaderWrapper from '../../shared/molecules/LoaderWrapper';
 
 interface Props {
@@ -54,9 +55,9 @@ const BrandProvider = ({ children }: Props) => {
   }, []);
 
   return (
-    <BrandsCtx.Provider value={[brands, setBrands, getBrands, deleteBrand]}>
+    <BrandListsCtx.Provider value={[brands, setBrands, getBrands, deleteBrand]}>
       <LoaderWrapper isLoading={isLoading}>{children}</LoaderWrapper>
-    </BrandsCtx.Provider>
+    </BrandListsCtx.Provider>
   );
 };
 

@@ -23,8 +23,6 @@ const Table = ({ data, onDelete, onEdit }: Props) => {
         return false;
       case 'deletedAt':
         return false;
-      case 'id':
-        return false;
       default:
         return true;
     }
@@ -53,9 +51,11 @@ const Table = ({ data, onDelete, onEdit }: Props) => {
                   .filter((key) => filterOut(key))
                   .map((key, subIndex) => (
                     <TableCell key={`${index}-${subIndex}`}>
-                      {key.toLowerCase().includes('at')
-                        ? moment(val?.[key]).format('MMM Do, YYYY hh:mm:ss')
-                        : val?.[key]}
+                      {typeof val?.[key] !== 'object'
+                        ? key.toLowerCase().includes('at')
+                          ? moment(val?.[key]).format('MMM Do, YYYY hh:mm:ss')
+                          : val?.[key]
+                        : JSON.stringify(val?.[key])}
                     </TableCell>
                   ))}
                 {(onEdit || onDelete) && (

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext } from 'react';
 
-export const BrandsCtx = createContext<
+export const BrandListsCtx = createContext<
   | [
       any[],
       React.Dispatch<React.SetStateAction<any[]>>,

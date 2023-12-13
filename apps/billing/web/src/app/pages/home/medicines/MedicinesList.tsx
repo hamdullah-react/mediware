@@ -4,20 +4,18 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
 } from '@fluentui/react-components';
 
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useContext, useState } from 'react';
 import Menu from '../../../shared/organisms/Menu';
 import { useNavigate } from 'react-router-dom';
+import { MedicineListsCtx } from '../../../state/contexts/MedicinesCtx';
+import Table from '../../../shared/organisms/Table';
 
 const MedicinesList = () => {
-  const [queryString, setQueryString] = useState('');
   const navigate = useNavigate();
+  const [medicines] = useContext(MedicineListsCtx);
+  const [queryString, setQueryString] = useState('');
 
   const handleQueryChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setQueryString(e.target.value);
@@ -80,40 +78,19 @@ const MedicinesList = () => {
         </Menu>
         <div className="flex items-center gap-2">
           <Input
-            size="medium"
+            size="large"
             placeholder="Search"
             value={queryString}
             onChange={handleQueryChange}
           />
-          <Button size="medium" onClick={onPressSearch}>
+          <Button size="large" onClick={onPressSearch}>
             Search
           </Button>
         </div>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Formula</TableCell>
-            <TableCell>Quantity</TableCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell>1</TableCell>
-            <TableCell>Medicine</TableCell>
-            <TableCell>geryzine</TableCell>
-            <TableCell>2</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>1</TableCell>
-            <TableCell>Medicine</TableCell>
-            <TableCell>geryzine</TableCell>
-            <TableCell>2</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      <div className="mt-14 max-h-[75vh] overflow-y-auto">
+        <Table data={medicines as object[]} />
+      </div>
     </div>
   );
 };

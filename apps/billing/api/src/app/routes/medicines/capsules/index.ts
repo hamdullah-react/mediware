@@ -2,7 +2,18 @@ import { DBClient } from '../../../../clients/prisma';
 import { FastifyInstance } from 'fastify';
 
 export default async function (fastify: FastifyInstance) {
-  // fastify.get('/', async function (req, reply) {});
+  fastify.get('/', async function (req, reply) {
+    const prisma = DBClient();
+    const data = await prisma.capsules.findMany({
+      where: {
+        deletedAt: null,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    return reply.status(200).send({ data });
+  });
 
   fastify.post('/', async function (req, reply) {
     try {

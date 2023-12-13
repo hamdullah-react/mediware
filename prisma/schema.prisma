@@ -55,6 +55,9 @@ model Medicines {
   Drops         Drops[]
   Topicals      Topicals[]
   Suppositories Suppositories[]
+  createdAt     DateTime?       @default(now())
+  updatedAt     DateTime?       @default(now())
+  deletedAt     DateTime?
 }
 
 model Capsules {
@@ -69,43 +72,64 @@ model Capsules {
   releaseProfile      String? //immediate, delayed, extended-release
   packaging           String? //blister packs or bottles
   storageRequirements String?
-  quantity            Int?   @default(0)
+  quantity            Int?      @default(0)
+  createdAt           DateTime? @default(now())
+  updatedAt           DateTime? @default(now())
+  deletedAt           DateTime?
 }
 
 model Syrups {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
+  deletedAt  DateTime?
 }
 
 model Inhalers {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
+  deletedAt  DateTime?
 }
 
 model Injections {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
+  deletedAt  DateTime?
 }
 
 model Drops {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
+  deletedAt  DateTime?
 }
 
 model Topicals {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
+  deletedAt  DateTime?
 }
 
 model Suppositories {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
+  deletedAt  DateTime?
 }
 
 // model Invoices {
