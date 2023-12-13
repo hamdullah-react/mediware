@@ -11,6 +11,7 @@ import { useLocation } from 'react-router-dom';
 import BrandProvider from './state/providers/BrandProvider';
 import MedicinesProvider from './state/providers/MedicinesProvider';
 import CapsulesProvider from './state/providers/CapsuleProvider';
+import SyrupsProvider from './state/providers/SyrupProvider';
 
 const App = () => {
   const location = useLocation();
@@ -83,7 +84,9 @@ const App = () => {
           <BrandProvider>
             <MedicinesProvider>
               <CapsulesProvider>
-                <HomeRouter />
+                <SyrupsProvider>
+                  <HomeRouter />
+                </SyrupsProvider>
               </CapsulesProvider>
             </MedicinesProvider>
           </BrandProvider>

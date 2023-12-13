@@ -17,7 +17,7 @@ interface Props {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const NewMedicine = ({ setIsOpen, isOpen = false }: Props) => {
+const NewBrand = ({ setIsOpen, isOpen = false }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [newBrand, setNewBrand] = useState({
     address: '',
@@ -130,4 +130,4 @@ const NewMedicine = ({ setIsOpen, isOpen = false }: Props) => {
   );
 };
 
-export default NewMedicine;
+export default NewBrand;

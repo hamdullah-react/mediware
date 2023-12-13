@@ -1,26 +1,15 @@
-// FIXME
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { DBClient } from '../../../../clients/prisma';
 import { FastifyInstance } from 'fastify';
-import { DBClient } from '../../../clients/prisma';
-
 
 export default async function (fastify: FastifyInstance) {
   fastify.get('/', async function (req, reply) {
     const prisma = DBClient();
-    const data = await prisma.medicines.findMany({
+    const data = await prisma.syrups.findMany({
       where: {
         deletedAt: null,
       },
       orderBy: {
         id: 'desc',
-      },
-      select: {
-        genericName: true,
-        formula: true,
-        usage: true,
-        sideEffect: true,
-        dosage: true,
-        brandId: true,
       },
     });
     return reply.status(200).send({ data });
@@ -30,21 +19,22 @@ export default async function (fastify: FastifyInstance) {
     try {
       const prisma = DBClient();
       const requestBody = req.body as unknown as object;
-
-      console.log('expirey', new Date(requestBody['expirey']).toUTCString());
-
-      const data = await prisma.medicines.create({
+      const data = await prisma.syrups.create({
         data: {
-          // FIXME
-          ...(requestBody as any),
-          expirey: new Date(requestBody['expirey']),
+          ingredients: requestBody['ingredients'],
+          numOfBottles: parseFloat(requestBody['numOfBottles']),
+          storageConditions: requestBody['storageConditions'],
+          code: requestBody['code'],
+          volume: requestBody['volume'],
+          medicineId: parseInt(requestBody['medicineId']),
         },
       });
-
       return reply.status(200).send({ data });
     } catch (error) {
       console.log(error);
       throw error;
     }
   });
+
+  // fastify.delete('/:id', async function (req, reply) {});
 }

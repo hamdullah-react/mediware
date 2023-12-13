@@ -48,6 +48,8 @@ model Medicines {
   usage         String
   sideEffect    String
   dosage        String
+  expirey       DateTime        @default(now())
+  price         Float?          @default(0)
   Capsules      Capsules[]
   Syrups        Syrups[]
   Inhalers      Inhalers[]
@@ -79,12 +81,17 @@ model Capsules {
 }
 
 model Syrups {
-  id         Int       @id @default(autoincrement())
-  medicineId Int
-  medicine   Medicines @relation(fields: [medicineId], references: [id])
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @default(now())
-  deletedAt  DateTime?
+  id                Int       @id @default(autoincrement())
+  medicineId        Int
+  medicine          Medicines @relation(fields: [medicineId], references: [id])
+  code              String?
+  volume            String?
+  ingredients       String
+  storageConditions String
+  numOfBottles Int
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @default(now())
+  deletedAt    DateTime?
 }
 
 model Inhalers {
