@@ -46,6 +46,7 @@ const InputField = ({
         </Label>
       )}
       <Input
+        className="w-full"
         required={required}
         type={type}
         onChange={onChange}

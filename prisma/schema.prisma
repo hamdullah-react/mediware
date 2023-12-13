@@ -42,7 +42,7 @@ model Brands {
 model Medicines {
   id            Int             @id @default(autoincrement())
   brandId       Int
-  brandName     Brands          @relation(fields: [brandId], references: [id])
+  brand         Brands          @relation(fields: [brandId], references: [id])
   genericName   String
   formula       String
   usage         String
@@ -58,9 +58,18 @@ model Medicines {
 }
 
 model Capsules {
-  id         Int       @id @default(autoincrement())
-  medicineId Int
-  medicine   Medicines @relation(fields: [medicineId], references: [id])
+  id                  Int       @id @default(autoincrement())
+  medicineId          Int
+  medicine            Medicines @relation(fields: [medicineId], references: [id])
+  composition         String?
+  strength            String?
+  size                String?
+  shape               String?
+  color               String?
+  releaseProfile      String? //immediate, delayed, extended-release
+  packaging           String? //blister packs or bottles
+  storageRequirements String?
+  quantity            Int?   @default(0)
 }
 
 model Syrups {
