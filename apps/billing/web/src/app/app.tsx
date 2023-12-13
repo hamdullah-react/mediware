@@ -1,82 +1,90 @@
-import './app.css';
+import { IconContext } from 'react-icons';
+import {
+  Divider,
+  FluentProvider,
+  webLightTheme,
+} from '@fluentui/react-components';
+import HomeRouter from './router/HomeRouter';
+import SidebarLayout from './shared/layouts/SidebarLayout';
+import SidebarItem from './shared/molecules/SidebarItem';
+import { useLocation } from 'react-router-dom';
+import BrandProvider from './state/providers/BrandProvider';
 
-import { Route, Routes, Link } from 'react-router-dom';
-
-export function App() {
+const App = () => {
+  const location = useLocation();
   return (
-    <div>
-      <h1>
-        <span> Hello there, </span>
-        Welcome billing-web 👋
-      </h1>
-    </div>
+    <FluentProvider theme={webLightTheme}>
+      <IconContext.Provider value={{ color: '#0078D3' }}>
+        <SidebarLayout
+          pageTitle={
+            location.pathname === '/'
+              ? 'Welcome'
+              : location.pathname.split('/').reverse()?.[0].replace(/\//g, '')
+          }
+          sidebar={
+            <>
+              <SidebarItem
+                isActive={'/' === location.pathname}
+                slug="/"
+                label="Home"
+              />
+              <SidebarItem
+                isActive={'/medicines' === location.pathname}
+                slug="/medicines"
+                label="All Medicines"
+              />
+              <Divider className="py-5" />
+              <SidebarItem
+                isActive={'/brands' === location.pathname}
+                slug="/brands"
+                label="Brands"
+              />
+              <Divider className="py-5" />
+              <SidebarItem
+                isActive={'/medicines/capsules' === location.pathname}
+                slug="/medicines/capsules"
+                label="Capsules"
+              />
+              <SidebarItem
+                isActive={'/medicines/syrups' === location.pathname}
+                slug="/medicines/syrups"
+                label="Syrups"
+              />
+              <SidebarItem
+                isActive={'/medicines/inhalers' === location.pathname}
+                slug="/medicines/inhalers"
+                label="Inhalers"
+              />
+              <SidebarItem
+                isActive={'/medicines/injections' === location.pathname}
+                slug="/medicines/injections"
+                label="Injections"
+              />
+              <SidebarItem
+                isActive={'/medicines/drops' === location.pathname}
+                slug="/medicines/drops"
+                label="Drops"
+              />
+              <SidebarItem
+                isActive={'/medicines/topicals' === location.pathname}
+                slug="/medicines/topicals"
+                label="Topicals"
+              />
+              <SidebarItem
+                isActive={'/medicines/suppositories' === location.pathname}
+                slug="/medicines/suppositories"
+                label="Suppositories"
+              />
+            </>
+          }
+        >
+          <BrandProvider>
+            <HomeRouter />
+          </BrandProvider>
+        </SidebarLayout>
+      </IconContext.Provider>
+    </FluentProvider>
   );
-}
+};
 
 export default App;
-
-if (import.meta.vitest) {
-  // add tests related to your file here
-  // For more information please visit the Vitest docs site here: https://vitest.dev/guide/in-source.html
-
-  const { it, expect, beforeEach } = import.meta.vitest;
-  let render: typeof import('@testing-library/react').render;
-
-  beforeEach(async () => {
-    render = (await import('@testing-library/react')).render;
-  });
-
-  it('should render successfully', () => {
-    const { baseElement } = render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    );
-    expect(baseElement).toBeTruthy();
-  });
-
-  it('should have a greeting as the title', () => {
-    const { getByText } = render(
-      <BrowserRouter>
-        <App />
-        {/* START: routes */}
-        {/* These routes and navigation have been generated for you */}
-        {/* Feel free to move and update them to fit your needs */}
-        <br />
-        <hr />
-        <br />
-        <div role="navigation">
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/page-2">Page 2</Link>
-            </li>
-          </ul>
-        </div>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <div>
-                This is the generated root route.{' '}
-                <Link to="/page-2">Click here for page 2.</Link>
-              </div>
-            }
-          />
-          <Route
-            path="/page-2"
-            element={
-              <div>
-                <Link to="/">Click here to go back to root page.</Link>
-              </div>
-            }
-          />
-        </Routes>
-        {/* END: routes */}
-      </BrowserRouter>
-    );
-    expect(getByText(/Welcome billing-web/gi)).toBeTruthy();
-  });
-}

@@ -3,9 +3,110 @@
 
 generator client {
   provider = "prisma-client-js"
+  // output = "apps/billing/api/src/clients/client"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Suppliers {
+  id               Int       @id @default(autoincrement())
+  pocName          String
+  pocTelephone     String
+  pocEmail         String
+  pocAddress       String
+  companyName      String
+  companyTelephone String
+  companyEmail     String
+  companyAddress   String
+  createdAt        DateTime? @default(now())
+  updatedAt        DateTime? @default(now())
+  deletedAt        DateTime?
+}
+
+model Brands {
+  id        Int         @id @default(autoincrement())
+  name      String
+  telephone String
+  email     String
+  address   String
+  createdAt DateTime?   @default(now())
+  updatedAt DateTime?   @default(now())
+  deletedAt DateTime?
+  Medicines Medicines[]
+}
+
+// General form of medicines
+model Medicines {
+  id            Int             @id @default(autoincrement())
+  brandId       Int
+  brandName     Brands          @relation(fields: [brandId], references: [id])
+  genericName   String
+  formula       String
+  usage         String
+  sideEffect    String
+  dosage        String
+  Capsules      Capsules[]
+  Syrups        Syrups[]
+  Inhalers      Inhalers[]
+  Injections    Injections[]
+  Drops         Drops[]
+  Topicals      Topicals[]
+  Suppositories Suppositories[]
+}
+
+model Capsules {
+  id         Int       @id @default(autoincrement())
+  medicineId Int
+  medicine   Medicines @relation(fields: [medicineId], references: [id])
+}
+
+model Syrups {
+  id         Int       @id @default(autoincrement())
+  medicineId Int
+  medicine   Medicines @relation(fields: [medicineId], references: [id])
+}
+
+model Inhalers {
+  id         Int       @id @default(autoincrement())
+  medicineId Int
+  medicine   Medicines @relation(fields: [medicineId], references: [id])
+}
+
+model Injections {
+  id         Int       @id @default(autoincrement())
+  medicineId Int
+  medicine   Medicines @relation(fields: [medicineId], references: [id])
+}
+
+model Drops {
+  id         Int       @id @default(autoincrement())
+  medicineId Int
+  medicine   Medicines @relation(fields: [medicineId], references: [id])
+}
+
+model Topicals {
+  id         Int       @id @default(autoincrement())
+  medicineId Int
+  medicine   Medicines @relation(fields: [medicineId], references: [id])
+}
+
+model Suppositories {
+  id         Int       @id @default(autoincrement())
+  medicineId Int
+  medicine   Medicines @relation(fields: [medicineId], references: [id])
+}
+
+// model Invoices {
+//   id Int @id @default(autoincrement()) @ignore
+// }
+
+// model TransactionLineItems { bridge entity bw ivnoices and medicines =>  konsi invoice k against konsi dawai bikini
+//   id Int @id @default(autoincrement()) @ignore
+// }
+
+// model Customers {
+//   id Int @id @default(autoincrement()) @ignore
+// }
