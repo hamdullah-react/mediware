@@ -10,7 +10,7 @@ export default async function (fastify: FastifyInstance) {
           deletedAt: null,
         },
         orderBy: {
-          updatedAt: 'desc',
+          id: 'desc',
         },
       });
       return reply.status(200).send({ data });

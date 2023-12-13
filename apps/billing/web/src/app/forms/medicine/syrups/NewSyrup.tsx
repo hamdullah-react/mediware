@@ -14,15 +14,15 @@ import InputField from '../../../shared/molecules/InputField';
 import NewBrand from '../NewBrand';
 import clsx from 'clsx';
 import { HttpClient, errorHandler } from '../../../utils/common';
-import { CapsuleListsCtx } from '../../../state/contexts/CapsulesCtx';
 import { useNavigate } from 'react-router-dom';
+import { SyrupListsCtx } from '../../../state/contexts/SyrupCtx';
 
 interface Props {
   isOpen?: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
+const NewSyrup = ({ setIsOpen, isOpen = false }: Props) => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
   const [newBrandName, setNewBrandName] = useState('');
   const [brands] = useContext(BrandListsCtx);
   const [step, setStep] = useState(0);
-  const [capsuleBrand, setCapsuleBrand] = useState<any>({});
+  const [syrupBrand, setSyrupBrand] = useState<any>({});
   const [newMedicine, setNewMedicine] = useState({
     dosage: '',
     formula: '',
@@ -40,19 +40,15 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
     expirey: '',
     brandId: null,
   });
-  const [newCapsule, setNewCapsule] = useState({
-    color: '',
-    composition: '',
-    packaging: '',
-    releaseProfile: '',
-    shape: '',
-    size: '',
-    storageRequirements: '',
-    strength: '',
-    quantity: '',
+  const [newSyrup, setNewSyrup] = useState({
+    ingredients: '',
+    numOfBottles: '',
+    storageConditions: '',
+    code: '',
+    volume: '',
     medicineId: -1,
   });
-  const [, , getCapsules] = useContext(CapsuleListsCtx);
+  const [, , getSyrups] = useContext(SyrupListsCtx);
 
   const handleChangeMedicine = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,31 +60,31 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
     [newMedicine]
   );
 
-  const handleChangeCapsule = useCallback(
+  const handleChangeSyrup = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setNewCapsule({
-        ...newCapsule,
+      setNewSyrup({
+        ...newSyrup,
         [ev.target.name]: ev.target.value,
       });
     },
-    [newCapsule]
+    [newSyrup]
   );
 
   const onSaveMedicine = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       try {
-        if (capsuleBrand?.id) {
+        if (syrupBrand?.id) {
           setIsLoading(true);
           const response = (
             await HttpClient().post('/medicines', {
               ...newMedicine,
-              brandId: capsuleBrand.id,
+              brandId: syrupBrand.id,
             })
           ).data;
 
-          setNewCapsule({
-            ...newCapsule,
+          setNewSyrup({
+            ...newSyrup,
             medicineId: response.data?.id,
           });
 
@@ -103,18 +99,18 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
         errorHandler({ error });
       }
     },
-    [capsuleBrand.id, newCapsule, newMedicine, step]
+    [syrupBrand.id, newSyrup, newMedicine, step]
   );
 
   const onSaveCapsule = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       try {
-        if (newCapsule.medicineId !== -1) {
+        if (newSyrup.medicineId !== -1) {
           setIsLoading(true);
-          await HttpClient().post('/medicines/capsules', newCapsule);
-          if (getCapsules) {
-            await getCapsules();
+          await HttpClient().post('/medicines/syrups', newSyrup);
+          if (getSyrups) {
+            await getSyrups();
           }
           setIsOpen(false);
           setAddingMedicine(false);
@@ -129,14 +125,14 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
         errorHandler({ error });
       }
     },
-    [getCapsules, navigate, newCapsule, setIsOpen]
+    [getSyrups, navigate, newSyrup, setIsOpen]
   );
 
   return (
     <Modal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title="New Capsule"
+      title="New Syrup"
       hideClose={isLoading}
     >
       <div>
@@ -175,14 +171,14 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
                       <div
                         key={brand.id}
                         onClick={() => {
-                          setCapsuleBrand(brand);
+                          setSyrupBrand(brand);
                           setNewBrandName(brand.name);
                           setStep(step + 1);
                         }}
                         className={clsx([
                           'cursor-pointer p-2 px-3 rounded-lg hover:bg-gray-200',
                           'active:bg-gray-300 active:scale-95 transition-all duration-200',
-                          brand.id === capsuleBrand?.id &&
+                          brand.id === syrupBrand?.id &&
                             'bg-blue-500 text-white',
                         ])}
                       >
@@ -259,73 +255,42 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
               <form onSubmit={onSaveCapsule}>
                 <div className="flex flex-col gap-1">
                   <InputField
-                    value={newCapsule.color}
-                    name="color"
-                    onChange={handleChangeCapsule}
-                    label="Enter capsule color"
-                    placeholder="Capsule Color"
+                    value={newSyrup.code}
+                    name="code"
+                    onChange={handleChangeSyrup}
+                    label="Syrup code"
+                    placeholder="Enter Syrup code (optional)"
                   />
                   <InputField
-                    value={newCapsule.composition}
-                    name="composition"
-                    onChange={handleChangeCapsule}
-                    label="Capsule composition"
-                    placeholder="Enter capsule composition"
+                    value={newSyrup.ingredients}
+                    name="ingredients"
+                    onChange={handleChangeSyrup}
+                    label="Syrup Ingredients"
+                    placeholder="Enter Syrup ingredients"
                     required
                   />
                   <InputField
-                    value={newCapsule.packaging}
-                    name="packaging"
-                    onChange={handleChangeCapsule}
-                    label="Packaging Type"
-                    placeholder="blister packs or bottles"
-                  />
-                  <InputField
-                    value={newCapsule.releaseProfile}
-                    name="releaseProfile"
-                    onChange={handleChangeCapsule}
-                    label="Release Profile"
-                    placeholder="Immediate, Delayed, Extended-release"
-                    required
-                  />
-                  <InputField
-                    value={newCapsule.shape}
-                    name="shape"
-                    onChange={handleChangeCapsule}
-                    label="Capsule Shape"
-                    placeholder="Capsule shape (optional)"
-                  />
-                  <InputField
-                    value={newCapsule.size}
-                    name="size"
-                    onChange={handleChangeCapsule}
-                    label="Capsule Size"
-                    placeholder="Enter size or amount (optional)"
-                  />
-                  <InputField
-                    value={newCapsule.storageRequirements}
-                    name="storageRequirements"
-                    onChange={handleChangeCapsule}
-                    label="Storage Requirements"
-                    placeholder="Enter Storage requirements"
-                    required
-                  />
-                  <InputField
-                    value={newCapsule.strength}
-                    name="strength"
-                    onChange={handleChangeCapsule}
-                    label="Capsule Strength"
-                    placeholder="Strength in potency"
-                    required
-                  />
-                  <InputField
-                    value={newCapsule.quantity}
-                    name="quantity"
-                    onChange={handleChangeCapsule}
-                    placeholder="Amount in inventory"
-                    label="Amount Recieved"
+                    value={newSyrup.numOfBottles}
+                    name="numOfBottles"
+                    onChange={handleChangeSyrup}
+                    label="Number of Bottles"
                     type="number"
+                    placeholder="Enter number of bottles"
+                  />
+                  <InputField
+                    value={newSyrup.storageConditions}
+                    name="storageConditions"
+                    onChange={handleChangeSyrup}
+                    label="Storage Conditions"
+                    placeholder="Cool, Dry..."
                     required
+                  />
+                  <InputField
+                    value={newSyrup.volume}
+                    name="volume"
+                    onChange={handleChangeSyrup}
+                    label="Volume"
+                    placeholder="Enter volume"
                   />
 
                   <div className="flex justify-end mt-4">
@@ -369,4 +334,4 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
   );
 };
 
-export default NewCapsule;
+export default NewSyrup;

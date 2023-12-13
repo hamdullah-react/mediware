@@ -10,14 +10,14 @@ import InputField from '../../shared/molecules/InputField';
 import { Button, Spinner } from '@fluentui/react-components';
 import Modal from '../../shared/organisms/Modal';
 import { HttpClient, errorHandler } from '../../utils/common';
-import { BrandsCtx } from '../../state/contexts/BrandsCtx';
+import { BrandListsCtx } from '../../state/contexts/BrandsCtx';
 
 interface Props {
   isOpen?: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const NewMedicine = ({ setIsOpen, isOpen = false }: Props) => {
+const NewBrand = ({ setIsOpen, isOpen = false }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [newBrand, setNewBrand] = useState({
     address: '',
@@ -25,7 +25,7 @@ const NewMedicine = ({ setIsOpen, isOpen = false }: Props) => {
     name: '',
     telephone: '',
   });
-  const [, , getBrands] = useContext(BrandsCtx);
+  const [, , getBrands] = useContext(BrandListsCtx);
 
   const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,4 +130,4 @@ const NewMedicine = ({ setIsOpen, isOpen = false }: Props) => {
   );
 };
 
-export default NewMedicine;
+export default NewBrand;

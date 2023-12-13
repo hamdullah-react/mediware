@@ -10,13 +10,13 @@ import { Button, Input } from '@fluentui/react-components';
 import { getLastRouteItem } from '../../utils/common';
 import Table from '../../shared/organisms/Table';
 import NewBrand from '../../forms/brands/NewBrand';
-import { BrandsCtx } from '../../state/contexts/BrandsCtx';
+import { BrandListsCtx } from '../../state/contexts/BrandsCtx';
 
 const Brands = () => {
   const location = useLocation();
   const [isAdding, setIsAdding] = useState(false);
   const [queryString, setQueryString] = useState('');
-  const [brands, , , deletebrand] = useContext(BrandsCtx);
+  const [brands, , , deletebrand] = useContext(BrandListsCtx);
 
   const handleQueryChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setQueryString(e.target.value);

@@ -9,6 +9,9 @@ import SidebarLayout from './shared/layouts/SidebarLayout';
 import SidebarItem from './shared/molecules/SidebarItem';
 import { useLocation } from 'react-router-dom';
 import BrandProvider from './state/providers/BrandProvider';
+import MedicinesProvider from './state/providers/MedicinesProvider';
+import CapsulesProvider from './state/providers/CapsuleProvider';
+import SyrupsProvider from './state/providers/SyrupProvider';
 
 const App = () => {
   const location = useLocation();
@@ -79,7 +82,13 @@ const App = () => {
           }
         >
           <BrandProvider>
-            <HomeRouter />
+            <MedicinesProvider>
+              <CapsulesProvider>
+                <SyrupsProvider>
+                  <HomeRouter />
+                </SyrupsProvider>
+              </CapsulesProvider>
+            </MedicinesProvider>
           </BrandProvider>
         </SidebarLayout>
       </IconContext.Provider>
