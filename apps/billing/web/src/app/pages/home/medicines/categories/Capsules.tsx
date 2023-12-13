@@ -1,9 +1,9 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import Modal from '../../../../shared/organisms/Modal';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../../utils/common';
 import Table from '../../../../shared/organisms/Table';
 import { Button, Input } from '@fluentui/react-components';
+import NewCapsule from '../../../../forms/medicine/capsules/NewCapsule';
 
 const Capsules = () => {
   const location = useLocation();
@@ -28,9 +28,7 @@ const Capsules = () => {
 
   return (
     <div>
-      <Modal isOpen={isAdding} setIsOpen={setIsAdding}>
-        <div>form comes here</div>
-      </Modal>
+      <NewCapsule isOpen={isAdding} setIsOpen={setIsAdding} />
       <div className="my-3 flex items-center justify-between">
         <Button onClick={toggleModalOpen}>Add New</Button>
         <div className="flex items-center gap-2">
