@@ -15,14 +15,14 @@ import NewBrand from '../NewBrand';
 import clsx from 'clsx';
 import { HttpClient, errorHandler } from '../../../utils/common';
 import { useNavigate } from 'react-router-dom';
-import { InjectionListsCtx } from '../../../state/contexts/InjectionsCtx';
+import { TopicalsListsCtx } from '../../../state/contexts/TopicalsCtx';
 
 interface Props {
   isOpen?: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
+const NewTopicals = ({ setIsOpen, isOpen = false }: Props) => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
   const [newBrandName, setNewBrandName] = useState('');
   const [brands] = useContext(BrandListsCtx);
   const [step, setStep] = useState(0);
-  const [injectionBrand, setInjectionBrand] = useState<any>({});
+  const [topicalsBrand, setTopicalsBrand] = useState<any>({});
   const [newMedicine, setNewMedicine] = useState({
     dosage: '',
     formula: '',
@@ -40,14 +40,12 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
     expirey: '',
     brandId: null,
   });
-  const [newInjection, setNewInjection] = useState({
-    injectionType: '',
+  const [newTopicals, setNewTopicals] = useState({
     potency: '',
     quantity: '',
-    storageCondition: '',
     medicineId: -1,
   });
-  const [, , getInjections] = useContext(InjectionListsCtx);
+  const [, , getDrops] = useContext(TopicalsListsCtx);
 
   const handleChangeMedicine = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,31 +57,31 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
     [newMedicine]
   );
 
-  const handleChangeInhaler = useCallback(
+  const handleChangeDrops = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setNewInjection({
-        ...newInjection,
+      setNewTopicals({
+        ...newTopicals,
         [ev.target.name]: ev.target.value,
       });
     },
-    [newInjection]
+    [newTopicals]
   );
 
   const onSaveMedicine = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       try {
-        if (injectionBrand?.id) {
+        if (topicalsBrand?.id) {
           setIsLoading(true);
           const response = (
             await HttpClient().post('/medicines', {
               ...newMedicine,
-              brandId: injectionBrand.id,
+              brandId: topicalsBrand.id,
             })
           ).data;
 
-          setNewInjection({
-            ...newInjection,
+          setNewTopicals({
+            ...newTopicals,
             medicineId: response.data?.id,
           });
 
@@ -98,18 +96,18 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
         errorHandler({ error });
       }
     },
-    [injectionBrand.id, newInjection, newMedicine, step]
+    [topicalsBrand.id, newTopicals, newMedicine, step]
   );
 
-  const onSaveCapsule = useCallback(
+  const onSaveTopicals = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       try {
-        if (newInjection.medicineId !== -1) {
+        if (newTopicals.medicineId !== -1) {
           setIsLoading(true);
-          await HttpClient().post('/medicines/injections', newInjection);
-          if (getInjections) {
-            await getInjections();
+          await HttpClient().post('/medicines/topicals', newTopicals);
+          if (getDrops) {
+            await getDrops();
           }
           setIsOpen(false);
           setAddingMedicine(false);
@@ -124,14 +122,14 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
         errorHandler({ error });
       }
     },
-    [getInjections, navigate, newInjection, setIsOpen]
+    [getDrops, navigate, newTopicals, setIsOpen]
   );
 
   return (
     <Modal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title="New Injection"
+      title="New Drops"
       hideClose={isLoading}
     >
       <div>
@@ -170,14 +168,14 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
                       <div
                         key={brand.id}
                         onClick={() => {
-                          setInjectionBrand(brand);
+                          setTopicalsBrand(brand);
                           setNewBrandName(brand.name);
                           setStep(step + 1);
                         }}
                         className={clsx([
                           'cursor-pointer p-2 px-3 rounded-lg hover:bg-gray-200',
                           'active:bg-gray-300 active:scale-95 transition-all duration-200',
-                          brand.id === injectionBrand?.id &&
+                          brand.id === topicalsBrand?.id &&
                             'bg-blue-500 text-white',
                         ])}
                       >
@@ -251,36 +249,22 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
               </form>
             )}
             {step === 2 && (
-              <form onSubmit={onSaveCapsule}>
+              <form onSubmit={onSaveTopicals}>
                 <div className="flex flex-col gap-1">
                   <InputField
-                    value={newInjection.injectionType}
-                    name="injectionType"
-                    onChange={handleChangeInhaler}
-                    label="Injection Type"
-                    placeholder="intramuscular (IM), subcutaneous (SC), intravenous (IV)"
-                  />
-                  <InputField
-                    value={newInjection.quantity}
+                    value={newTopicals.quantity}
                     name="quantity"
-                    onChange={handleChangeInhaler}
+                    onChange={handleChangeDrops}
                     label="Quantity"
                     type="number"
                     placeholder="Enter quantity"
                   />
                   <InputField
-                    value={newInjection.potency}
+                    value={newTopicals.potency}
                     name="potency"
-                    onChange={handleChangeInhaler}
+                    onChange={handleChangeDrops}
                     label="Injection potency"
                     placeholder="Enter potency"
-                  />
-                  <InputField
-                    value={newInjection.storageCondition}
-                    name="storageCondition"
-                    onChange={handleChangeInhaler}
-                    label="Storage conditions"
-                    placeholder="Enter Storage conditions"
                   />
 
                   <div className="flex justify-end mt-4">
@@ -324,4 +308,4 @@ const NewInjection = ({ setIsOpen, isOpen = false }: Props) => {
   );
 };
 
-export default NewInjection;
+export default NewTopicals;

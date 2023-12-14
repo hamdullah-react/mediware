@@ -25,6 +25,7 @@ const NewBrand = ({ setIsOpen, isOpen = false }: Props) => {
     name: '',
     telephone: '',
   });
+
   const [, , getBrands] = useContext(BrandListsCtx);
 
   const handleChange = useCallback(

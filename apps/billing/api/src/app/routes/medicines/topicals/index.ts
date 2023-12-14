@@ -4,7 +4,7 @@ import { FastifyInstance } from 'fastify';
 export default async function (fastify: FastifyInstance) {
   fastify.get('/', async function (req, reply) {
     const prisma = DBClient();
-    const data = await prisma.injections.findMany({
+    const data = await prisma.topicals.findMany({
       where: {
         deletedAt: null,
       },
@@ -19,10 +19,8 @@ export default async function (fastify: FastifyInstance) {
     try {
       const prisma = DBClient();
       const requestBody = req.body as unknown as object;
-      const data = await prisma.injections.create({
+      const data = await prisma.topicals.create({
         data: {
-          injectionType: requestBody['injectionType'],
-          potency: requestBody['potency'],
           quantity: parseInt(requestBody['quantity']),
           storageConditions: requestBody['storageConditions'],
           medicineId: parseInt(requestBody['medicineId']),

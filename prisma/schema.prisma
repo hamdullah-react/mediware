@@ -107,15 +107,16 @@ model Inhalers {
 }
 
 model Injections {
-  id            Int       @id @default(autoincrement())
-  medicineId    Int
-  medicine      Medicines @relation(fields: [medicineId], references: [id])
-  injectionType String? //  intramuscular (IM), subcutaneous (SC), intravenous (IV)
-  potency       String?
-  quantity      Int?
-  createdAt     DateTime? @default(now())
-  updatedAt     DateTime? @default(now())
-  deletedAt     DateTime?
+  id                Int       @id @default(autoincrement())
+  medicineId        Int
+  medicine          Medicines @relation(fields: [medicineId], references: [id])
+  injectionType     String? //  intramuscular (IM), subcutaneous (SC), intravenous (IV)
+  potency           String?
+  storageConditions String?
+  quantity          Int?
+  createdAt         DateTime? @default(now())
+  updatedAt         DateTime? @default(now())
+  deletedAt         DateTime?
 }
 
 model Drops {
@@ -135,9 +136,13 @@ model Topicals {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @default(now())
-  deletedAt  DateTime?
+
+  storageConditions String?
+  quantity          Int?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+  deletedAt DateTime?
 }
 
 model Suppositories {

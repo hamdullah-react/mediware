@@ -15,6 +15,7 @@ import SyrupsProvider from './state/providers/SyrupProvider';
 import InhalersProvider from './state/providers/InhalerProvider';
 import InjectionsProvider from './state/providers/InjectionProvider';
 import DropsProvider from './state/providers/DropsProvider';
+import TopicalsProvider from './state/providers/TopicalsProvider';
 
 const App = () => {
   const location = useLocation();
@@ -76,11 +77,11 @@ const App = () => {
                 slug="/medicines/topicals"
                 label="Topicals"
               />
-              <SidebarItem
+              {/* <SidebarItem
                 isActive={'/medicines/suppositories' === location.pathname}
                 slug="/medicines/suppositories"
                 label="Suppositories"
-              />
+              /> */}
             </>
           }
         >
@@ -91,7 +92,9 @@ const App = () => {
                   <InhalersProvider>
                     <InjectionsProvider>
                       <DropsProvider>
-                        <HomeRouter />
+                        <TopicalsProvider>
+                          <HomeRouter />
+                        </TopicalsProvider>
                       </DropsProvider>
                     </InjectionsProvider>
                   </InhalersProvider>
