@@ -31,7 +31,7 @@ const Table = ({ data, onDelete, onEdit }: Props) => {
   return (
     <div>
       {data.length > 0 && (
-        <FUITable unselectable="on">
+        <FUITable unselectable="on" className="text-xs">
           <TableHeader>
             <TableRow appearance="brand">
               {Object.keys(data[0])

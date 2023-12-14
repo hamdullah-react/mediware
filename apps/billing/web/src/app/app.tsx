@@ -12,6 +12,8 @@ import BrandProvider from './state/providers/BrandProvider';
 import MedicinesProvider from './state/providers/MedicinesProvider';
 import CapsulesProvider from './state/providers/CapsuleProvider';
 import SyrupsProvider from './state/providers/SyrupProvider';
+import InhalersProvider from './state/providers/InhalerProvider';
+import InjectionsProvider from './state/providers/InjectionProvider';
 
 const App = () => {
   const location = useLocation();
@@ -85,7 +87,11 @@ const App = () => {
             <MedicinesProvider>
               <CapsulesProvider>
                 <SyrupsProvider>
-                  <HomeRouter />
+                  <InhalersProvider>
+                    <InjectionsProvider>
+                      <HomeRouter />
+                    </InjectionsProvider>
+                  </InhalersProvider>
                 </SyrupsProvider>
               </CapsulesProvider>
             </MedicinesProvider>
