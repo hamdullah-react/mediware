@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import { app } from './app/app';
 import cors from '@fastify/cors';
+import { networkInterfaces } from 'os';
 
 const host = process.env.HOST ?? '0.0.0.0';
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
@@ -21,8 +22,16 @@ server.listen({ port, host }, (err) => {
     server.log.error(err);
     process.exit(1);
   } else {
-    console.log(`[ ready ] http://${host}:${port}`);
     console.log(server.printRoutes({ commonPrefix: true }));
+    console.log(`[ ready ] http://${host}:${port}`);
+    console.log('Your configured IP (mostl likey)');
+    console.log(
+      JSON.stringify(
+        networkInterfaces()['en0'].filter((val) => val.family === 'IPv6'),
+        null,
+        2
+      )
+    );
 
     process.on('SIGINT', () => {
       console.log('\n\nServer shutdown at', new Date(), '\n\n');
