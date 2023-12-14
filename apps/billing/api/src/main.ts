@@ -25,13 +25,7 @@ server.listen({ port, host }, (err) => {
     console.log(server.printRoutes({ commonPrefix: true }));
     console.log(`[ ready ] http://${host}:${port}`);
     console.log('Your configured IP (mostl likey)');
-    console.log(
-      JSON.stringify(
-        networkInterfaces()['en0'].filter((val) => val.family === 'IPv6'),
-        null,
-        2
-      )
-    );
+    console.log(JSON.stringify(networkInterfaces(), null, 2));
 
     process.on('SIGINT', () => {
       console.log('\n\nServer shutdown at', new Date(), '\n\n');
