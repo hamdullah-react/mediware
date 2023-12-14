@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "clear": "nx reset",
-    "api": "nx server billing-api",
-    "web": "nx server billing-web"
+    "api": "nx run billing-api:serve:development",
+    "web": "nx run billing-web:serve:development"
   },
   "private": true,
   "dependencies": {
