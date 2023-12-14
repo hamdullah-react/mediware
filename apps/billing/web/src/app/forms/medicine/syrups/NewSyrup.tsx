@@ -115,7 +115,7 @@ const NewSyrup = ({ setIsOpen, isOpen = false }: Props) => {
           setIsOpen(false);
           setAddingMedicine(false);
           setIsLoading(false);
-          navigate('..');
+          navigate('/medicines/syrups');
         } else {
           alert('Unfinished or unsaved details on previous page');
           setIsLoading(false);

@@ -30,7 +30,7 @@ const Table = ({ data, onDelete, onEdit }: Props) => {
 
   return (
     <div>
-      {data.length > 0 && (
+      {data.length > 0 ? (
         <FUITable unselectable="on" className="text-xs">
           <TableHeader>
             <TableRow appearance="brand">
@@ -84,6 +84,10 @@ const Table = ({ data, onDelete, onEdit }: Props) => {
             ))}
           </TableBody>
         </FUITable>
+      ) : (
+        <div className="min-h-[65vh] flex items-center justify-center">
+          No Records
+        </div>
       )}
     </div>
   );

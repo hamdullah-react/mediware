@@ -41,7 +41,7 @@ const NewTopicals = ({ setIsOpen, isOpen = false }: Props) => {
     brandId: null,
   });
   const [newTopicals, setNewTopicals] = useState({
-    potency: '',
+    storageConditions: '',
     quantity: '',
     medicineId: -1,
   });
@@ -112,7 +112,7 @@ const NewTopicals = ({ setIsOpen, isOpen = false }: Props) => {
           setIsOpen(false);
           setAddingMedicine(false);
           setIsLoading(false);
-          navigate('..');
+          navigate('/medicines/topicals');
         } else {
           alert('Unfinished or unsaved details on previous page');
           setIsLoading(false);
@@ -260,11 +260,11 @@ const NewTopicals = ({ setIsOpen, isOpen = false }: Props) => {
                     placeholder="Enter quantity"
                   />
                   <InputField
-                    value={newTopicals.potency}
-                    name="potency"
+                    value={newTopicals.storageConditions}
+                    name="storageConditions"
                     onChange={handleChangeDrops}
-                    label="Injection potency"
-                    placeholder="Enter potency"
+                    label="Storage Conditions"
+                    placeholder="Enter storage requirements"
                   />
 
                   <div className="flex justify-end mt-4">

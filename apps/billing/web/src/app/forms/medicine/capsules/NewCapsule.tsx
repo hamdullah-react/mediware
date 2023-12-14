@@ -119,7 +119,7 @@ const NewCapsule = ({ setIsOpen, isOpen = false }: Props) => {
           setIsOpen(false);
           setAddingMedicine(false);
           setIsLoading(false);
-          navigate('..');
+          navigate('/medicines/capsules');
         } else {
           alert('Unfinished or unsaved details on previous page');
           setIsLoading(false);
