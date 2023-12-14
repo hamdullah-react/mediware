@@ -9,8 +9,8 @@ import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../../utils/common';
 import Table from '../../../../shared/organisms/Table';
 import { Button, Input } from '@fluentui/react-components';
-import { InhalerListsCtx } from '../../../../state/contexts/InhalersCtx';
 import NewInhaler from '../../../../forms/medicine/inhalers/NewInhaler';
+import { InhalerListsCtx } from '../../../../state/contexts/InhalersCtx';
 
 const Inhalers = () => {
   const location = useLocation();

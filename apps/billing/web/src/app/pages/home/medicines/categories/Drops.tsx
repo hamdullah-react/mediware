@@ -1,13 +1,21 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import Modal from '../../../../shared/organisms/Modal';
+import {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../../utils/common';
 import Table from '../../../../shared/organisms/Table';
 import { Button, Input } from '@fluentui/react-components';
+import NewDrop from '../../../../forms/medicine/drops/NewDrops';
+import { DropsListsCtx } from '../../../../state/contexts/DropsCtx';
 
-const Drops = () => {
+const Inhalers = () => {
   const location = useLocation();
   const [isAdding, setIsAdding] = useState(false);
+  const [drops] = useContext(DropsListsCtx);
   const [queryString, setQueryString] = useState('');
 
   const handleQueryChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -28,9 +36,7 @@ const Drops = () => {
 
   return (
     <div>
-      <Modal isOpen={isAdding} setIsOpen={setIsAdding}>
-        <div>form comes here</div>
-      </Modal>
+      <NewDrop isOpen={isAdding} setIsOpen={setIsAdding} />
       <div className="my-3 flex items-center justify-between">
         <Button onClick={toggleModalOpen}>Add New</Button>
         <div className="flex items-center gap-2">
@@ -45,29 +51,11 @@ const Drops = () => {
           </Button>
         </div>
       </div>
-      <div>
-        <Table
-          data={[
-            {
-              a: 'val',
-              b: 'val2',
-              c: 'object',
-            },
-            {
-              a: 'val',
-              b: 'val2',
-              c: 'val3',
-            },
-            {
-              a: 'val',
-              b: 'val2',
-              c: 'val3',
-            },
-          ]}
-        />
+      <div className="mt-14 max-h-[75vh] overflow-y-auto">
+        <Table data={drops as object[]} />
       </div>
     </div>
   );
 };
 
-export default Drops;
+export default Inhalers;
