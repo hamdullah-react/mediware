@@ -86,30 +86,38 @@ model Syrups {
   medicine          Medicines @relation(fields: [medicineId], references: [id])
   code              String?
   volume            String?
-  ingredients       String
-  storageConditions String
-  numOfBottles Int
-  createdAt    DateTime? @default(now())
-  updatedAt    DateTime? @default(now())
-  deletedAt    DateTime?
+  ingredients       String?
+  storageConditions String?
+  numOfBottles      Int
+  createdAt         DateTime? @default(now())
+  updatedAt         DateTime? @default(now())
+  deletedAt         DateTime?
 }
 
 model Inhalers {
-  id         Int       @id @default(autoincrement())
-  medicineId Int
-  medicine   Medicines @relation(fields: [medicineId], references: [id])
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @default(now())
-  deletedAt  DateTime?
+  id                Int       @id @default(autoincrement())
+  medicineId        Int
+  medicine          Medicines @relation(fields: [medicineId], references: [id])
+  inhalerType       String? // such as metered-dose inhaler (MDI), dry powder inhaler (DPI), or nebulizer.
+  storageConditions String?
+  quantity          Int?
+  createdAt         DateTime? @default(now())
+  updatedAt         DateTime? @default(now())
+  deletedAt         DateTime?
 }
 
 model Injections {
   id         Int       @id @default(autoincrement())
   medicineId Int
   medicine   Medicines @relation(fields: [medicineId], references: [id])
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @default(now())
-  deletedAt  DateTime?
+
+  injectionType String? //  intramuscular (IM), subcutaneous (SC), intravenous (IV)
+  potency       String?
+  quantity      Int?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+  deletedAt DateTime?
 }
 
 model Drops {
