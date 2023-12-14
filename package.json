@@ -2,7 +2,11 @@
   "name": "@mediware/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "clear": "nx reset",
+    "api": "nx server billing-api",
+    "web": "nx server billing-web"
+  },
   "private": true,
   "dependencies": {
     "@fastify/autoload": "~5.7.1",
