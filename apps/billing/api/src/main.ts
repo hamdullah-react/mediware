@@ -16,7 +16,6 @@ server.register(app);
 
 server.register(cors, { hideOptionsRoute: true });
 
-// Start listening.
 server.listen({ port, host }, (err) => {
   if (err) {
     server.log.error(err);

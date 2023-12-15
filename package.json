@@ -6,7 +6,9 @@
     "clear": "nx reset",
     "api": "nx run billing-api:serve:development",
     "web": "nx run billing-web:serve:development",
-    "dev": "concurrently \"nx run billing-api:serve:development\" \"nx run billing-web:serve:development\""
+    "dev": "concurrently \"nx run billing-api:serve:development\" \"nx run billing-web:serve:development\"",
+    "api:build": "nx run billing-api:build:production",
+    "api:prod": "node dist/apps/billing/api/main.js"
   },
   "private": true,
   "dependencies": {

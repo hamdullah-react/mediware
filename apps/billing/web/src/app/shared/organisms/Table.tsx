@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Table as FUITable,
@@ -45,7 +46,7 @@ const Table = ({ data, onDelete, onEdit }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((val: object, index) => (
+            {data.map((val: any, index) => (
               <TableRow key={index}>
                 {Object.keys(val)
                   .filter((key) => filterOut(key))
