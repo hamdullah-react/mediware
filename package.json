@@ -4,11 +4,12 @@
   "license": "MIT",
   "scripts": {
     "clear": "nx reset",
-    "api": "nx run billing-api:serve:development",
-    "web": "nx run billing-web:serve:development",
     "dev": "concurrently \"nx run billing-api:serve:development\" \"nx run billing-web:serve:development\"",
+    "api:run": "nx run billing-api:serve:development",
+    "web:run": "nx run billing-web:serve:development",
     "api:build": "nx run billing-api:build:production",
-    "api:prod": "node dist/apps/billing/api/main.js"
+    "api:prod": "node dist/apps/billing/api/main.js",
+    "web:build": "nx run billing-web:build:production"
   },
   "private": true,
   "dependencies": {
