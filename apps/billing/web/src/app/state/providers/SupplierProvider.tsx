@@ -2,6 +2,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import LoaderWrapper from '../../shared/molecules/LoaderWrapper';
 import { ISupplier } from '@billinglib';
 import { SupplierListCtx } from '../contexts/SupplierContext';
+import { HttpClient } from '../../utils/common';
 
 interface Props {
   children?: ReactNode | ReactNode[];
@@ -9,82 +10,51 @@ interface Props {
 
 const SupplierProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [supplierList, setSupplierList] = useState<ISupplier[]>([
-    {
-      name: 'abubakar',
-      addressLine1: 'hah 1',
-      addressLine2: ' haha 2',
-      city: 'sialkot',
-      emails: 'abubakar@gmail.com',
-      licenseNumber: '',
-      NTN: '',
-      STN: '',
-      telephones: '',
-      TNNumber: '',
-      TRNNumber: '',
-      whatsapps: '',
-    },
-    {
-      name: 'abubakar2',
-      addressLine1: 'hah 1',
-      addressLine2: ' haha 2',
-      city: 'sialkot',
-      emails: 'abubakar@gmail.com',
-      licenseNumber: '',
-      NTN: '123456',
-      STN: '',
-      telephones: '',
-      TNNumber: '',
-      TRNNumber: '',
-      whatsapps: '',
-    },
-    {
-      name: 'abubakar3',
-      addressLine1: 'hah 1',
-      addressLine2: ' haha 2',
-      city: 'sialkot',
-      emails: 'abubakar@gmail.com',
-      licenseNumber: '',
-      NTN: '',
-      STN: '',
-      telephones: '',
-      TNNumber: '',
-      TRNNumber: '',
-      whatsapps: '',
-    },
-  ]);
+
+  const [supplierList, setSupplierList] = useState<ISupplier[]>([]);
 
   const getSuppliers = useCallback(async () => {
-    console.log(supplierList);
-  }, [supplierList]);
+    setIsLoading(true);
+    const data = (await HttpClient().get('/supplier')).data;
+    setIsLoading(false);
+    setSupplierList(data);
+  }, []);
 
   const createSupplier = useCallback(
     async (newSupplier: ISupplier) => {
-      console.log(supplierList);
+      setIsLoading(true);
+      await HttpClient().post('/supplier', newSupplier);
+      await getSuppliers();
+      setIsLoading(false);
     },
-    [supplierList]
+    [getSuppliers]
   );
 
   const updateSupplier = useCallback(
     async (updatedSupplier: ISupplier) => {
-      console.log(supplierList);
+      setIsLoading(true);
+      await HttpClient().put(
+        `/supplier/${updatedSupplier.id}`,
+        updatedSupplier
+      );
+      await getSuppliers();
+      setIsLoading(false);
     },
-    [supplierList]
+    [getSuppliers]
   );
 
   const deleteSupplier = useCallback(
-    async (updatedSupplier: ISupplier) => {
-      console.log(supplierList);
+    async (deletedSupplier: ISupplier) => {
+      HttpClient().delete(`/supplier/${deletedSupplier.id}`);
+      await getSuppliers();
     },
-    [supplierList]
+    [getSuppliers]
   );
 
   useEffect(() => {
-    // load suppliers here
     getSuppliers();
-    setIsLoading(false);
     return () => {};
-  }, [getSuppliers, supplierList]);
+  }, [getSuppliers]);
 
   return (
     <LoaderWrapper isLoading={isLoading}>
