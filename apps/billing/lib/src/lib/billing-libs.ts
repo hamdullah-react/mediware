@@ -16,4 +16,7 @@ export interface ISupplier {
   licenseNumber: string;
   TNNumber: string;
   TRNNumber: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }

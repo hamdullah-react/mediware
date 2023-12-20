@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import HomeRouter from './router/HomeRouter';
 import { routes } from './router/routes';
 import SidebarItem from './shared/molecules/SidebarItem';
+import AppProvider from './state/providers/AppProvider';
 
 const App = () => {
   const location = useLocation();
@@ -26,7 +27,9 @@ const App = () => {
             />
           ))}
         >
-          <HomeRouter />
+          <AppProvider>
+            <HomeRouter />
+          </AppProvider>
         </SidebarLayout>
       </IconContext.Provider>
     </FluentProvider>

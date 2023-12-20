@@ -1,46 +1,23 @@
 import { useLocation } from 'react-router-dom';
 import Modal from '../../../shared/organisms/Modal';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { Button } from '@fluentui/react-components';
-import { getLastRouteItem, handleChange } from '../../../utils/common';
-import InputField from '../../../shared/molecules/InputField';
-import { ISupplier } from '@billinglib';
+import { getLastRouteItem } from '../../../utils/common';
+import SupplierForm from './SupplierForm';
+import Table from '../../../shared/organisms/Table';
+import { SupplierListCtx } from '../../../state/contexts/SupplierContext';
 
 const Suppliers = () => {
   const location = useLocation();
+
+  const { supplierList } = useContext(SupplierListCtx);
+
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
   );
-  const [newSupplier, setNewSupplier] = useState<ISupplier>({
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    emails: '',
-    licenseNumber: '',
-    name: '',
-    NTN: '',
-    STN: '',
-    telephones: '',
-    TNNumber: '',
-    TRNNumber: '',
-    whatsapps: '',
-  });
-
   const toggleModel = useCallback(
     () => setIsCreatingRecord(!isCreatingRecord),
     [isCreatingRecord]
-  );
-
-  const handleOnChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement>) => {
-      handleChange(
-        ev.target.name,
-        ev.target.value,
-        newSupplier,
-        setNewSupplier
-      );
-    },
-    [newSupplier]
   );
 
   return (
@@ -54,20 +31,22 @@ const Suppliers = () => {
         title="Add Supplier"
         triggerButton={<Button onClick={toggleModel}>Add New</Button>}
       >
-        <form>
-          <InputField
-            name="emails"
-            value={newSupplier?.emails}
-            onChange={handleOnChange}
-            label=""
-            placeholder=""
-            type="text"
-            fieldSize="large"
-            labelSize="medium"
-            required
-          />
-        </form>
+        <SupplierForm />
       </Modal>
+      <div>
+        {supplierList && supplierList?.length > 0 && (
+          <Table
+            headers={[]}
+            data={supplierList}
+            onDelete={(data) => {
+              console.log(data);
+            }}
+            onEdit={(data) => {
+              console.log(data);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };

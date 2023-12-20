@@ -24,4 +24,7 @@ model Supplier {
   licenseNumber String?
   TNNumber String?
   TRNNumber String?
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+  deletedAt DateTime? @default(dbgenerated("NULL"))
 }

@@ -6,6 +6,7 @@
     "clear": "nx reset",
     "dev": "concurrently \"nx run billing-api:serve:development\" \"nx run billing-web:serve:development\"",
     "migrate": "prisma db push",
+    "studio": "prisma studio",
     "api:run": "nx run billing-api:serve:development",
     "web:run": "nx run billing-web:serve:development",
     "api:build": "nx run billing-api:build:production",
