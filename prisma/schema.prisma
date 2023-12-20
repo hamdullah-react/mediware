@@ -11,19 +11,40 @@ datasource db {
 }
 
 model Supplier {
-  id Int @id @default(autoincrement())
-  emails String
-  name String
-  city String
-  telephones String
-  addressLine1 String
-  addressLine2 String?
-  whatsapps String?
-  NTN String?
-  STN String?
+  id            Int     @id @default(autoincrement())
+  emails        String
+  name          String
+  city          String
+  telephones    String
+  addressLine1  String
+  addressLine2  String?
+  whatsapps     String?
+  NTN           String?
+  STN           String?
   licenseNumber String?
-  TNNumber String?
-  TRNNumber String?
+  TNNumber      String?
+  TRNNumber     String?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+  deletedAt DateTime? @default(dbgenerated("NULL"))
+
+  batches Batch[]
+}
+
+model Batch {
+  id          Int      @id @default(autoincrement())
+  identifier  String
+  supplierId  Int
+  from        Supplier @relation(references: [id], fields: [supplierId], onDelete: Cascade, onUpdate: Cascade)
+  bonus       Float
+  grossAmount Float
+  unitPrice   Float
+  expirey DateTime
+  quantity Int
+  DiscountPerc Float
+  // TODO
+
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
   deletedAt DateTime? @default(dbgenerated("NULL"))
