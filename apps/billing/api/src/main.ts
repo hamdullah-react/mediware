@@ -24,7 +24,9 @@ server.listen({ port, host }, (err) => {
     console.log(server.printRoutes({ commonPrefix: true }));
     console.log(`[ ready ] http://${host}:${port}`);
     console.log('Your configured IP (mostl likey)');
-    console.log(JSON.stringify(networkInterfaces(), null, 2));
+    // console.log(JSON.stringify(networkInterfaces(), null, 2));
+    // print routes
+    // console.log(server.printRoutes())
 
     process.on('SIGINT', () => {
       console.log('\n\nServer shutdown at', new Date(), '\n\n');
