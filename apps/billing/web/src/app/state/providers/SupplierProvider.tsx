@@ -59,7 +59,7 @@ const SupplierProvider = ({ children }: Props) => {
   }, [supplierList]);
 
   const createSupplier = useCallback(
-    async (newSupploer: ISupplier) => {
+    async (newSupplier: ISupplier) => {
       console.log(supplierList);
     },
     [supplierList]
