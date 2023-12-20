@@ -61,12 +61,12 @@ model Invoice {
 }
 
 model InvoiceMedicine {
-  id                 Int      @id @default(autoincrement())
+  id                 Int       @id @default(autoincrement())
   batchIdentifier    String
   medicineId         Int
-  Medicine           Medicine @relation(fields: [medicineId], references: [id])
+  Medicine           Medicine  @relation(fields: [medicineId], references: [id])
   invoiceId          Int
-  Invoice            Invoice  @relation(fields: [invoiceId], references: [id])
+  Invoice            Invoice   @relation(fields: [invoiceId], references: [id])
   quantity           Int
   pack               String
   expiry             DateTime
@@ -76,4 +76,7 @@ model InvoiceMedicine {
   discountedAmount   Float
   advTaxPercentatge  Float
   netAmount          Float
+  createdAt          DateTime? @default(now())
+  updatedAt          DateTime? @default(now())
+  deletedAt          DateTime? @default(dbgenerated("NULL"))
 }

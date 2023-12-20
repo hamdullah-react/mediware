@@ -33,7 +33,7 @@ export interface IMedicine {
 }
 
 export interface IInvoice {
-  id: number;
+  id?: number;
   invoiceNumber: string;
   invoiceData: Date;
   total: number;
@@ -44,13 +44,13 @@ export interface IInvoice {
   deliveredBy: string;
   bookingDriver: string;
   status: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }
 
 export interface IInvoiceMedicine {
-  id: number;
+  id?: number;
   batchIdentifier: string;
   medicineId: number;
   Medicine: IMedicine;
@@ -65,4 +65,7 @@ export interface IInvoiceMedicine {
   discountedAmount: number;
   advTaxPercentatge: number;
   netAmount: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }
