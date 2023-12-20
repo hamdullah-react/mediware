@@ -1,11 +1,20 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 import { Button, Divider } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
 import InputField from '../../../shared/molecules/InputField';
 import { ISupplier } from '@billinglib';
+import { SupplierListCtx } from '../../../state/contexts/SupplierContext';
 
 const SupplierForm = () => {
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
+
+  const { createSupplier } = useContext(SupplierListCtx);
 
   const [newSupplier, setNewSupplier] = useState<ISupplier>({
     addressLine1: '',
@@ -40,11 +49,13 @@ const SupplierForm = () => {
   );
 
   const handleSubmit = useCallback(
-    (ev: FormEvent<HTMLFormElement>) => {
+    async (ev: FormEvent<HTMLFormElement>) => {
       ev.preventDefault();
-      console.log(JSON.stringify(newSupplier, null, 2));
+      if (createSupplier) {
+        await createSupplier(newSupplier);
+      }
     },
-    [newSupplier]
+    [createSupplier, newSupplier]
   );
 
   return (

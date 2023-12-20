@@ -10,7 +10,8 @@ import { SupplierListCtx } from '../../../state/contexts/SupplierContext';
 const Suppliers = () => {
   const location = useLocation();
 
-  const { supplierList } = useContext(SupplierListCtx);
+  const { supplierList, deleteSupplier, updateSupplier } =
+    useContext(SupplierListCtx);
 
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
@@ -34,16 +35,12 @@ const Suppliers = () => {
         <SupplierForm />
       </Modal>
       <div>
-        {supplierList && supplierList?.length > 0 && (
+        {supplierList && supplierList?.length > 0 && deleteSupplier && (
           <Table
             headers={[]}
             data={supplierList}
-            onDelete={(data) => {
-              console.log(data);
-            }}
-            onEdit={(data) => {
-              console.log(data);
-            }}
+            onDelete={deleteSupplier}
+            onEdit={updateSupplier}
           />
         )}
       </div>
