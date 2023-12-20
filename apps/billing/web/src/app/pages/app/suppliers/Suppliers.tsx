@@ -2,23 +2,46 @@ import { useLocation } from 'react-router-dom';
 import Modal from '../../../shared/organisms/Modal';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Button } from '@fluentui/react-components';
-import { getLastRouteItem } from '../../../utils/common';
+import { getLastRouteItem, handleChange } from '../../../utils/common';
 import InputField from '../../../shared/molecules/InputField';
-import {} from '@billing-lib';
+import { ISupplier } from '@billinglib';
 
 const Suppliers = () => {
   const location = useLocation();
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
   );
-  const [newSupplier, setNewSupplier] = useState<ISupplier>();
+  const [newSupplier, setNewSupplier] = useState<ISupplier>({
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    emails: '',
+    licenseNumber: '',
+    name: '',
+    NTN: '',
+    STN: '',
+    telephones: '',
+    TNNumber: '',
+    TRNNumber: '',
+    whatsapps: '',
+  });
 
   const toggleModel = useCallback(
     () => setIsCreatingRecord(!isCreatingRecord),
     [isCreatingRecord]
   );
 
-  const handleChange = useCallback((ev: ChangeEvent) => {}, []);
+  const handleOnChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement>) => {
+      handleChange(
+        ev.target.name,
+        ev.target.value,
+        newSupplier,
+        setNewSupplier
+      );
+    },
+    [newSupplier]
+  );
 
   return (
     <div>
@@ -33,9 +56,9 @@ const Suppliers = () => {
       >
         <form>
           <InputField
-            name=""
-            value=""
-            onChange={}
+            name="emails"
+            value={newSupplier?.emails}
+            onChange={handleOnChange}
             label=""
             placeholder=""
             type="text"

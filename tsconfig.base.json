@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@billing": ["apps/billing/libs/src/index.ts"],
-      "@billing-lib": ["billing-libs/src/index.ts"]
+      "@billing-lib": ["billing-libs/src/index.ts"],
+      "@billinglib": ["apps/billing/lib/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
