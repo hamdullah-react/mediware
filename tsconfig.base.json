@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@billing": ["apps/billing/libs/src/index.ts"]
+      "@billing": ["apps/billing/libs/src/index.ts"],
+      "@billing-lib": ["billing-libs/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output = "apps/billing/api/src/clients/client"
 }
 
 datasource db {
@@ -11,157 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Suppliers {
-  id               Int       @id @default(autoincrement())
-  pocName          String
-  pocTelephone     String
-  pocEmail         String
-  pocAddress       String
-  companyName      String
-  companyTelephone String
-  companyEmail     String
-  companyAddress   String
-  createdAt        DateTime? @default(now())
-  updatedAt        DateTime? @default(now())
-  deletedAt        DateTime?
+model Supplier {
+  id Int @id @default(autoincrement())
+  name String
+  city String
+  addressLine1 String
+  telephones String
+  emails String
+  addressLine2 String?
+  whatsapps String?
+  NTN String?
+  STN String?
+  licenseNumber String?
+  TNNumber String?
+  TRNNumber String?
 }
-
-model Brands {
-  id        Int         @id @default(autoincrement())
-  name      String
-  telephone String
-  email     String
-  address   String
-  createdAt DateTime?   @default(now())
-  updatedAt DateTime?   @default(now())
-  deletedAt DateTime?
-  Medicines Medicines[]
-}
-
-// General form of medicines
-model Medicines {
-  id            Int             @id @default(autoincrement())
-  brandId       Int
-  brand         Brands          @relation(fields: [brandId], references: [id])
-  genericName   String
-  formula       String
-  usage         String
-  sideEffect    String
-  dosage        String
-  expirey       DateTime        @default(now())
-  price         Float?          @default(0)
-  Capsules      Capsules[]
-  Syrups        Syrups[]
-  Inhalers      Inhalers[]
-  Injections    Injections[]
-  Drops         Drops[]
-  Topicals      Topicals[]
-  Suppositories Suppositories[]
-  createdAt     DateTime?       @default(now())
-  updatedAt     DateTime?       @default(now())
-  deletedAt     DateTime?
-}
-
-model Capsules {
-  id                  Int       @id @default(autoincrement())
-  medicineId          Int
-  medicine            Medicines @relation(fields: [medicineId], references: [id])
-  composition         String?
-  strength            String?
-  size                String?
-  shape               String?
-  color               String?
-  releaseProfile      String? //immediate, delayed, extended-release
-  packaging           String? //blister packs or bottles
-  storageRequirements String?
-  quantity            Int?      @default(0)
-  createdAt           DateTime? @default(now())
-  updatedAt           DateTime? @default(now())
-  deletedAt           DateTime?
-}
-
-model Syrups {
-  id                Int       @id @default(autoincrement())
-  medicineId        Int
-  medicine          Medicines @relation(fields: [medicineId], references: [id])
-  code              String?
-  volume            String?
-  ingredients       String?
-  storageConditions String?
-  numOfBottles      Int
-  createdAt         DateTime? @default(now())
-  updatedAt         DateTime? @default(now())
-  deletedAt         DateTime?
-}
-
-model Inhalers {
-  id                Int       @id @default(autoincrement())
-  medicineId        Int
-  medicine          Medicines @relation(fields: [medicineId], references: [id])
-  inhalerType       String? // such as metered-dose inhaler (MDI), dry powder inhaler (DPI), or nebulizer.
-  storageConditions String?
-  quantity          Int?
-  createdAt         DateTime? @default(now())
-  updatedAt         DateTime? @default(now())
-  deletedAt         DateTime?
-}
-
-model Injections {
-  id                Int       @id @default(autoincrement())
-  medicineId        Int
-  medicine          Medicines @relation(fields: [medicineId], references: [id])
-  injectionType     String? //  intramuscular (IM), subcutaneous (SC), intravenous (IV)
-  potency           String?
-  storageConditions String?
-  quantity          Int?
-  createdAt         DateTime? @default(now())
-  updatedAt         DateTime? @default(now())
-  deletedAt         DateTime?
-}
-
-model Drops {
-  id         Int       @id @default(autoincrement())
-  medicineId Int
-  medicine   Medicines @relation(fields: [medicineId], references: [id])
-
-  potency  String?
-  quantity Int?
-
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
-  deletedAt DateTime?
-}
-
-model Topicals {
-  id         Int       @id @default(autoincrement())
-  medicineId Int
-  medicine   Medicines @relation(fields: [medicineId], references: [id])
-
-  storageConditions String?
-  quantity          Int?
-
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
-  deletedAt DateTime?
-}
-
-model Suppositories {
-  id         Int       @id @default(autoincrement())
-  medicineId Int
-  medicine   Medicines @relation(fields: [medicineId], references: [id])
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @default(now())
-  deletedAt  DateTime?
-}
-
-// model Invoices {
-//   id Int @id @default(autoincrement()) @ignore
-// }
-
-// model TransactionLineItems { bridge entity bw ivnoices and medicines =>  konsi invoice k against konsi dawai bikini
-//   id Int @id @default(autoincrement()) @ignore
-// }
-
-// model Customers {
-//   id Int @id @default(autoincrement()) @ignore
-// }
