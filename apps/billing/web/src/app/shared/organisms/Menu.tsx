@@ -2,6 +2,7 @@ import {
   MenuTrigger,
   Menu as FUIMenu,
   MenuPopover,
+  PositioningShorthand,
 } from '@fluentui/react-components';
 import { ReactNode } from 'react';
 
@@ -11,11 +12,12 @@ interface Props {
     unknown,
     string | React.JSXElementConstructor<unknown>
   >;
+  positioning?: PositioningShorthand;
 }
 
-const Menu = ({ children, button }: Props) => {
+const Menu = ({ children, button, positioning = 'below-end' }: Props) => {
   return (
-    <FUIMenu>
+    <FUIMenu positioning={positioning}>
       <MenuTrigger disableButtonEnhancement>{button}</MenuTrigger>
       <MenuPopover>{children}</MenuPopover>
     </FUIMenu>
