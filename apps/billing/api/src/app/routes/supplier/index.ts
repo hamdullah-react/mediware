@@ -11,18 +11,23 @@ export default async function (fastify: FastifyInstance) {
     return suppliers;
   });
   fastify.get('/:id', async function (request, reply) {
-    const id = request.params['id']
-    
+    const id = request.params['id'];
+
     // Retrieve supplier by ID
     const foundSupplier = await prisma.supplier.findUnique({
       where: { id: parseInt(id, 10) },
     });
-  
+
     if (!foundSupplier) {
       return reply.status(404).send({ message: 'Supplier not found' });
     }
-  
-    return reply.status(200).send({ message: 'Supplier retrieved successfully', data: foundSupplier });
+
+    return reply
+      .status(200)
+      .send({
+        message: 'Supplier retrieved successfully',
+        data: foundSupplier,
+      });
   });
 
   // Create a new supplier
@@ -55,9 +60,8 @@ export default async function (fastify: FastifyInstance) {
     } catch (error) {
       console.log(error);
     }
-    
   });
-  
+
   fastify.put('/:id', async function (request, reply) {
     const id = request.params['id'];
     const requestBody = request.body as ISupplier;
@@ -81,19 +85,28 @@ export default async function (fastify: FastifyInstance) {
         updatedAt: new Date(),
       },
     });
-  
-    return reply.status(200).send({ message: 'Supplier updated successfully', data: updatedSupplier });
+
+    return reply
+      .status(200)
+      .send({
+        message: 'Supplier updated successfully',
+        data: updatedSupplier,
+      });
   });
 
   fastify.delete('/:id', async function (request, reply) {
     const id = request.params['id'];
-  
+
     // Delete supplier by ID
     const deletedSupplier = await prisma.supplier.delete({
       where: { id: parseInt(id, 10) },
     });
-  
-    return reply.status(200).send({ message: 'Supplier deleted successfully', data: deletedSupplier });
-  });
 
+    return reply
+      .status(200)
+      .send({
+        message: 'Supplier deleted successfully',
+        data: deletedSupplier,
+      });
+  });
 }

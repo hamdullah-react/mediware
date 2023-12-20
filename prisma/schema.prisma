@@ -11,20 +11,72 @@ datasource db {
 }
 
 model Supplier {
-  id Int @id @default(autoincrement())
-  emails String
-  name String
-  city String
-  telephones String
-  addressLine1 String
-  addressLine2 String?
-  whatsapps String?
-  NTN String?
-  STN String?
+  id            Int       @id @default(autoincrement())
+  emails        String
+  name          String
+  city          String
+  telephones    String
+  addressLine1  String
+  addressLine2  String?
+  whatsapps     String?
+  NTN           String?
+  STN           String?
   licenseNumber String?
-  TNNumber String?
-  TRNNumber String?
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
-  deletedAt DateTime? @default(dbgenerated("NULL"))
+  TNNumber      String?
+  TRNNumber     String?
+  createdAt     DateTime? @default(now())
+  updatedAt     DateTime? @default(now())
+  deletedAt     DateTime? @default(dbgenerated("NULL"))
+
+  // batches Batch[]
+  Invoice Invoice[]
+}
+
+model Medicine {
+  id              Int               @id @default(autoincrement())
+  name            String
+  formula         String?
+  brand           String?
+  InvoiceMedicine InvoiceMedicine[]
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @default(now())
+  deletedAt       DateTime?         @default(dbgenerated("NULL"))
+}
+
+model Invoice {
+  id              Int               @id @default(autoincrement())
+  invoiceNumber   String
+  invoiceData     DateTime
+  total           Float
+  InvoiceMedicine InvoiceMedicine[]
+  salesTax        Float
+  supplierId      Int
+  Supplier        Supplier          @relation(fields: [supplierId], references: [id])
+  deliveredBy     String
+  bookingDriver   String
+  status          String
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @default(now())
+  deletedAt       DateTime?         @default(dbgenerated("NULL"))
+}
+
+model InvoiceMedicine {
+  id                 Int       @id @default(autoincrement())
+  batchIdentifier    String
+  medicineId         Int
+  Medicine           Medicine  @relation(fields: [medicineId], references: [id])
+  invoiceId          Int
+  Invoice            Invoice   @relation(fields: [invoiceId], references: [id])
+  quantity           Int
+  pack               String
+  expiry             DateTime
+  unitTakePrice      Float
+  unitSalePrice      Float
+  discountPercentage Float
+  discountedAmount   Float
+  advTaxPercentatge  Float
+  netAmount          Float
+  createdAt          DateTime? @default(now())
+  updatedAt          DateTime? @default(now())
+  deletedAt          DateTime? @default(dbgenerated("NULL"))
 }
