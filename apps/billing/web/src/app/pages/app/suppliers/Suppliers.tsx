@@ -142,6 +142,7 @@ const Suppliers = () => {
           <Button onClick={toggleAdditionalDetails}>
             {showAdditionalDetails ? 'Hide Optionals' : 'Show Optionals'}
           </Button>
+
           {showAdditionalDetails && (
             <>
               <InputField
@@ -185,16 +186,6 @@ const Suppliers = () => {
                 labelSize="medium"
               />
               <InputField
-                name="licenseNumber"
-                value={newSupplier?.licenseNumber}
-                onChange={handleOnChange}
-                label="Supplier License number"
-                placeholder="Enter license number (Optional)"
-                type="text"
-                fieldSize="large"
-                labelSize="medium"
-              />
-              <InputField
                 name="TNNumber"
                 value={newSupplier?.TNNumber}
                 onChange={handleOnChange}
@@ -206,7 +197,7 @@ const Suppliers = () => {
               />
               <InputField
                 name="TRNNumber"
-                value={newSupplier?.TNNumber}
+                value={newSupplier?.TRNNumber}
                 onChange={handleOnChange}
                 label="Supplier TRN Number"
                 placeholder="Enter TRN number (Optional)"
