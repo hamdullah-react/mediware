@@ -16,9 +16,12 @@ const Suppliers = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<ISupplier>();
 
+  const [currentlyEditing, setCurrentlyEditing] = useState<ISupplier>();
+
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
   );
+
   const toggleModel = useCallback(
     () => setIsCreatingRecord(!isCreatingRecord),
     [isCreatingRecord]
@@ -30,9 +33,21 @@ const Suppliers = () => {
     }
   }, []);
 
+  const onEditingData = useCallback((_: ISupplier, index: number) => {
+    if (supplierList) {
+      setCurrentlyEditing(supplierList[index]);
+    }
+  }, []);
+
   const clearCurrentlyViewing = useCallback(() => {
     setCurrentlyViewing(undefined);
   }, []);
+
+  const clearCurrentlyEdting = useCallback(() => {
+    setCurrentlyEditing(undefined);
+  }, []);
+
+  const onUpdateSuppler = useCallback(() => {}, []);
 
   const getFilteredData = useCallback(() => {
     if (supplierList)
@@ -76,6 +91,16 @@ const Suppliers = () => {
           <div>{JSON.stringify(currentlyViewing)}</div>
         )}
       </Modal>
+      <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
+        {!!currentlyEditing && (
+          <div>
+            {JSON.stringify(currentlyEditing)}
+            <div className="flex flex-row justify-end mt-4">
+              <Button onClick={onUpdateSuppler}>Editing</Button>
+            </div>
+          </div>
+        )}
+      </Modal>
       <div className="flex flex-row justify-end">
         <Input
           type="search"
@@ -88,9 +113,8 @@ const Suppliers = () => {
         {supplierList && supplierList?.length > 0 && (
           <Table
             data={getFilteredData() as unknown as []}
-            // onDelete={deleteSupplier}
-            // onEdit={updateSupplier}
             onViewData={onViewData}
+            onEdit={onEditingData}
           />
         )}
       </div>

@@ -16,6 +16,8 @@ const Medicines = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IMedicine>();
 
+  const [currentlyEditing, setCurrentlyEditing] = useState<IMedicine>();
+
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
   );
@@ -31,9 +33,21 @@ const Medicines = () => {
     }
   }, []);
 
+  const onEditingData = useCallback((_: IMedicine, index: number) => {
+    if (medicineList) {
+      setCurrentlyEditing(medicineList[index]);
+    }
+  }, []);
+
   const clearCurrentlyViewing = useCallback(() => {
     setCurrentlyViewing(undefined);
   }, []);
+
+  const clearCurrentlyEdting = useCallback(() => {
+    setCurrentlyEditing(undefined);
+  }, []);
+
+  const onUpdateSuppler = useCallback(() => {}, []);
 
   const getFilteredData = useCallback(() => {
     if (medicineList) {
@@ -71,8 +85,16 @@ const Medicines = () => {
         <MedicineForm />
       </Modal>
       <Modal isOpen={!!currentlyViewing} onClosePressed={clearCurrentlyViewing}>
-        {!!clearCurrentlyViewing && (
-          <div>{JSON.stringify(currentlyViewing)}</div>
+        {!!currentlyViewing && <div>{JSON.stringify(currentlyViewing)}</div>}
+      </Modal>
+      <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
+        {!!currentlyEditing && (
+          <div>
+            {JSON.stringify(currentlyEditing)}
+            <div className="flex flex-row justify-end mt-4">
+              <Button onClick={onUpdateSuppler}>Editing</Button>
+            </div>
+          </div>
         )}
       </Modal>
       <div className="flex flex-row justify-end">
@@ -88,8 +110,8 @@ const Medicines = () => {
           <Table
             data={getFilteredData() as unknown as []}
             // onDelete={deleteMedicine}
-            // onEdit={updateMedicine}
             onViewData={onViewData}
+            onEdit={onEditingData}
           />
         )}
       </div>
