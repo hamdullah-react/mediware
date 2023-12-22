@@ -87,9 +87,9 @@ const Table = <Type,>({
       ) : (
         <div className="flex gap-3 flex-col items-center justify-center min-h-[70vh]">
           <div>Looks like there is no data</div>
-          <Button className="px-3" onClick={onAddData}>
+          {/* <Button className="px-3" onClick={onAddData}>
             Add Data
-          </Button>
+          </Button> */}
         </div>
       )}
     </div>
