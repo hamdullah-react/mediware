@@ -26,3 +26,14 @@ export const handleChange = <Type, ValueType>(
     [key]: value,
   });
 };
+
+export const getFormElementValue = (elementId: string) => {
+  const element = document.getElementById(elementId) as HTMLInputElement;
+  if (element && element?.value !== 'NaN') {
+    return element?.value;
+  }
+};
+
+export const sanitizeNaN = (value: string) => {
+  return value === 'NaN' || !value ? '0' : value;
+};

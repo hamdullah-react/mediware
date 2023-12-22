@@ -9,12 +9,12 @@ import { Button, Divider } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
 import InputField from '../../../shared/molecules/InputField';
 import { ISupplier } from '@billinglib';
-import { SupplierListCtx } from '../../../state/contexts/SupplierContext';
+import { SupplierContext } from '../../../state/contexts/SupplierContext';
 
 const SupplierForm = () => {
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 
-  const { createSupplier } = useContext(SupplierListCtx);
+  const { createSupplier } = useContext(SupplierContext);
 
   const [newSupplier, setNewSupplier] = useState<ISupplier>({
     addressLine1: '',
@@ -106,27 +106,29 @@ const SupplierForm = () => {
             labelSize="medium"
             required
           />
-          <InputField
-            name="addressLine1"
-            value={newSupplier?.addressLine1}
-            onChange={handleOnChange}
-            label="Address Line 1"
-            placeholder="Enter address line 1"
-            type="text"
-            fieldSize="large"
-            labelSize="medium"
-            required
-          />
-          <InputField
-            name="addressLine2"
-            value={newSupplier?.addressLine2}
-            onChange={handleOnChange}
-            label="Address Line 2"
-            placeholder="Enter address line 2 (Optional)"
-            type="text"
-            fieldSize="large"
-            labelSize="medium"
-          />
+          <div className="flex flex-row gap-3">
+            <InputField
+              name="addressLine1"
+              value={newSupplier?.addressLine1}
+              onChange={handleOnChange}
+              label="Address Line 1"
+              placeholder="Enter address line 1"
+              type="text"
+              fieldSize="large"
+              labelSize="medium"
+              required
+            />
+            <InputField
+              name="addressLine2"
+              value={newSupplier?.addressLine2}
+              onChange={handleOnChange}
+              label="Address Line 2"
+              placeholder="Enter address line 2 (Optional)"
+              type="text"
+              fieldSize="large"
+              labelSize="medium"
+            />
+          </div>
           <Divider className="my-3" />
         </>
       )}

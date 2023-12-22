@@ -25,6 +25,11 @@ interface Props {
     | 'month'
     | 'week';
   required?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  disabled?: boolean;
+  max?: number;
+  min?: number;
 }
 
 const InputField = ({
@@ -37,15 +42,23 @@ const InputField = ({
   fieldSize = 'large',
   type = 'text',
   required = false,
+  onFocus,
+  onBlur,
+  disabled = false,
+  max,
+  min,
 }: Props) => {
   return (
-    <>
+    <div className="flex-1">
       {label && (
         <Label htmlFor={name} size={labelSize}>
-          {label}
+          <span className="text-gray-400">{label}</span>
         </Label>
       )}
       <Input
+        max={max}
+        min={min}
+        disabled={disabled}
         className="w-full"
         required={required}
         type={type}
@@ -55,8 +68,10 @@ const InputField = ({
         name={name}
         size={fieldSize}
         placeholder={placeholder}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
-    </>
+    </div>
   );
 };
 

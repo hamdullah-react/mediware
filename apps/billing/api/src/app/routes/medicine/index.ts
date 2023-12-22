@@ -1,12 +1,13 @@
 import { FastifyInstance } from 'fastify';
 import { PrismaClient } from '@prisma/client';
-import { ISupplier } from '@billinglib';
+import { IMedicine } from '@billinglib';
 
 const prisma = new PrismaClient();
 
 export default async function (fastify: FastifyInstance) {
+  // Get all suppliers
   fastify.get('/', async function () {
-    const suppliers = await prisma.supplier.findMany({
+    const suppliers = await prisma.medicine.findMany({
       orderBy: {
         id: 'desc',
       },
@@ -20,7 +21,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.get('/:id', async function (request, reply) {
     const id = request.params['id'];
 
-    const foundSupplier = await prisma.supplier.findUnique({
+    const foundSupplier = await prisma.medicine.findUnique({
       where: { id: parseInt(id), deletedAt: null },
     });
 
@@ -36,27 +37,19 @@ export default async function (fastify: FastifyInstance) {
 
   fastify.post('/', async function (request, reply) {
     try {
-      const requestBody = request.body as ISupplier;
-      const newSupplier = await prisma.supplier.create({
+      const requestBody = request.body as IMedicine;
+      const newMedicine = await prisma.medicine.create({
         data: {
-          emails: requestBody.emails,
           name: requestBody.name,
-          city: requestBody.city,
-          telephones: requestBody.telephones,
-          addressLine1: requestBody.addressLine1,
-          addressLine2: requestBody.addressLine2 || '',
-          whatsapps: requestBody.whatsapps || '',
-          NTN: requestBody.NTN || '',
-          STN: requestBody.STN || '',
-          licenseNumber: requestBody.licenseNumber || '',
-          TNNumber: requestBody.TNNumber || '',
-          TRNNumber: requestBody.TRNNumber || '',
+          brand: requestBody.brand || '',
+          formula: requestBody.formula || '',
+          type: requestBody.type || '',
         },
       });
 
       return reply
         .status(201)
-        .send({ message: 'Supplier created successfully', data: newSupplier });
+        .send({ message: 'Supplier created successfully', data: newMedicine });
     } catch (error) {
       console.log(error);
     }
@@ -64,23 +57,15 @@ export default async function (fastify: FastifyInstance) {
 
   fastify.put('/:id', async function (request, reply) {
     const id = request.params['id'];
-    const requestBody = request.body as ISupplier;
+    const requestBody = request.body as IMedicine;
 
-    const updatedSupplier = await prisma.supplier.update({
+    const updatedSupplier = await prisma.medicine.update({
       where: { id: parseInt(id, 10) },
       data: {
-        emails: requestBody.emails,
         name: requestBody.name,
-        city: requestBody.city,
-        telephones: requestBody.telephones,
-        addressLine1: requestBody.addressLine1,
-        addressLine2: requestBody.addressLine2 || '',
-        whatsapps: requestBody.whatsapps || '',
-        NTN: requestBody.NTN || '',
-        STN: requestBody.STN || '',
-        licenseNumber: requestBody.licenseNumber || '',
-        TNNumber: requestBody.TNNumber || '',
-        TRNNumber: requestBody.TRNNumber || '',
+        brand: requestBody.brand || '',
+        formula: requestBody.formula || '',
+        type: requestBody.formula || '',
         updatedAt: new Date(),
       },
     });
@@ -94,7 +79,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.delete('/:id', async function (request, reply) {
     const id = request.params['id'];
 
-    const deletedSupplier = await prisma.supplier.update({
+    const deletedSupplier = await prisma.medicine.update({
       where: { id: parseInt(id, 10) },
       data: { deletedAt: new Date() },
     });

@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import LoaderWrapper from '../../shared/molecules/LoaderWrapper';
 import { ISupplier } from '@billinglib';
-import { SupplierListCtx } from '../contexts/SupplierContext';
+import { SupplierContext } from '../contexts/SupplierContext';
 import { HttpClient } from '../../utils/common';
 
 interface Props {
@@ -58,7 +58,7 @@ const SupplierProvider = ({ children }: Props) => {
 
   return (
     <LoaderWrapper isLoading={isLoading}>
-      <SupplierListCtx.Provider
+      <SupplierContext.Provider
         value={{
           supplierList,
           setSupplierList,
@@ -69,7 +69,7 @@ const SupplierProvider = ({ children }: Props) => {
         }}
       >
         {children}
-      </SupplierListCtx.Provider>
+      </SupplierContext.Provider>
     </LoaderWrapper>
   );
 };

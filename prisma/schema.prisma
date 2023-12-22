@@ -27,9 +27,7 @@ model Supplier {
   createdAt     DateTime? @default(now())
   updatedAt     DateTime? @default(now())
   deletedAt     DateTime? @default(dbgenerated("NULL"))
-
-  // batches Batch[]
-  Invoice Invoice[]
+  Invoice       Invoice[]
 }
 
 model Medicine {
@@ -37,6 +35,7 @@ model Medicine {
   name            String
   formula         String?
   brand           String?
+  type            String?
   InvoiceMedicine InvoiceMedicine[]
   createdAt       DateTime?         @default(now())
   updatedAt       DateTime?         @default(now())
@@ -46,15 +45,15 @@ model Medicine {
 model Invoice {
   id              Int               @id @default(autoincrement())
   invoiceNumber   String
-  invoiceData     DateTime
+  invoiceDate     DateTime          @default(now())
   total           Float
-  InvoiceMedicine InvoiceMedicine[]
-  salesTax        Float
+  salesTax        Float             @default(0.0)
+  deliveredBy     String?
+  bookingDriver   String?
+  status          String?
   supplierId      Int
   Supplier        Supplier          @relation(fields: [supplierId], references: [id])
-  deliveredBy     String
-  bookingDriver   String
-  status          String
+  InvoiceMedicine InvoiceMedicine[]
   createdAt       DateTime?         @default(now())
   updatedAt       DateTime?         @default(now())
   deletedAt       DateTime?         @default(dbgenerated("NULL"))
@@ -63,18 +62,18 @@ model Invoice {
 model InvoiceMedicine {
   id                 Int       @id @default(autoincrement())
   batchIdentifier    String
+  packing            String
+  expirey            DateTime
+  unitTakePrice      Float
+  unitSalePrice      Float
+  discountPercentage Float     @default(0.0)
+  discountedAmount   Float     @default(0.0)
+  advTax             Float     @default(0.0)
+  quantity           Int
   medicineId         Int
   Medicine           Medicine  @relation(fields: [medicineId], references: [id])
   invoiceId          Int
   Invoice            Invoice   @relation(fields: [invoiceId], references: [id])
-  quantity           Int
-  pack               String
-  expiry             DateTime
-  unitTakePrice      Float
-  unitSalePrice      Float
-  discountPercentage Float
-  discountedAmount   Float
-  advTaxPercentatge  Float
   netAmount          Float
   createdAt          DateTime? @default(now())
   updatedAt          DateTime? @default(now())

@@ -6,4 +6,12 @@
 * {
   margin: 0pt;
   user-select: none;
+  outline: none;
+}
+
+.fui-DialogSurface {
+  width: inherit;
+  min-width: inherit;
+  max-width: inherit;
+  overflow: auto;
 }

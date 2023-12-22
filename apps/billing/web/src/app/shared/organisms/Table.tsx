@@ -13,8 +13,8 @@ import Menu from './Menu';
 interface Props<Type> {
   data: Type[];
   headers?: string[];
-  onDelete?: (data: Type) => void;
-  onEdit?: (data: Type) => void;
+  onDelete?: (data: Type, index: number) => void;
+  onEdit?: (data: Type, index: number) => void;
   onAddData?: () => void;
 }
 
@@ -26,7 +26,7 @@ const Table = <Type,>({
   onAddData,
 }: Props<Type>) => {
   return (
-    <div className="w-full overflow-scroll min-h-[80vh]">
+    <div className="w-full overflow-auto min-h-[80vh]">
       {data.length > 0 ? (
         <FUITable>
           <TableHeader>
@@ -66,12 +66,12 @@ const Table = <Type,>({
                       <div className="flex flex-row gap-2">
                         <Menu button={<Button>Action</Button>}>
                           {onEdit && (
-                            <MenuItem onClick={() => onEdit(row)}>
+                            <MenuItem onClick={() => onEdit(row, index)}>
                               Edit
                             </MenuItem>
                           )}
                           {onDelete && (
-                            <MenuItem onClick={() => onDelete(row)}>
+                            <MenuItem onClick={() => onDelete(row, index)}>
                               Delete
                             </MenuItem>
                           )}

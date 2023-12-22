@@ -5,3 +5,5 @@ export interface IRoute {
   nestRoutes?: IRoute[];
   label: string;
 }
+
+export const STATAUS = ['Posted', 'Unposted'];
