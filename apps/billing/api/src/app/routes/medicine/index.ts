@@ -5,14 +5,30 @@ import { IMedicine } from '@billinglib';
 const prisma = new PrismaClient();
 
 export default async function (fastify: FastifyInstance) {
-  // Get all suppliers
   fastify.get('/', async function () {
     const suppliers = await prisma.medicine.findMany({
-      orderBy: {
-        id: 'desc',
+      select: {
+        id: true,
+        brand: true,
+        formula: true,
+        name: true,
+        type: true,
+        // uncomment if you need all the invoices containing this medicines
+        // InvoiceMedicine: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        _count: {
+          select: {
+            InvoiceMedicine: true,
+          },
+        },
       },
       where: {
         deletedAt: null,
+      },
+      orderBy: {
+        id: 'desc',
       },
     });
     return suppliers;

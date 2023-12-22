@@ -7,11 +7,36 @@ const prisma = new PrismaClient();
 export default async function (fastify: FastifyInstance) {
   fastify.get('/', async function () {
     const suppliers = await prisma.supplier.findMany({
-      orderBy: {
-        id: 'desc',
+      select: {
+        id: true,
+        emails: true,
+        name: true,
+        addressLine1: true,
+        addressLine2: true,
+        city: true,
+        licenseNumber: true,
+        NTN: true,
+        STN: true,
+        telephones: true,
+        TNNumber: true,
+        TRNNumber: true,
+        whatsapps: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        // incomment if you need all the invoices for this client
+        // Invoice: true,
+        _count: {
+          select: {
+            Invoice: true,
+          },
+        },
       },
       where: {
         deletedAt: null,
+      },
+      orderBy: {
+        id: 'desc',
       },
     });
     return suppliers;

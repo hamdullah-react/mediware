@@ -29,6 +29,7 @@ interface Props {
   modalType?: 'modal' | 'non-modal' | 'alert';
   isOpen?: boolean;
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
+  onClosePressed?: () => void;
   hideClose?: boolean;
   width?: string | number;
   maxWidth?: string | number;
@@ -46,9 +47,11 @@ const Modal = ({
   maxWidth = '600pt',
   minWidth,
   width,
+  onClosePressed,
 }: Props) => {
   const onClose = useCallback(() => {
-    if (setIsOpen) setIsOpen(false);
+    if (onClosePressed) onClosePressed();
+    else if (setIsOpen) setIsOpen(false);
   }, [setIsOpen]);
 
   return (

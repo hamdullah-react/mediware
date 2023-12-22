@@ -3,14 +3,17 @@ import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
 import InvoiceForm from './InvoiceForm';
 import Modal from '../../../shared/organisms/Modal';
-import { Button } from '@fluentui/react-components';
+import { Button, Input } from '@fluentui/react-components';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import moment from 'moment';
 import Table from '../../../shared/organisms/Table';
-import { APP_ROUNDOFF_SETTING } from '@billinglib';
+import { APP_ROUNDOFF_SETTING, IInvoice } from '@billinglib';
 
 const Invoices = () => {
   const location = useLocation();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentlyViewing, setCurrentlyViewing] = useState<IInvoice>();
 
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
@@ -23,17 +26,40 @@ const Invoices = () => {
     [isCreatingRecord]
   );
 
-  const getFilteredData = useCallback(() => {
+  const onViewData = useCallback((_: IInvoice, index: number) => {
     if (invoiceList) {
-      return invoiceList.map((invoice) => ({
-        'Invoice Number': invoice.invoiceNumber,
-        Company: invoice.Supplier?.name,
-        Date: moment(invoice.invoiceDate).format('DD/MM/YYYY'),
-        'Booking Driver': invoice.bookingDriver,
-        Total: (invoice?.total ?? 0).toFixed(APP_ROUNDOFF_SETTING),
-      }));
+      setCurrentlyViewing(invoiceList[index]);
     }
   }, []);
+
+  const clearCurrentlyViewing = useCallback(() => {
+    setCurrentlyViewing(undefined);
+  }, []);
+
+  const getFilteredData = useCallback(() => {
+    if (invoiceList) {
+      return invoiceList
+        .map((invoice) => ({
+          'Invoice Number': invoice.invoiceNumber,
+          Company: invoice.Supplier?.name,
+          Date: moment(invoice.invoiceDate).format('DD/MM/YYYY'),
+          'Booking Driver': invoice.bookingDriver,
+          Total: (invoice?.total ?? 0).toFixed(APP_ROUNDOFF_SETTING),
+        }))
+        ?.filter(
+          (data) =>
+            data['Invoice Number']
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            data?.Company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            data?.Date?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            data?.['Booking Driver']
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            data.Total?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }
+  }, [searchQuery]);
 
   return (
     <div>
@@ -48,12 +74,23 @@ const Invoices = () => {
       >
         <InvoiceForm />
       </Modal>
+      <Modal isOpen={!!currentlyViewing} onClosePressed={clearCurrentlyViewing}>
+        {!!currentlyViewing && <div>{JSON.stringify(currentlyViewing)}</div>}
+      </Modal>
+      <div className="flex flex-row justify-end">
+        <Input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search..."
+        />
+      </div>
       <div>
         {invoiceList && invoiceList?.length > 0 && (
           <Table
             data={getFilteredData() as unknown as []}
-            // onDelete={deleteInvoice}
             // onEdit={updateInvoice}
+            onViewData={onViewData}
           />
         )}
       </div>
