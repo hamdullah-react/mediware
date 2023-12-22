@@ -8,6 +8,7 @@ import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import moment from 'moment';
 import Table from '../../../shared/organisms/Table';
 import { APP_ROUNDOFF_SETTING, IInvoice } from '@billinglib';
+import InvoiceViewer from '../../../shared/organisms/InvoiceViewer';
 
 const Invoices = () => {
   const location = useLocation();
@@ -88,8 +89,16 @@ const Invoices = () => {
       >
         <InvoiceForm />
       </Modal>
-      <Modal isOpen={!!currentlyViewing} onClosePressed={clearCurrentlyViewing}>
-        {!!currentlyViewing && <div>{JSON.stringify(currentlyViewing)}</div>}
+      <Modal
+        isOpen={!!currentlyViewing}
+        onClosePressed={clearCurrentlyViewing}
+        width={'75vw'}
+        maxWidth={'75vw'}
+        title={`Invoice #${currentlyViewing?.id} from ${
+          currentlyViewing?.Supplier?.name ?? ''
+        }`}
+      >
+        {!!currentlyViewing && <InvoiceViewer invoice={currentlyViewing} />}
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
         {!!currentlyEditing && (

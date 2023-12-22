@@ -9,6 +9,7 @@ import {
 } from '@fluentui/react-components';
 import moment from 'moment';
 import Menu from './Menu';
+import clsx from 'clsx';
 
 interface Props<Type> {
   data: Type[];
@@ -17,6 +18,7 @@ interface Props<Type> {
   onEdit?: (data: Type, index: number) => void;
   onAddData?: () => void;
   onViewData?: (data: Type, index: number) => void;
+  minHeight?: string;
 }
 
 const Table = <Type,>({
@@ -25,9 +27,10 @@ const Table = <Type,>({
   onEdit,
   headers,
   onViewData,
+  minHeight = 'min-h-[80vh]',
 }: Props<Type>) => {
   return (
-    <div className="w-full overflow-auto min-h-[80vh]">
+    <div className={clsx(['w-full overflow-auto', minHeight])}>
       {data.length > 0 ? (
         <FUITable>
           <TableHeader>

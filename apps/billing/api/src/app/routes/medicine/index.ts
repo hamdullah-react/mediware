@@ -13,6 +13,7 @@ export default async function (fastify: FastifyInstance) {
         formula: true,
         name: true,
         type: true,
+        code: true,
         // uncomment if you need all the invoices containing this medicines
         // InvoiceMedicine: true,
         createdAt: true,
@@ -54,18 +55,20 @@ export default async function (fastify: FastifyInstance) {
   fastify.post('/', async function (request, reply) {
     try {
       const requestBody = request.body as IMedicine;
+
       const newMedicine = await prisma.medicine.create({
         data: {
           name: requestBody.name,
           brand: requestBody.brand || '',
           formula: requestBody.formula || '',
           type: requestBody.type || '',
+          code: requestBody.code || '',
         },
       });
 
       return reply
-        .status(201)
-        .send({ message: 'Supplier created successfully', data: newMedicine });
+        .status(200)
+        .send({ message: 'Medicine created successfully', data: newMedicine });
     } catch (error) {
       console.log(error);
     }

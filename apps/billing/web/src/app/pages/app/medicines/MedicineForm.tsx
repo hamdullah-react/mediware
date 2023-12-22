@@ -12,20 +12,13 @@ import { IMedicine, MedicineTypes } from '@billinglib';
 import Menu from '../../../shared/organisms/Menu';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 
-interface Props {
-  formType?: 'new-entry' | 'edit-existing';
-  onRegisterNewDevice?: (data: IMedicine) => void;
-}
-
-const MedicineForm = ({
-  formType = 'new-entry',
-  onRegisterNewDevice,
-}: Props) => {
+const MedicineForm = () => {
   const [newMedicine, setNewMedicine] = useState<IMedicine>({
     name: '',
     brand: '',
     formula: '',
     type: '',
+    code: '',
   });
 
   const { createMedicine } = useContext(MedicineContext);
@@ -63,6 +56,15 @@ const MedicineForm = ({
             label="Name"
             placeholder="Medicine Name"
             required
+          />
+        </div>
+        <div className="flex-1">
+          <InputField
+            name="code"
+            value={newMedicine?.code?.toString() ?? ''}
+            onChange={handleOnChange}
+            label="Medicine Code"
+            placeholder="Enter product code"
           />
         </div>
         <div>

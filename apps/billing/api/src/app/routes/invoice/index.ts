@@ -17,11 +17,45 @@ export default async function (fastify: FastifyInstance) {
         deliveredBy: true,
         invoiceDate: true,
         salesTax: true,
-        InvoiceMedicine: true,
         Supplier: true,
         status: true,
         total: true,
         updatedAt: true,
+        InvoiceMedicine: {
+          select: {
+            advTax: true,
+            batchIdentifier: true,
+            createdAt: true,
+            deletedAt: true,
+            discountedAmount: true,
+            discountPercentage: true,
+            expirey: true,
+            id: true,
+            Invoice: true,
+            invoiceId: true,
+            medicineId: true,
+            netAmount: true,
+            packing: true,
+            quantity: true,
+            gst: true,
+            unitSalePrice: true,
+            unitTakePrice: true,
+            updatedAt: true,
+            Medicine: {
+              select: {
+                brand: true,
+                createdAt: true,
+                formula: true,
+                deletedAt: true,
+                name: true,
+                type: true,
+                code: true,
+                id: true,
+                updatedAt: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             InvoiceMedicine: true,
@@ -70,6 +104,7 @@ export default async function (fastify: FastifyInstance) {
                 batchIdentifier: invoiceMedicine.batchIdentifier,
                 quantity: parseInt(invoiceMedicine.quantity.toString()) || 1,
                 packing: invoiceMedicine.packing,
+
                 expirey: moment(invoiceMedicine.expirey).format(
                   'YYYY-MM-DDTHH:mm:ss.SSSZ'
                 ),
@@ -82,6 +117,7 @@ export default async function (fastify: FastifyInstance) {
                 discountPercentage:
                   parseFloat(invoiceMedicine.discountPercentage.toString()) ||
                   0,
+                gst: parseFloat(invoiceMedicine.gst.toString()),
                 netAmount:
                   parseFloat(invoiceMedicine.netAmount.toString()) || 0,
                 advTax: parseFloat(invoiceMedicine.advTax.toString()) || 0,
@@ -118,6 +154,7 @@ export default async function (fastify: FastifyInstance) {
                 discountPercentage:
                   parseFloat(invoiceMedicine.discountPercentage.toString()) ||
                   0,
+                gst: parseFloat(invoiceMedicine.gst.toString()),
                 netAmount:
                   parseFloat(invoiceMedicine.netAmount.toString()) || 0,
                 advTax: parseFloat(invoiceMedicine.advTax.toString()) || 0,

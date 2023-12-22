@@ -1,17 +1,15 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
+import { ChangeEvent, useCallback, useContext, useState } from 'react';
 import { Button, Divider } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
 import InputField from '../../../shared/molecules/InputField';
 import { ISupplier } from '@billinglib';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 
-const SupplierForm = () => {
+interface Props {
+  onCreateSupplier?: () => void;
+}
+
+const SupplierForm = ({ onCreateSupplier }: Props) => {
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 
   const { createSupplier } = useContext(SupplierContext);
@@ -48,18 +46,15 @@ const SupplierForm = () => {
     [newSupplier]
   );
 
-  const handleSubmit = useCallback(
-    async (ev: FormEvent<HTMLFormElement>) => {
-      ev.preventDefault();
-      if (createSupplier) {
-        await createSupplier(newSupplier);
-      }
-    },
-    [createSupplier, newSupplier]
-  );
+  const handleSubmit = useCallback(async () => {
+    if (createSupplier) {
+      await createSupplier(newSupplier);
+      if (onCreateSupplier) onCreateSupplier();
+    }
+  }, [createSupplier, newSupplier]);
 
   return (
-    <form className="gap-2 flex flex-col" onSubmit={handleSubmit}>
+    <form className="gap-2 flex flex-col">
       {!showAdditionalDetails && (
         <>
           <InputField
@@ -201,7 +196,7 @@ const SupplierForm = () => {
         </>
       )}
       <Divider className="my-3" />
-      <Button type="submit" size="large" appearance="primary">
+      <Button size="large" appearance="primary" onClick={handleSubmit}>
         Submit
       </Button>
     </form>

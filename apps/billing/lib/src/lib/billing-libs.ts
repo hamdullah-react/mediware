@@ -43,11 +43,15 @@ export interface ISupplier {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+  _count?: {
+    Invoice?: number;
+  };
 }
 
 export interface IMedicine {
   id?: number;
   name: string;
+  code?: string;
   formula?: string;
   brand?: string;
   type?: MedicineTypes;
@@ -55,6 +59,9 @@ export interface IMedicine {
   updatedAt?: Date;
   deletedAt?: Date;
   InvoiceMedicine?: IInvoiceMedicine[];
+  _count?: {
+    InvoiceMedicine?: number;
+  };
 }
 
 export interface IInvoice {
@@ -83,6 +90,7 @@ export interface IInvoiceMedicine {
   unitTakePrice: number;
   unitSalePrice: number;
   discountPercentage: number;
+  gst?: number;
   advTax: number;
   discountedAmount: number;
   netAmount: number;

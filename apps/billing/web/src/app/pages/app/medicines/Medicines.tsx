@@ -7,6 +7,7 @@ import { Button, Input } from '@fluentui/react-components';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 import Table from '../../../shared/organisms/Table';
 import { IMedicine } from '@billinglib';
+import MedicineViewer from '../../../shared/organisms/MedicineViewer';
 
 const Medicines = () => {
   const location = useLocation();
@@ -54,6 +55,7 @@ const Medicines = () => {
       return medicineList
         .map((medicine) => ({
           Id: medicine.id,
+          Code: medicine.code,
           'Medicine Name': medicine.name,
           Brand: medicine.brand,
           Formula: medicine.formula,
@@ -84,8 +86,12 @@ const Medicines = () => {
       >
         <MedicineForm />
       </Modal>
-      <Modal isOpen={!!currentlyViewing} onClosePressed={clearCurrentlyViewing}>
-        {!!currentlyViewing && <div>{JSON.stringify(currentlyViewing)}</div>}
+      <Modal
+        isOpen={!!currentlyViewing}
+        onClosePressed={clearCurrentlyViewing}
+        title={`Medicine #${currentlyViewing?.id} ${currentlyViewing?.name} (${currentlyViewing?.type})`}
+      >
+        {!!currentlyViewing && <MedicineViewer medicine={currentlyViewing} />}
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
         {!!currentlyEditing && (

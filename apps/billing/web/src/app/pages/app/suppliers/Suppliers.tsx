@@ -7,6 +7,7 @@ import SupplierForm from './SupplierForm';
 import Table from '../../../shared/organisms/Table';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 import { ISupplier } from '@billinglib';
+import SupplierViewer from '../../../shared/organisms/SupplierViewer';
 
 const Suppliers = () => {
   const location = useLocation();
@@ -86,9 +87,15 @@ const Suppliers = () => {
       >
         <SupplierForm />
       </Modal>
-      <Modal isOpen={!!currentlyViewing} onClosePressed={clearCurrentlyViewing}>
+      <Modal
+        isOpen={!!currentlyViewing}
+        onClosePressed={clearCurrentlyViewing}
+        title={`Supplier #${currentlyViewing?.id?.toString() ?? ''} - ${
+          currentlyViewing?.name
+        }`}
+      >
         {!!clearCurrentlyViewing && (
-          <div>{JSON.stringify(currentlyViewing)}</div>
+          <SupplierViewer supplier={currentlyViewing} />
         )}
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>

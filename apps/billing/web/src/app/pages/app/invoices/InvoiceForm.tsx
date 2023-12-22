@@ -56,7 +56,7 @@ const InvoiceForm = () => {
   const [showMedicineListPopover, setShowMedicineListPopover] = useState(false);
   const [newInvoiceItemBeingEntered, setNewInvoiceItemBeingEntered] =
     useState<IInvoiceMedicine>({
-      Medicine: { name: '', brand: '', formula: '', type: '' },
+      Medicine: { name: '', brand: '', formula: '', type: '', code: '' },
       batchIdentifier: '',
       quantity: 0,
       packing: '',
@@ -65,6 +65,7 @@ const InvoiceForm = () => {
       unitSalePrice: 0,
       discountPercentage: 0,
       advTax: 0,
+      gst: 0,
       discountedAmount: 0,
       netAmount: 0,
     });
@@ -161,18 +162,16 @@ const InvoiceForm = () => {
     });
     setMedicineSearchText('');
     setNewInvoiceItemBeingEntered({
-      Medicine: { name: '', brand: '', formula: '', type: '' },
-
+      Medicine: { name: '', brand: '', formula: '', type: '', code: '' },
       batchIdentifier: '',
       quantity: 0,
       packing: '',
       expirey: new Date(),
       unitTakePrice: 0,
       unitSalePrice: 0,
-
+      gst: 0,
       discountPercentage: 0,
       advTax: 0,
-
       discountedAmount: 0,
       netAmount: 0,
     });
@@ -210,7 +209,12 @@ const InvoiceForm = () => {
     ) {
       const netAmountWithoutTax =
         (parseFloat(getValueOfForm('unitSalePrice')) -
-          parseFloat(sanitizeNaN(discountAmount))) *
+          parseFloat(sanitizeNaN(discountAmount)) +
+          (parseFloat(
+            sanitizeNaN((newInvoiceItemBeingEntered.gst ?? 0)?.toString())
+          ) /
+            100) *
+            parseFloat(getValueOfForm('unitSalePrice'))) *
         parseFloat(newInvoiceItemBeingEntered?.quantity.toString());
 
       const netAmount =
@@ -271,6 +275,7 @@ const InvoiceForm = () => {
     newInvoiceItemBeingEntered.quantity,
     newInvoiceItemBeingEntered.discountPercentage,
     newInvoiceItemBeingEntered.advTax,
+    newInvoiceItemBeingEntered.gst,
   ]);
 
   return (
@@ -284,7 +289,7 @@ const InvoiceForm = () => {
             setIsOpen={setAddingNewSupplier}
             title="Add Supplier"
           >
-            <SupplierForm />
+            <SupplierForm onCreateSupplier={toggleAddNewSupplier} />
           </Modal>
           <ListSelectors
             list={getFilteredListOfSuppliers()}
@@ -441,6 +446,7 @@ const InvoiceForm = () => {
             >
               {invoiceData?.InvoiceMedicine && (
                 <Table
+                  minHeight="min-h-[30vh]"
                   onDelete={(_, index) => {
                     if (
                       invoiceData.InvoiceMedicine &&
@@ -460,7 +466,8 @@ const InvoiceForm = () => {
                     'Gross Amt': (
                       medicine.unitSalePrice * medicine.quantity
                     ).toFixed(APP_ROUNDOFF_SETTING),
-                    'Dis %': medicine?.discountPercentage,
+                    'Dis (%)': medicine?.discountPercentage,
+                    'GST (%)': medicine?.gst,
                     'Adv.Tax': medicine?.advTax,
                     'Net Amount':
                       medicine.netAmount?.toFixed(APP_ROUNDOFF_SETTING),
@@ -601,6 +608,21 @@ const InvoiceForm = () => {
                 />
 
                 <InputField
+                  name="gst"
+                  value={newInvoiceItemBeingEntered?.gst?.toString() ?? ''}
+                  placeholder="GST (%)"
+                  onChange={handleOnChangeCurrentInvoiceItem}
+                  label="GST (%)"
+                  type="number"
+                  min={0}
+                  max={100}
+                />
+              </div>
+              <div className="flex flex-row gap-2 my-4">
+                <div className="flex-1 text-center items-center flex justify-center font-semibold text-lg bg-blue-100 rounded-sm text-blue-600">
+                  Net Amount
+                </div>
+                <InputField
                   disabled
                   name="grossAmount"
                   value={newInvoiceItemBeingEntered?.netAmount.toFixed(
@@ -608,7 +630,6 @@ const InvoiceForm = () => {
                   )}
                   placeholder="Gross Amount"
                   onChange={handleOnChangeInvoice}
-                  label="Gross Amount"
                   type="number"
                 />
               </div>
@@ -677,6 +698,26 @@ const InvoiceForm = () => {
                     }
                   }}
                   label="Medicine formula"
+                />
+                <InputField
+                  name="newMedicineCode"
+                  value={newInvoiceItemBeingEntered?.Medicine?.code ?? ''}
+                  placeholder="Medicine Code"
+                  onChange={(e) => {
+                    if (
+                      newInvoiceItemBeingEntered &&
+                      newInvoiceItemBeingEntered.Medicine
+                    ) {
+                      setNewInvoiceItemBeingEntered({
+                        ...newInvoiceItemBeingEntered,
+                        Medicine: {
+                          ...newInvoiceItemBeingEntered.Medicine,
+                          code: e.target.value,
+                        },
+                      });
+                    }
+                  }}
+                  label="Medicine Code"
                 />
                 <div className="flex flex-col min-w-[120pt]">
                   <Text className="text-gray-400">Medicine Type</Text>
