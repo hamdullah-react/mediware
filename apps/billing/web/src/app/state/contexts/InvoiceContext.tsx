@@ -8,4 +8,5 @@ export const InvoiceContext = createContext<{
   createInvoice?: (newInvoice: IInvoice) => Promise<void>;
   updateInvoice?: (updatedInvoice: IInvoice) => Promise<void>;
   deleteInvoice?: (updatedInvoice: IInvoice) => Promise<void>;
+  isLoading?: boolean;
 }>({});

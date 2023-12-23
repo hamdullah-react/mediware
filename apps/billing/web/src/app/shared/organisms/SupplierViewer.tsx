@@ -1,4 +1,4 @@
-import { ISupplier } from '@billinglib';
+import { APP_TIME_FORMAT, ISupplier } from '@billinglib';
 import { TableBody, TableCell, TableRow } from '@fluentui/react-components';
 import { Table as FUITable } from '@fluentui/react-components';
 import { dashIfNull } from '../../utils/common';
@@ -50,7 +50,7 @@ const SupplierViewer = ({ supplier }: Props) => {
           <TableRow>
             <TableCell>Created On</TableCell>
             <TableCell>
-              {dashIfNull(moment(supplier.createdAt).format('DD/MM/YYYY'))}
+              {dashIfNull(moment(supplier.createdAt).format(APP_TIME_FORMAT))}
             </TableCell>
           </TableRow>
           <TableRow>

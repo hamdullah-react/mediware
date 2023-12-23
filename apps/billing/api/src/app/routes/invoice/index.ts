@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { PrismaClient } from '@prisma/client';
-import { IInvoice } from '@billinglib';
+import { APP_DB_FORMAT, IInvoice } from '@billinglib';
 import moment from 'moment';
 
 const prisma = new PrismaClient();
@@ -35,14 +35,14 @@ export default async function (fastify: FastifyInstance) {
             invoiceId: true,
             medicineId: true,
             netAmount: true,
-            packing: true,
             quantity: true,
             gst: true,
             unitSalePrice: true,
-            unitTakePrice: true,
             updatedAt: true,
             Medicine: {
               select: {
+                unitTakePrice: true,
+                packing: true,
                 brand: true,
                 createdAt: true,
                 formula: true,
@@ -80,9 +80,7 @@ export default async function (fastify: FastifyInstance) {
       const newInvoice = await prisma.invoice.create({
         data: {
           invoiceNumber: requestBody.invoiceNumber,
-          invoiceDate: moment(requestBody.invoiceDate).format(
-            'YYYY-MM-DDTHH:mm:ss.SSSZ'
-          ),
+          invoiceDate: moment(requestBody.invoiceDate).format(APP_DB_FORMAT),
           bookingDriver: requestBody.bookingDriver,
           deliveredBy: requestBody.deliveredBy,
           salesTax: parseFloat(requestBody.salesTax.toString()),
@@ -103,14 +101,8 @@ export default async function (fastify: FastifyInstance) {
               data: {
                 batchIdentifier: invoiceMedicine.batchIdentifier,
                 quantity: parseInt(invoiceMedicine.quantity.toString()) || 1,
-                packing: invoiceMedicine.packing,
 
-                expirey: moment(invoiceMedicine.expirey).format(
-                  'YYYY-MM-DDTHH:mm:ss.SSSZ'
-                ),
-                unitTakePrice: parseFloat(
-                  invoiceMedicine.unitTakePrice.toString()
-                ),
+                expirey: moment(invoiceMedicine.expirey).format(APP_DB_FORMAT),
                 unitSalePrice: parseFloat(
                   invoiceMedicine.unitSalePrice.toString()
                 ),
@@ -141,13 +133,9 @@ export default async function (fastify: FastifyInstance) {
               data: {
                 batchIdentifier: invoiceMedicine.batchIdentifier,
                 quantity: parseInt(invoiceMedicine.quantity.toString()) || 1,
-                packing: invoiceMedicine.packing,
-                expirey: moment(invoiceMedicine.expirey).format(
-                  'YYYY-MM-DDTHH:mm:ss.SSSZ'
-                ),
-                unitTakePrice: parseFloat(
-                  invoiceMedicine.unitTakePrice.toString()
-                ),
+
+                expirey: moment(invoiceMedicine.expirey).format(APP_DB_FORMAT),
+
                 unitSalePrice: parseFloat(
                   invoiceMedicine.unitSalePrice.toString()
                 ),
@@ -172,6 +160,10 @@ export default async function (fastify: FastifyInstance) {
                     brand: invoiceMedicine.Medicine.brand,
                     formula: invoiceMedicine.Medicine.formula,
                     type: invoiceMedicine.Medicine.type,
+                    packing: invoiceMedicine.Medicine.packing,
+                    unitTakePrice: parseFloat(
+                      String(invoiceMedicine.Medicine.unitTakePrice)
+                    ),
                   },
                 },
               },

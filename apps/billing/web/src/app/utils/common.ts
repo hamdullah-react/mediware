@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { HOST } from '../../environment';
 import { Dispatch, SetStateAction } from 'react';
+
 const axiosInstance = axios.create({
   baseURL: HOST,
 });

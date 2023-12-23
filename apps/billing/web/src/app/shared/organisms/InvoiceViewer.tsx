@@ -1,4 +1,4 @@
-import { APP_ROUNDOFF_SETTING, IInvoice } from '@billinglib';
+import { APP_ROUNDOFF_SETTING, APP_TIME_FORMAT, IInvoice } from '@billinglib';
 import { Divider } from '@fluentui/react-components';
 import { dashIfNull } from '../../utils/common';
 import moment from 'moment';
@@ -15,9 +15,9 @@ const InvoiceViewer = ({ invoice }: Props) => {
       const returnable = invoice.InvoiceMedicine;
       return returnable?.map((medicine) => ({
         Name: medicine.Medicine?.name,
-        Packing: medicine.packing,
+        Packing: medicine.Medicine?.packing,
         Batch: medicine.batchIdentifier,
-        Expirey: moment(medicine.expirey).format('DD/MM/YYYY'),
+        Expirey: moment(medicine.expirey).format(APP_TIME_FORMAT),
         Quantity: medicine.quantity,
         'Unit Price': medicine.unitSalePrice,
         'Gross Amt': (medicine.unitSalePrice * medicine.quantity).toFixed(

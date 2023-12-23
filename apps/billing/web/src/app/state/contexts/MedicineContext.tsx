@@ -8,4 +8,5 @@ export const MedicineContext = createContext<{
   createMedicine?: (newMedicine: IMedicine) => Promise<void>;
   updateMedicine?: (updatedMedicine: IMedicine) => Promise<void>;
   deleteMedicine?: (updatedMedicine: IMedicine) => Promise<void>;
+  isLoading?: boolean;
 }>({});

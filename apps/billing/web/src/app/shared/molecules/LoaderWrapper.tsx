@@ -9,7 +9,7 @@ interface Props {
 const LoaderWrapper = ({ children, isLoading = false }: Props) => {
   if (isLoading) {
     return (
-      <div className="min-h-[90vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <Spinner label={'Loading'} labelPosition="after" appearance="primary" />
       </div>
     );

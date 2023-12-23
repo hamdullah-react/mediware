@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import LoaderWrapper from '../../shared/molecules/LoaderWrapper';
 import { IInvoice } from '@billinglib';
 import { HttpClient } from '../../utils/common';
 import { InvoiceContext } from '../contexts/InvoiceContext';
@@ -16,8 +15,8 @@ const InvoiceProvider = ({ children }: Props) => {
   const getInvoices = useCallback(async () => {
     setIsLoading(true);
     const data = (await HttpClient().get('/invoice')).data;
-    setIsLoading(false);
     setInvoiceList(data);
+    setIsLoading(false);
   }, []);
 
   const createInvoice = useCallback(
@@ -29,7 +28,7 @@ const InvoiceProvider = ({ children }: Props) => {
       setIsLoading(false);
       return responseData;
     },
-    [getInvoices]
+    [invoiceList]
   );
 
   const updateInvoice = useCallback(
@@ -37,17 +36,17 @@ const InvoiceProvider = ({ children }: Props) => {
       setIsLoading(true);
       await HttpClient().put(`/invoice/${updatedInvoice.id}`, updatedInvoice);
       await getInvoices();
-      setIsLoading(false);
     },
-    [getInvoices]
+    [invoiceList]
   );
 
   const deleteInvoice = useCallback(
     async (deletedMedicine: IInvoice) => {
+      setIsLoading(true);
       HttpClient().delete(`/invoice/${deletedMedicine.id}`);
       await getInvoices();
     },
-    [getInvoices]
+    [invoiceList]
   );
 
   useEffect(() => {
@@ -56,22 +55,19 @@ const InvoiceProvider = ({ children }: Props) => {
   }, [getInvoices]);
 
   return (
-    <div>
-      <LoaderWrapper isLoading={isLoading}>
-        <InvoiceContext.Provider
-          value={{
-            invoiceList,
-            setInvoiceList,
-            createInvoice,
-            getInvoices,
-            updateInvoice,
-            deleteInvoice,
-          }}
-        >
-          {children}
-        </InvoiceContext.Provider>
-      </LoaderWrapper>
-    </div>
+    <InvoiceContext.Provider
+      value={{
+        invoiceList,
+        setInvoiceList,
+        createInvoice,
+        getInvoices,
+        updateInvoice,
+        deleteInvoice,
+        isLoading,
+      }}
+    >
+      {children}
+    </InvoiceContext.Provider>
   );
 };
 

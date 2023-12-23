@@ -1,20 +1,21 @@
 import { useLocation } from 'react-router-dom';
 import Modal from '../../../shared/organisms/Modal';
 import { useCallback, useContext, useState } from 'react';
-import { Button, Input } from '@fluentui/react-components';
+import { Button } from '@fluentui/react-components';
 import { getLastRouteItem } from '../../../utils/common';
 import SupplierForm from './SupplierForm';
 import Table from '../../../shared/organisms/Table';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 import { ISupplier } from '@billinglib';
 import SupplierViewer from '../../../shared/organisms/SupplierViewer';
+import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
 
 const Suppliers = () => {
   const location = useLocation();
 
-  const { supplierList } = useContext(SupplierContext);
+  const { supplierList, isLoading } = useContext(SupplierContext);
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<ISupplier>();
 
   const [currentlyEditing, setCurrentlyEditing] = useState<ISupplier>();
@@ -109,21 +110,22 @@ const Suppliers = () => {
         )}
       </Modal>
       <div className="flex flex-row justify-end">
-        <Input
-          type="search"
+        {/* <Input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
-        />
+        /> */}
       </div>
       <div>
-        {supplierList && supplierList?.length > 0 && (
-          <Table
-            data={getFilteredData() as unknown as []}
-            onViewData={onViewData}
-            onEdit={onEditingData}
-          />
-        )}
+        <LoaderWrapper isLoading={isLoading}>
+          {supplierList && supplierList?.length > 0 && (
+            <Table
+              data={getFilteredData() as unknown as []}
+              onViewData={onViewData}
+              onEdit={onEditingData}
+            />
+          )}
+        </LoaderWrapper>
       </div>
     </div>
   );

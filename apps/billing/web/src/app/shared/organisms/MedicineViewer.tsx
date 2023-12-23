@@ -1,8 +1,8 @@
-import { IMedicine } from '@billinglib';
+import { APP_TIME_FORMAT, IMedicine } from '@billinglib';
 import { TableBody, TableCell, TableRow } from '@fluentui/react-components';
 import { Table as FUITable } from '@fluentui/react-components';
 import moment from 'moment';
-import { dashIfNull } from '../../utils/common';
+import { dashIfNull, sanitizeNaN } from '../../utils/common';
 
 interface Props {
   medicine?: IMedicine;
@@ -26,13 +26,19 @@ const MedicineViewer = ({ medicine }: Props) => {
             <TableCell>{dashIfNull(medicine.brand)}</TableCell>
           </TableRow>
           <TableRow>
+            <TableCell>Price</TableCell>
+            <TableCell>
+              {dashIfNull(sanitizeNaN(String(medicine.unitTakePrice)))}
+            </TableCell>
+          </TableRow>
+          <TableRow>
             <TableCell>Formula</TableCell>
             <TableCell>{dashIfNull(medicine.formula)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Created At</TableCell>
             <TableCell>
-              {moment(medicine.createdAt).format('DD/MM/YYYY')}
+              {moment(medicine.createdAt).format(APP_TIME_FORMAT)}
             </TableCell>
           </TableRow>
           <TableRow>

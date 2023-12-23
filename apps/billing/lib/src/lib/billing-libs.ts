@@ -3,6 +3,8 @@ export function billingLibs(): string {
 }
 
 export const APP_ROUNDOFF_SETTING = 2;
+export const APP_TIME_FORMAT = 'MMM Do, YYYY hh:mm:ss';
+export const APP_DB_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 
 export type MedicineTypes =
   | 'Capsule'
@@ -55,6 +57,8 @@ export interface IMedicine {
   formula?: string;
   brand?: string;
   type?: MedicineTypes;
+  packing: string;
+  unitTakePrice: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -85,9 +89,7 @@ export interface IInvoiceMedicine {
   id?: number;
   batchIdentifier: string;
   quantity: number;
-  packing: string;
   expirey: Date;
-  unitTakePrice: number;
   unitSalePrice: number;
   discountPercentage: number;
   gst?: number;

@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
+import { ChangeEvent, useCallback, useContext, useState } from 'react';
 import { Button, Divider, MenuItem } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
 import InputField from '../../../shared/molecules/InputField';
@@ -12,13 +6,19 @@ import { IMedicine, MedicineTypes } from '@billinglib';
 import Menu from '../../../shared/organisms/Menu';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 
-const MedicineForm = () => {
+interface Props {
+  onCreateMedicine?: () => void;
+}
+
+const MedicineForm = ({ onCreateMedicine }: Props) => {
   const [newMedicine, setNewMedicine] = useState<IMedicine>({
     name: '',
     brand: '',
     formula: '',
     type: '',
     code: '',
+    packing: '',
+    unitTakePrice: 0,
   });
 
   const { createMedicine } = useContext(MedicineContext);
@@ -35,18 +35,39 @@ const MedicineForm = () => {
     [newMedicine]
   );
 
-  const handleSubmit = useCallback(
-    async (ev: FormEvent<HTMLFormElement>) => {
-      ev.preventDefault();
-      if (createMedicine) {
-        createMedicine(newMedicine);
+  const invalidForm = useCallback(
+    (object: IMedicine) => {
+      if (!object.name) {
+        return 'Please enter Name';
       }
+      if (!object.type) {
+        return 'Please select Type';
+      }
+      if (!object.packing) {
+        return 'Please provide packing type';
+      }
+      if (!object.unitTakePrice) {
+        return 'Please provide a Price';
+      }
+      return;
     },
-    [createMedicine, newMedicine]
+    [newMedicine]
   );
 
+  const handleSubmit = useCallback(async () => {
+    if (createMedicine) {
+      const error = invalidForm(newMedicine);
+      if (!error) {
+        await createMedicine(newMedicine);
+        if (onCreateMedicine) onCreateMedicine();
+      } else {
+        alert(error);
+      }
+    }
+  }, [createMedicine, newMedicine]);
+
   return (
-    <form className="gap-2 flex flex-col" onSubmit={handleSubmit}>
+    <div className="gap-2 flex flex-col">
       <div className="flex flex-row items-end gap-3">
         <div className="flex-1">
           <InputField
@@ -67,28 +88,6 @@ const MedicineForm = () => {
             placeholder="Enter product code"
           />
         </div>
-        <div>
-          <Menu
-            button={
-              <Button size="large">
-                {newMedicine?.type ? newMedicine.type : 'Type'}
-              </Button>
-            }
-          >
-            {MedicineTypes.map((medicine) => (
-              <MenuItem
-                key={medicine}
-                onClick={() =>
-                  handleChange('type', medicine, newMedicine, setNewMedicine)
-                }
-              >
-                {medicine}
-              </MenuItem>
-            ))}
-          </Menu>
-        </div>
-      </div>
-      <div className="flex flex-row gap-3">
         <InputField
           name="brand"
           value={newMedicine?.brand ?? ''}
@@ -96,6 +95,8 @@ const MedicineForm = () => {
           label="Brand"
           placeholder="Brand"
         />
+      </div>
+      <div className="flex flex-row items-end gap-3">
         <InputField
           name="formula"
           value={newMedicine?.formula ?? ''}
@@ -103,12 +104,48 @@ const MedicineForm = () => {
           label="Forumula"
           placeholder="Medicine Formula"
         />
+        <InputField
+          name="packing"
+          value={newMedicine?.packing ?? ''}
+          onChange={handleOnChange}
+          label="Packing"
+          placeholder="Packing Type"
+        />
+        <InputField
+          name="unitTakePrice"
+          value={String(newMedicine?.unitTakePrice ?? 0)}
+          onChange={handleOnChange}
+          label="Price"
+          placeholder="Enter Price"
+          type="number"
+        />
       </div>
       <Divider className="my-3" />
-      <Button type="submit" size="large" appearance="primary">
-        Submit
+      <div className="flex-1">
+        <Menu
+          button={
+            <Button size="large" className="w-full">
+              {newMedicine?.type ? newMedicine.type : 'Type'}
+            </Button>
+          }
+        >
+          {MedicineTypes.map((medicine) => (
+            <MenuItem
+              key={medicine}
+              onClick={() =>
+                handleChange('type', medicine, newMedicine, setNewMedicine)
+              }
+            >
+              {medicine}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+      <Divider className="my-3" />
+      <Button onClick={handleSubmit} size="large" appearance="primary">
+        {invalidForm(newMedicine) ? invalidForm(newMedicine) : 'Submit'}
       </Button>
-    </form>
+    </div>
   );
 };
 

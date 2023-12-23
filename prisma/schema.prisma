@@ -37,6 +37,8 @@ model Medicine {
   formula         String?
   brand           String?
   type            String?
+  packing         String
+  unitTakePrice   Float
   InvoiceMedicine InvoiceMedicine[]
   createdAt       DateTime?         @default(now())
   updatedAt       DateTime?         @default(now())
@@ -61,11 +63,10 @@ model Invoice {
 }
 
 model InvoiceMedicine {
-  id                 Int       @id @default(autoincrement())
-  batchIdentifier    String    @unique
-  packing            String
+  id              Int    @id @default(autoincrement())
+  batchIdentifier String @unique
+
   expirey            DateTime
-  unitTakePrice      Float
   unitSalePrice      Float
   discountPercentage Float     @default(0.0)
   gst                Float     @default(0.0)

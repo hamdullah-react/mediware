@@ -3,18 +3,19 @@ import MedicineForm from './MedicineForm';
 import Modal from '../../../shared/organisms/Modal';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
-import { Button, Input } from '@fluentui/react-components';
+import { Button } from '@fluentui/react-components';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 import Table from '../../../shared/organisms/Table';
 import { IMedicine } from '@billinglib';
 import MedicineViewer from '../../../shared/organisms/MedicineViewer';
+import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
 
 const Medicines = () => {
   const location = useLocation();
 
-  const { medicineList } = useContext(MedicineContext);
+  const { medicineList, isLoading } = useContext(MedicineContext);
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IMedicine>();
 
   const [currentlyEditing, setCurrentlyEditing] = useState<IMedicine>();
@@ -104,22 +105,22 @@ const Medicines = () => {
         )}
       </Modal>
       <div className="flex flex-row justify-end">
-        <Input
-          type="search"
+        {/* <Input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
-        />
+        /> */}
       </div>
       <div>
-        {medicineList && medicineList?.length > 0 && (
-          <Table
-            data={getFilteredData() as unknown as []}
-            // onDelete={deleteMedicine}
-            onViewData={onViewData}
-            onEdit={onEditingData}
-          />
-        )}
+        <LoaderWrapper isLoading={isLoading}>
+          {medicineList && medicineList?.length > 0 && (
+            <Table
+              data={getFilteredData() as unknown as []}
+              onViewData={onViewData}
+              onEdit={onEditingData}
+            />
+          )}
+        </LoaderWrapper>
       </div>
     </div>
   );

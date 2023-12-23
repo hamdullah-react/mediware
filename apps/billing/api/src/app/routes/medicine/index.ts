@@ -14,10 +14,12 @@ export default async function (fastify: FastifyInstance) {
         name: true,
         type: true,
         code: true,
+        unitTakePrice: true,
         // uncomment if you need all the invoices containing this medicines
         // InvoiceMedicine: true,
         createdAt: true,
         updatedAt: true,
+        packing: true,
         deletedAt: true,
         _count: {
           select: {
@@ -63,6 +65,8 @@ export default async function (fastify: FastifyInstance) {
           formula: requestBody.formula || '',
           type: requestBody.type || '',
           code: requestBody.code || '',
+          packing: requestBody.packing || '',
+          unitTakePrice: parseFloat(String(requestBody.unitTakePrice)) || 0,
         },
       });
 

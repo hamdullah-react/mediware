@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import LoaderWrapper from '../../shared/molecules/LoaderWrapper';
 import { IMedicine } from '@billinglib';
 import { HttpClient } from '../../utils/common';
 import { MedicineContext } from '../contexts/MedicineContext';
@@ -16,8 +15,8 @@ const MedicineProvider = ({ children }: Props) => {
   const getMedicines = useCallback(async () => {
     setIsLoading(true);
     const data = (await HttpClient().get('/medicine')).data;
-    setIsLoading(false);
     setMedicineList(data);
+    setIsLoading(false);
   }, []);
 
   const createMedicine = useCallback(
@@ -26,10 +25,9 @@ const MedicineProvider = ({ children }: Props) => {
       const responseData = (await HttpClient().post('/medicine', newMedicine))
         .data;
       await getMedicines();
-      setIsLoading(false);
       return responseData;
     },
-    [getMedicines]
+    [medicineList]
   );
 
   const updateMedicine = useCallback(
@@ -40,39 +38,38 @@ const MedicineProvider = ({ children }: Props) => {
         updatedMedicine
       );
       await getMedicines();
-      setIsLoading(false);
     },
-    [getMedicines]
+    [medicineList]
   );
 
   const deleteMedicine = useCallback(
     async (deletedMedicine: IMedicine) => {
+      setIsLoading(true);
       HttpClient().delete(`/medicine/${deletedMedicine.id}`);
       await getMedicines();
     },
-    [getMedicines]
+    [medicineList]
   );
 
   useEffect(() => {
-    getMedicines();
+    getMedicines().then(() => {});
     return () => {};
   }, [getMedicines]);
 
   return (
-    <LoaderWrapper isLoading={isLoading}>
-      <MedicineContext.Provider
-        value={{
-          medicineList,
-          setMedicineList,
-          getMedicines,
-          createMedicine,
-          updateMedicine,
-          deleteMedicine,
-        }}
-      >
-        {children}
-      </MedicineContext.Provider>
-    </LoaderWrapper>
+    <MedicineContext.Provider
+      value={{
+        medicineList,
+        setMedicineList,
+        getMedicines,
+        createMedicine,
+        updateMedicine,
+        deleteMedicine,
+        isLoading,
+      }}
+    >
+      {children}
+    </MedicineContext.Provider>
   );
 };
 

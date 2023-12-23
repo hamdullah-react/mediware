@@ -3,17 +3,20 @@ import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
 import InvoiceForm from './InvoiceForm';
 import Modal from '../../../shared/organisms/Modal';
-import { Button, Input } from '@fluentui/react-components';
+import { Button } from '@fluentui/react-components';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import moment from 'moment';
 import Table from '../../../shared/organisms/Table';
-import { APP_ROUNDOFF_SETTING, IInvoice } from '@billinglib';
+import { APP_ROUNDOFF_SETTING, APP_TIME_FORMAT, IInvoice } from '@billinglib';
 import InvoiceViewer from '../../../shared/organisms/InvoiceViewer';
+import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
 
 const Invoices = () => {
   const location = useLocation();
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const { invoiceList, isLoading } = useContext(InvoiceContext);
+
+  const [searchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IInvoice>();
 
   const [currentlyEditing, setCurrentlyEditing] = useState<IInvoice>();
@@ -21,8 +24,6 @@ const Invoices = () => {
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
   );
-
-  const { invoiceList } = useContext(InvoiceContext);
 
   const toggleModel = useCallback(
     () => setIsCreatingRecord(!isCreatingRecord),
@@ -57,7 +58,7 @@ const Invoices = () => {
         .map((invoice) => ({
           'Invoice Number': invoice.invoiceNumber,
           Company: invoice.Supplier?.name,
-          Date: moment(invoice.invoiceDate).format('DD/MM/YYYY'),
+          Date: moment(invoice.invoiceDate).format(APP_TIME_FORMAT),
           'Booking Driver': invoice.bookingDriver,
           Total: (invoice?.total ?? 0).toFixed(APP_ROUNDOFF_SETTING),
         }))
@@ -92,8 +93,8 @@ const Invoices = () => {
       <Modal
         isOpen={!!currentlyViewing}
         onClosePressed={clearCurrentlyViewing}
-        width={'75vw'}
-        maxWidth={'75vw'}
+        width={'80vw'}
+        maxWidth={'80vw'}
         title={`Invoice #${currentlyViewing?.id} from ${
           currentlyViewing?.Supplier?.name ?? ''
         }`}
@@ -111,21 +112,23 @@ const Invoices = () => {
         )}
       </Modal>
       <div className="flex flex-row justify-end">
-        <Input
-          type="search"
+        {/* <Input
+          disabled={isCreatingRecord}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
-        />
+        /> */}
       </div>
       <div>
-        {invoiceList && invoiceList?.length > 0 && (
-          <Table
-            data={getFilteredData() as unknown as []}
-            onViewData={onViewData}
-            onEdit={onEditingData}
-          />
-        )}
+        <LoaderWrapper isLoading={isLoading}>
+          {invoiceList && invoiceList?.length > 0 && (
+            <Table
+              data={getFilteredData() as unknown as []}
+              onViewData={onViewData}
+              onEdit={onEditingData}
+            />
+          )}
+        </LoaderWrapper>
       </div>
     </div>
   );

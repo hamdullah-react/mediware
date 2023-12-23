@@ -1,5 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import LoaderWrapper from '../../shared/molecules/LoaderWrapper';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { ISupplier } from '@billinglib';
 import { SupplierContext } from '../contexts/SupplierContext';
 import { HttpClient } from '../../utils/common';
@@ -16,9 +15,9 @@ const SupplierProvider = ({ children }: Props) => {
   const getSuppliers = useCallback(async () => {
     setIsLoading(true);
     const data = (await HttpClient().get('/supplier')).data;
-    setIsLoading(false);
     setSupplierList(data);
-  }, []);
+    setIsLoading(false);
+  }, [supplierList]);
 
   const createSupplier = useCallback(
     async (newSupplier: ISupplier) => {
@@ -27,7 +26,7 @@ const SupplierProvider = ({ children }: Props) => {
       await getSuppliers();
       setIsLoading(false);
     },
-    [getSuppliers]
+    [supplierList]
   );
 
   const updateSupplier = useCallback(
@@ -38,39 +37,38 @@ const SupplierProvider = ({ children }: Props) => {
         updatedSupplier
       );
       await getSuppliers();
-      setIsLoading(false);
     },
-    [getSuppliers]
+    [supplierList]
   );
 
   const deleteSupplier = useCallback(
     async (deletedSupplier: ISupplier) => {
+      setIsLoading(true);
       HttpClient().delete(`/supplier/${deletedSupplier.id}`);
       await getSuppliers();
     },
-    [getSuppliers]
+    [supplierList]
   );
 
   useEffect(() => {
-    getSuppliers();
+    getSuppliers().then(() => {});
     return () => {};
-  }, [getSuppliers]);
+  }, []);
 
   return (
-    <LoaderWrapper isLoading={isLoading}>
-      <SupplierContext.Provider
-        value={{
-          supplierList,
-          setSupplierList,
-          getSuppliers,
-          createSupplier,
-          updateSupplier,
-          deleteSupplier,
-        }}
-      >
-        {children}
-      </SupplierContext.Provider>
-    </LoaderWrapper>
+    <SupplierContext.Provider
+      value={{
+        supplierList,
+        setSupplierList,
+        getSuppliers,
+        createSupplier,
+        updateSupplier,
+        deleteSupplier,
+        isLoading,
+      }}
+    >
+      {children}
+    </SupplierContext.Provider>
   );
 };
 

@@ -1,0 +1,14 @@
+
+Todo:
+  ☐ Enable the editing 
+  ☐ Add the login screen
+  ☐ batchidentifier to be unique throughout and check on database too not just current invoice
+  ☐ Implement Search on 3 entities
+  ✔ remove the take price and add the currentPrice of the article in its price @done(23-12-24 01:22)
+  ✔ Move the packing and sales tax to medicine @done(23-12-24 00:07)
+  ✔ Fix the focus issue of the form @done(23-12-24 00:07)
+  ✔ Put the article entry in a separate form, link with the "add new" button on the search @done(23-12-24 00:07)
+
+Editing:
+  ☐ Make all the entities editable
+  ☐ Lock the entities if the invoice is posted

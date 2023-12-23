@@ -52,7 +52,7 @@ const Modal = ({
   const onClose = useCallback(() => {
     if (onClosePressed) onClosePressed();
     else if (setIsOpen) setIsOpen(false);
-  }, [setIsOpen]);
+  }, [isOpen]);
 
   return (
     <div>

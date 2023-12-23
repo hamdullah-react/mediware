@@ -5,7 +5,7 @@ import { ISupplier } from '@billinglib';
 const prisma = new PrismaClient();
 
 export default async function (fastify: FastifyInstance) {
-  fastify.get('/', async function () {
+  fastify.get('/', async function (request, reply) {
     const suppliers = await prisma.supplier.findMany({
       select: {
         id: true,
@@ -39,7 +39,8 @@ export default async function (fastify: FastifyInstance) {
         id: 'desc',
       },
     });
-    return suppliers;
+
+    return reply.status(200).send(suppliers);
   });
 
   fastify.get('/:id', async function (request, reply) {

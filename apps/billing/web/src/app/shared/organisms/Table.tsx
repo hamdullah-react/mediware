@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import Menu from './Menu';
 import clsx from 'clsx';
+import { APP_TIME_FORMAT } from '@billinglib';
 
 interface Props<Type> {
   data: Type[];
@@ -60,7 +61,7 @@ const Table = <Type,>({
                     return (
                       <TableCell key={`${index}${JSON.stringify(value)}`}>
                         {column.toLowerCase().includes('tedat')
-                          ? moment(value).format('MMM Do, YYYY hh:mm')
+                          ? moment(value).format(APP_TIME_FORMAT)
                           : value}
                       </TableCell>
                     );
@@ -94,7 +95,7 @@ const Table = <Type,>({
           )}
         </FUITable>
       ) : (
-        <div className="flex gap-3 flex-col items-center justify-center min-h-[70vh]">
+        <div className="flex gap-3 flex-col items-center justify-center">
           <div>Looks like there is no data</div>
           {/* <Button className="px-3" onClick={onAddData}>
             Add Data
