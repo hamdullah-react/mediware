@@ -30,6 +30,7 @@ interface Props {
   disabled?: boolean;
   max?: number;
   min?: number;
+  className?: string;
 }
 
 const InputField = ({
@@ -47,9 +48,10 @@ const InputField = ({
   disabled = false,
   max,
   min,
+  className,
 }: Props) => {
   return (
-    <div className="flex-1">
+    <div className={className ? className : 'flex-1'}>
       {label && (
         <Label htmlFor={name} size={labelSize}>
           <span className="text-gray-400">{label}</span>

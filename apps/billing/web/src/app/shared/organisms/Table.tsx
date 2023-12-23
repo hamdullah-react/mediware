@@ -95,11 +95,8 @@ const Table = <Type,>({
           )}
         </FUITable>
       ) : (
-        <div className="flex gap-3 flex-col items-center justify-center">
-          <div>Looks like there is no data</div>
-          {/* <Button className="px-3" onClick={onAddData}>
-            Add Data
-          </Button> */}
+        <div className="flex gap-3 flex-col items-center justify-center min-h-[20vh]">
+          <div className="">Looks like there is no data</div>
         </div>
       )}
     </div>

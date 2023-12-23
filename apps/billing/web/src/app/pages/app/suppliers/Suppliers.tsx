@@ -1,21 +1,22 @@
 import { useLocation } from 'react-router-dom';
 import Modal from '../../../shared/organisms/Modal';
 import { useCallback, useContext, useState } from 'react';
-import { Button } from '@fluentui/react-components';
+import { Button, Input } from '@fluentui/react-components';
 import { getLastRouteItem } from '../../../utils/common';
 import SupplierForm from './SupplierForm';
 import Table from '../../../shared/organisms/Table';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 import { ISupplier } from '@billinglib';
-import SupplierViewer from '../../../shared/organisms/SupplierViewer';
+import SupplierViewer from '../../../shared/organisms/supplier/SupplierViewer';
 import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
+import SupplierEditor from '../../../shared/organisms/supplier/SupplierEditor';
 
 const Suppliers = () => {
   const location = useLocation();
 
   const { supplierList, isLoading } = useContext(SupplierContext);
 
-  const [searchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<ISupplier>();
 
   const [currentlyEditing, setCurrentlyEditing] = useState<ISupplier>();
@@ -49,17 +50,13 @@ const Suppliers = () => {
     setCurrentlyEditing(undefined);
   }, []);
 
-  const onUpdateSuppler = useCallback(() => {}, []);
-
   const getFilteredData = useCallback(() => {
     if (supplierList)
       return supplierList
         .map((supplier) => ({
-          Id: supplier.id,
           Supplier: supplier.name,
           'Phone No.': supplier.telephones,
           Emails: supplier.emails,
-          'Whatsapp Tel': supplier.whatsapps,
         }))
         ?.filter(
           (data) =>
@@ -67,10 +64,7 @@ const Suppliers = () => {
             data['Phone No.']
               .toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
-            data.Supplier.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data['Whatsapp Tel']
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())
+            data.Supplier.toLowerCase().includes(searchQuery.toLowerCase())
         );
     return [];
   }, [searchQuery]);
@@ -86,14 +80,12 @@ const Suppliers = () => {
         title="Add Supplier"
         triggerButton={<Button onClick={toggleModel}>Add New</Button>}
       >
-        <SupplierForm />
+        <SupplierForm formStateSetter={setIsCreatingRecord} />
       </Modal>
       <Modal
         isOpen={!!currentlyViewing}
         onClosePressed={clearCurrentlyViewing}
-        title={`Supplier #${currentlyViewing?.id?.toString() ?? ''} - ${
-          currentlyViewing?.name
-        }`}
+        title={`Supplier #${currentlyViewing?.id} - ${currentlyViewing?.name}`}
       >
         {!!clearCurrentlyViewing && (
           <SupplierViewer supplier={currentlyViewing} />
@@ -101,20 +93,21 @@ const Suppliers = () => {
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
         {!!currentlyEditing && (
-          <div>
-            {JSON.stringify(currentlyEditing)}
-            <div className="flex flex-row justify-end mt-4">
-              <Button onClick={onUpdateSuppler}>Editing</Button>
-            </div>
-          </div>
+          <SupplierEditor
+            supplier={currentlyEditing}
+            setSupplier={setCurrentlyEditing}
+          />
         )}
       </Modal>
       <div className="flex flex-row justify-end">
-        {/* <Input
+        <Input
+          disabled={
+            !!currentlyEditing || !!currentlyViewing || isCreatingRecord
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
-        /> */}
+        />
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>

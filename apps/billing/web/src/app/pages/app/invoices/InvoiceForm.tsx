@@ -88,6 +88,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
     salesTax: 0,
     status: '',
     total: 0,
+    advTax: 0,
     InvoiceMedicine: [],
   });
 
@@ -363,23 +364,15 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               </div>
             </div>
             <div className="flex flex-row gap-3">
-              <InputField
-                name="invoiceDate"
-                value={moment(invoiceData?.invoiceDate).format(APP_TIME_FORMAT)}
-                label="Invoice Date"
-                type="datetime-local"
-                onChange={handleOnChangeInvoice}
-                required
-              />
-              <InputField
+              {/* <InputField
                 name="salesTax"
-                value={invoiceData?.salesTax?.toString() ?? ''}
+                value={String(invoiceData?.salesTax) ?? ''}
                 label="Sales Tax."
                 placeholder="Sales Tax Percentage (%)"
                 type="number"
                 onChange={handleOnChangeInvoice}
                 required
-              />
+              /> */}
             </div>
             <div className="flex flex-row gap-3">
               <InputField
@@ -396,6 +389,14 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
                 placeholder="Booking driver name"
                 onChange={handleOnChangeInvoice}
               />
+              <InputField
+                name="invoiceDate"
+                value={String(invoiceData?.invoiceDate)}
+                label="Invoice Date"
+                type="datetime-local"
+                onChange={handleOnChangeInvoice}
+                required
+              />
             </div>
 
             <div className="flex justify-end mt-3">
@@ -410,8 +411,9 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
         <div className="flex flex-col gap-3">
           <Divider />
           <Modal
-            width={'min-w-[100vw]'}
-            maxWidth={'min-w-[100vw]'}
+            width={'80vw'}
+            maxWidth={'80vw'}
+            minWidth={'80vw'}
             isOpen={showInvoiceItem}
             setIsOpen={setShowInvoiceItem}
             title="Enter New Medicine"
@@ -426,7 +428,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
             }
           >
             <Table
-              minHeight="min-h-[30vh]"
+              minHeight="min-h-[40vh]"
               onDelete={deleteInvoiceItem}
               data={
                 invoiceData?.InvoiceMedicine?.map((medicine) => ({
@@ -516,13 +518,13 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               min={0}
             />
             <InputField
-              label="Disc. %"
-              placeholder="Enter Discount %"
-              name="discountPercentage"
-              value={String(newInvoiceItemBeingEntered.discountPercentage)}
+              label="Quantity"
+              placeholder="Enter Quanitity"
+              name="quantity"
+              value={String(newInvoiceItemBeingEntered.quantity)}
               onChange={handleChangeOnNewInvoiceItem}
               type="number"
-              min={0}
+              min={1}
             />
           </div>
           <div className="flex flex-row gap-3">
@@ -545,13 +547,13 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               min={0}
             />
             <InputField
-              label="Quantity"
-              placeholder="Enter Quanitity"
-              name="quantity"
-              value={String(newInvoiceItemBeingEntered.quantity)}
+              label="Disc. %"
+              placeholder="Enter Discount %"
+              name="discountPercentage"
+              value={String(newInvoiceItemBeingEntered.discountPercentage)}
               onChange={handleChangeOnNewInvoiceItem}
               type="number"
-              min={1}
+              min={0}
             />
           </div>
           <div className="flex flex-row items-center gap-3 justify-end">
@@ -570,13 +572,29 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               Save Article
             </Button>
           </div>
+          <Divider />
+          <div className="flex flex-row items-end justify-end">
+            <div className="flex-1 text-end py-2.5">Advance Tax (if any)</div>
+            <InputField
+              name="advTax"
+              onChange={handleOnChangeInvoice}
+              value={String(invoiceData.advTax)}
+              type="number"
+              placeholder="Advance Tax (if any)"
+              className="ml-5"
+            />
+          </div>
         </div>
       )}
       <Divider className="mb-3 mt-2" />
       <div className="flex flex-row justify-between items-center gap-2">
         <div className="font-semibold text-lg text-gray-500">
           <span>
-            Sum total: {invoiceData.total.toFixed(APP_ROUNDOFF_SETTING)}
+            Sum total:{' '}
+            {(
+              parseFloat(String(invoiceData.total)) +
+              parseFloat(String(sanitizeNaN(String(invoiceData.advTax))))
+            ).toFixed(APP_ROUNDOFF_SETTING)}
           </span>
         </div>
         <div className="flex flex-row justify-end gap-2">

@@ -2,7 +2,7 @@ import { APP_TIME_FORMAT, IMedicine } from '@billinglib';
 import { TableBody, TableCell, TableRow } from '@fluentui/react-components';
 import { Table as FUITable } from '@fluentui/react-components';
 import moment from 'moment';
-import { dashIfNull, sanitizeNaN } from '../../utils/common';
+import { dashIfNull, sanitizeNaN } from '../../../utils/common';
 
 interface Props {
   medicine?: IMedicine;
@@ -45,10 +45,10 @@ const MedicineViewer = ({ medicine }: Props) => {
             <TableCell>Occurances in Invoices</TableCell>
             <TableCell>
               {dashIfNull(
-                (
+                String(
                   (medicine?._count ?? { InvoiceMedicine: 0 })
                     ?.InvoiceMedicine ?? 0
-                ).toString()
+                )
               )}{' '}
               Invoices
             </TableCell>
