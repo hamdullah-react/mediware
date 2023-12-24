@@ -15,7 +15,8 @@ import InvoiceEditor from '../../../shared/organisms/invoice/InvoiceEditor';
 const Invoices = () => {
   const location = useLocation();
 
-  const { invoiceList, isLoading, deleteInvoice } = useContext(InvoiceContext);
+  const { invoiceList, isLoading, deleteInvoice, getInvoices } =
+    useContext(InvoiceContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IInvoice>();
@@ -78,21 +79,10 @@ const Invoices = () => {
             data.Total?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }
-  }, [searchQuery]);
+  }, [searchQuery, invoiceList]);
 
   return (
     <div>
-      <div className="p-2 text-gray-400">{location.pathname}</div>
-      <Modal
-        isOpen={isCreatingRecord}
-        hideClose={false}
-        modalType="modal"
-        setIsOpen={setIsCreatingRecord}
-        title="Add Invoice"
-        triggerButton={<Button onClick={toggleModel}>Add Invoice</Button>}
-      >
-        <InvoiceForm formStateSetter={() => setIsCreatingRecord(false)} />
-      </Modal>
       <Modal
         isOpen={!!currentlyViewing}
         onClosePressed={clearCurrentlyViewing}
@@ -117,7 +107,7 @@ const Invoices = () => {
           />
         )}
       </Modal>
-      <div className="flex flex-row justify-end">
+      <div className="flex flex-row justify-end gap-2 py-5">
         <Input
           disabled={
             isCreatingRecord || !!currentlyEditing || !!currentlyViewing
@@ -125,7 +115,25 @@ const Invoices = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
+          size="medium"
         />
+        <Button size="medium" onClick={getInvoices}>
+          Refresh
+        </Button>
+        <Modal
+          isOpen={isCreatingRecord}
+          hideClose={false}
+          modalType="modal"
+          setIsOpen={setIsCreatingRecord}
+          title="Add Invoice"
+          triggerButton={
+            <Button size="medium" onClick={toggleModel}>
+              Add New
+            </Button>
+          }
+        >
+          <InvoiceForm formStateSetter={() => setIsCreatingRecord(false)} />
+        </Modal>
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>

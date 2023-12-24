@@ -14,7 +14,7 @@ import MedicineEditor from '../../../shared/organisms/medicine/MedicineEditor';
 const Medicines = () => {
   const location = useLocation();
 
-  const { medicineList, isLoading, deleteMedicine } =
+  const { medicineList, isLoading, getMedicines, deleteMedicine } =
     useContext(MedicineContext);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -88,21 +88,10 @@ const Medicines = () => {
             data.Type?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }
-  }, [searchQuery]);
+  }, [searchQuery, medicineList]);
 
   return (
     <div>
-      <div className="p-2 text-gray-400">{location.pathname}</div>
-      <Modal
-        isOpen={isCreatingRecord}
-        hideClose={false}
-        modalType="modal"
-        setIsOpen={setIsCreatingRecord}
-        title="Add Medicine"
-        triggerButton={<Button onClick={toggleModel}>Add Medicine</Button>}
-      >
-        <MedicineForm onCreateMedicine={() => setIsCreatingRecord(false)} />
-      </Modal>
       <Modal
         isOpen={!!currentlyViewing}
         onClosePressed={clearCurrentlyViewing}
@@ -118,7 +107,7 @@ const Medicines = () => {
           />
         )}
       </Modal>
-      <div className="flex flex-row justify-end">
+      <div className="flex flex-row justify-end gap-2 py-5">
         <Input
           disabled={
             isCreatingRecord || !!currentlyViewing || !!currentlyEditing
@@ -126,7 +115,25 @@ const Medicines = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
+          size="medium"
         />
+        <Button size="medium" onClick={getMedicines}>
+          Refresh
+        </Button>
+        <Modal
+          isOpen={isCreatingRecord}
+          hideClose={false}
+          modalType="modal"
+          setIsOpen={setIsCreatingRecord}
+          title="Add Medicine"
+          triggerButton={
+            <Button size="medium" onClick={toggleModel}>
+              Add New
+            </Button>
+          }
+        >
+          <MedicineForm onCreateMedicine={() => setIsCreatingRecord(false)} />
+        </Modal>
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>

@@ -9,9 +9,11 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useState,
 } from 'react';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import InputField from '../../molecules/InputField';
+import Modal from '../Modal';
 
 interface Props {
   invoice: IInvoice;
@@ -20,6 +22,9 @@ interface Props {
 
 const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
   const { updateInvoice } = useContext(InvoiceContext);
+
+  const [currentlyEditing, setCurrentlyEditing] = useState<number>(-1);
+  const [isMedicineSelectorOpen, setIsMedicineSelectorOpen] = useState(false);
 
   const handleChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +67,20 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
 
   return (
     <div>
+      <Modal
+        isOpen={isMedicineSelectorOpen}
+        setIsOpen={setIsMedicineSelectorOpen}
+        title="Add New Medicine"
+      >
+        Medicine Selector
+      </Modal>
+      <Modal
+        title="Edit entry"
+        isOpen={currentlyEditing !== -1}
+        onClosePressed={() => setCurrentlyEditing(-1)}
+      >
+        Medicine Editing window
+      </Modal>
       <div className="flex flex-row py-3">
         <div className="flex-1">
           {invoice.Supplier?.telephones && (
@@ -112,6 +131,22 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
       <Table
         data={getFilteredHeader() as unknown as []}
         minHeight="min-h-[40vh]"
+        onAddData={() => setIsMedicineSelectorOpen(true)}
+        onEdit={(_, index) => {
+          if (invoice.InvoiceMedicine && invoice.InvoiceMedicine[index]) {
+            setCurrentlyEditing(index);
+          }
+        }}
+        onDelete={(_, index) => {
+          if (invoice.InvoiceMedicine && invoice.InvoiceMedicine[index]) {
+            setInvoice({
+              ...invoice,
+              InvoiceMedicine: [
+                ...invoice.InvoiceMedicine.filter((_, idx) => idx !== index),
+              ],
+            });
+          }
+        }}
       />
       <div className="flex flex-col items-end px-4 pb-4">
         <div className="text-lg text-gray-500">

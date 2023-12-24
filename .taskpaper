@@ -2,10 +2,9 @@
 Todo:
   ☐ Enable the editing 
   ☐ Add the login screen
-  ☐ make invoice items (while editing) editable
-  ☐ implement delete on all 3
-  ☐ Add refresh button on all tables
   ☐ implement edit invoice
+  ✔ Add refresh button on all tables @done(23-12-24 06:02)
+  ✔ implement delete on all 3 @done(23-12-24 05:16)
   ✔ Implement Search on 3 entities @done(23-12-24 04:08)
   ✔ Increase size of invoiceItems previewer @done(23-12-24 04:02)
   ✔ batchidentifier to be unique throughout and check on database too not just current invoice @done(23-12-24 02:39)
@@ -17,5 +16,4 @@ Todo:
   ✔ Put the article entry in a separate form, link with the "add new" button on the search @done(23-12-24 00:07)
 
 Editing:
-  ☐ Make all the entities editable
-  ☐ Lock the entities if the invoice is posted
+  ✘ Lock the entities if the invoice is posted @cancelled(23-12-24 05:17)
