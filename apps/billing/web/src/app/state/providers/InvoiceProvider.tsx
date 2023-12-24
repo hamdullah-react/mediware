@@ -43,7 +43,7 @@ const InvoiceProvider = ({ children }: Props) => {
   const deleteInvoice = useCallback(
     async (deletedMedicine: IInvoice) => {
       setIsLoading(true);
-      HttpClient().delete(`/invoice/${deletedMedicine.id}`);
+      await HttpClient().delete(`/invoice/${deletedMedicine.id}`);
       await getInvoices();
     },
     [invoiceList]

@@ -20,7 +20,7 @@ const InvoiceViewer = ({ invoice }: Props) => {
         Expirey: moment(medicine.expirey).format(APP_TIME_FORMAT),
         Quantity: medicine.quantity,
         'Unit Price': medicine.unitSalePrice,
-        'Gross Amt': (medicine.unitSalePrice * medicine.quantity).toFixed(
+        Total: (medicine.unitSalePrice * medicine.quantity).toFixed(
           APP_ROUNDOFF_SETTING
         ),
         'Dis %': medicine?.discountPercentage,

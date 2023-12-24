@@ -43,7 +43,7 @@ const SupplierProvider = ({ children }: Props) => {
   const deleteSupplier = useCallback(
     async (deletedSupplier: ISupplier) => {
       setIsLoading(true);
-      HttpClient().delete(`/supplier/${deletedSupplier.id}`);
+      await HttpClient().delete(`/supplier/${deletedSupplier.id}`);
       await getSuppliers();
     },
     [supplierList]

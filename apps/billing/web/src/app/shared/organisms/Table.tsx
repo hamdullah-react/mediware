@@ -29,9 +29,17 @@ const Table = <Type,>({
   headers,
   onViewData,
   minHeight = 'min-h-[80vh]',
+  onAddData,
 }: Props<Type>) => {
   return (
     <div className={clsx(['w-full overflow-auto', minHeight])}>
+      {onAddData && (
+        <div className="flex flex-row justify-end">
+          <Button size="small" className="p-5" onClick={onAddData}>
+            Add New
+          </Button>
+        </div>
+      )}
       {data.length > 0 ? (
         <FUITable>
           <TableHeader>
@@ -69,7 +77,7 @@ const Table = <Type,>({
                   {(onEdit || onDelete || onViewData) && (
                     <TableCell>
                       <div className="flex flex-row gap-2">
-                        <Menu button={<Button>Action</Button>}>
+                        <Menu button={<Button size="medium">Action</Button>}>
                           {onViewData && (
                             <MenuItem onClick={() => onViewData(row, index)}>
                               View

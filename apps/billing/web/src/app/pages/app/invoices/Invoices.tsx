@@ -15,7 +15,8 @@ import InvoiceEditor from '../../../shared/organisms/invoice/InvoiceEditor';
 const Invoices = () => {
   const location = useLocation();
 
-  const { invoiceList, isLoading, deleteInvoice } = useContext(InvoiceContext);
+  const { invoiceList, isLoading, deleteInvoice, getInvoices } =
+    useContext(InvoiceContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IInvoice>();
@@ -31,31 +32,34 @@ const Invoices = () => {
     [isCreatingRecord]
   );
 
-  const onViewData = useCallback((_: IInvoice, index: number) => {
-    if (invoiceList) {
-      setCurrentlyViewing(invoiceList[index]);
-    }
-  }, []);
+  const onViewData = useCallback(
+    (_: IInvoice, index: number) => {
+      if (invoiceList) {
+        setCurrentlyViewing(invoiceList[index]);
+      }
+    },
+    [invoiceList, currentlyViewing]
+  );
 
-  const onEditingData = useCallback((_: IInvoice, index: number) => {
-    if (invoiceList) {
-      setCurrentlyEditing(invoiceList[index]);
-    }
-  }, []);
+  const onEditingData = useCallback(
+    (_: IInvoice, index: number) => {
+      if (invoiceList) {
+        setCurrentlyEditing(invoiceList[index]);
+      }
+    },
+    [invoiceList, currentlyEditing]
+  );
 
-  const clearCurrentlyViewing = useCallback(() => {
-    setCurrentlyViewing(undefined);
-  }, []);
-
-  const onDeletingData = useCallback(async (_: IInvoice, index: number) => {
+  const onDeletingData = async (_: IInvoice, index: number) => {
     if (invoiceList && invoiceList[index] && deleteInvoice) {
       await deleteInvoice(invoiceList[index]);
     }
-  }, []);
+  };
 
-  const clearCurrentlyEdting = useCallback(() => {
+  const closeModals = useCallback(() => {
+    setCurrentlyViewing(undefined);
     setCurrentlyEditing(undefined);
-  }, []);
+  }, [currentlyEditing, currentlyViewing]);
 
   const getFilteredData = useCallback(() => {
     if (invoiceList) {
@@ -78,24 +82,13 @@ const Invoices = () => {
             data.Total?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }
-  }, [searchQuery]);
+  }, [searchQuery, invoiceList]);
 
   return (
     <div>
-      <div className="p-2 text-gray-400">{location.pathname}</div>
-      <Modal
-        isOpen={isCreatingRecord}
-        hideClose={false}
-        modalType="modal"
-        setIsOpen={setIsCreatingRecord}
-        title="Add Invoice"
-        triggerButton={<Button onClick={toggleModel}>Add Invoice</Button>}
-      >
-        <InvoiceForm formStateSetter={() => setIsCreatingRecord(false)} />
-      </Modal>
       <Modal
         isOpen={!!currentlyViewing}
-        onClosePressed={clearCurrentlyViewing}
+        onClosePressed={closeModals}
         width={'80vw'}
         maxWidth={'80vw'}
         title={`Invoice #${currentlyViewing?.id} from ${
@@ -106,7 +99,7 @@ const Invoices = () => {
       </Modal>
       <Modal
         isOpen={!!currentlyEditing}
-        onClosePressed={clearCurrentlyEdting}
+        onClosePressed={closeModals}
         width={'80vw'}
         maxWidth={'80vw'}
       >
@@ -117,7 +110,7 @@ const Invoices = () => {
           />
         )}
       </Modal>
-      <div className="flex flex-row justify-end">
+      <div className="flex flex-row justify-end gap-2 py-5">
         <Input
           disabled={
             isCreatingRecord || !!currentlyEditing || !!currentlyViewing
@@ -125,7 +118,25 @@ const Invoices = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
+          size="medium"
         />
+        <Button size="medium" onClick={getInvoices}>
+          Refresh
+        </Button>
+        <Modal
+          isOpen={isCreatingRecord}
+          hideClose={false}
+          modalType="modal"
+          setIsOpen={setIsCreatingRecord}
+          title="Add Invoice"
+          triggerButton={
+            <Button size="medium" onClick={toggleModel}>
+              Add New
+            </Button>
+          }
+        >
+          <InvoiceForm formStateSetter={() => setIsCreatingRecord(false)} />
+        </Modal>
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>

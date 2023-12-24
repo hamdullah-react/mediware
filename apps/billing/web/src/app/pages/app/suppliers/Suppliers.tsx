@@ -14,7 +14,7 @@ import SupplierEditor from '../../../shared/organisms/supplier/SupplierEditor';
 const Suppliers = () => {
   const location = useLocation();
 
-  const { supplierList, isLoading, deleteSupplier } =
+  const { supplierList, isLoading, getSuppliers, deleteSupplier } =
     useContext(SupplierContext);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,19 +31,25 @@ const Suppliers = () => {
     [isCreatingRecord]
   );
 
-  const onViewData = useCallback((_: ISupplier, index: number) => {
-    if (supplierList) {
-      setCurrentlyViewing(supplierList[index]);
-    }
-  }, []);
+  const onViewData = useCallback(
+    (_: ISupplier, index: number) => {
+      if (supplierList) {
+        setCurrentlyViewing(supplierList[index]);
+      }
+    },
+    [currentlyViewing, supplierList]
+  );
 
-  const onEditingData = useCallback((_: ISupplier, index: number) => {
-    if (supplierList) {
-      setCurrentlyEditing(supplierList[index]);
-    }
-  }, []);
+  const onEditingData = useCallback(
+    (_: ISupplier, index: number) => {
+      if (supplierList) {
+        setCurrentlyEditing(supplierList[index]);
+      }
+    },
+    [currentlyEditing, supplierList]
+  );
 
-  const onDeletingData = useCallback(async (_: ISupplier, index: number) => {
+  const onDeletingData = async (_: ISupplier, index: number) => {
     if (supplierList) {
       if (
         supplierList[index] &&
@@ -57,15 +63,12 @@ const Suppliers = () => {
         await deleteSupplier(supplierList[index]);
       }
     }
-  }, []);
+  };
 
-  const clearCurrentlyViewing = useCallback(() => {
+  const closeModals = useCallback(() => {
     setCurrentlyViewing(undefined);
-  }, []);
-
-  const clearCurrentlyEdting = useCallback(() => {
     setCurrentlyEditing(undefined);
-  }, []);
+  }, [currentlyEditing, currentlyViewing]);
 
   const getFilteredData = useCallback(() => {
     if (supplierList)
@@ -84,31 +87,18 @@ const Suppliers = () => {
             data.Supplier.toLowerCase().includes(searchQuery.toLowerCase())
         );
     return [];
-  }, [searchQuery]);
+  }, [searchQuery, supplierList]);
 
   return (
     <div>
-      <div className="p-2 text-gray-400">{location.pathname}</div>
-      <Modal
-        isOpen={isCreatingRecord}
-        hideClose={false}
-        modalType="modal"
-        setIsOpen={setIsCreatingRecord}
-        title="Add Supplier"
-        triggerButton={<Button onClick={toggleModel}>Add New</Button>}
-      >
-        <SupplierForm formStateSetter={setIsCreatingRecord} />
-      </Modal>
       <Modal
         isOpen={!!currentlyViewing}
-        onClosePressed={clearCurrentlyViewing}
+        onClosePressed={closeModals}
         title={`Supplier #${currentlyViewing?.id} - ${currentlyViewing?.name}`}
       >
-        {!!clearCurrentlyViewing && (
-          <SupplierViewer supplier={currentlyViewing} />
-        )}
+        {!!closeModals && <SupplierViewer supplier={currentlyViewing} />}
       </Modal>
-      <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
+      <Modal isOpen={!!currentlyEditing} onClosePressed={closeModals}>
         {!!currentlyEditing && (
           <SupplierEditor
             supplier={currentlyEditing}
@@ -116,7 +106,7 @@ const Suppliers = () => {
           />
         )}
       </Modal>
-      <div className="flex flex-row justify-end">
+      <div className="flex flex-row justify-end gap-2 py-5">
         <Input
           disabled={
             !!currentlyEditing || !!currentlyViewing || isCreatingRecord
@@ -124,7 +114,25 @@ const Suppliers = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
+          size="medium"
         />
+        <Button size="medium" onClick={getSuppliers}>
+          Refresh
+        </Button>
+        <Modal
+          isOpen={isCreatingRecord}
+          hideClose={false}
+          modalType="modal"
+          setIsOpen={setIsCreatingRecord}
+          title="Add Supplier"
+          triggerButton={
+            <Button size="medium" onClick={toggleModel}>
+              Add New
+            </Button>
+          }
+        >
+          <SupplierForm formStateSetter={setIsCreatingRecord} />
+        </Modal>
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>

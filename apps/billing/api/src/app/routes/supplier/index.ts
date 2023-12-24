@@ -28,7 +28,11 @@ export default async function (fastify: FastifyInstance) {
         // Invoice: true,
         _count: {
           select: {
-            Invoice: true,
+            Invoice: {
+              where: {
+                deletedAt: null,
+              },
+            },
           },
         },
       },

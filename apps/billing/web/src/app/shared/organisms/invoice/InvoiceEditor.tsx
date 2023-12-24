@@ -9,9 +9,15 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import InputField from '../../molecules/InputField';
+import Modal from '../Modal';
+import InvoiceItemPicker from './InvoiceItemPicker';
+import InvoiceItemEditor from './InvoiceItemEditor';
 
 interface Props {
   invoice: IInvoice;
@@ -19,7 +25,11 @@ interface Props {
 }
 
 const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
-  const { updateInvoice } = useContext(InvoiceContext);
+  const [originalInvoice] = useState(invoice);
+  const { updateInvoice, invoiceList } = useContext(InvoiceContext);
+
+  const [currentlyEditing, setCurrentlyEditing] = useState<number>(-1);
+  const [isMedicineSelectorOpen, setIsMedicineSelectorOpen] = useState(false);
 
   const handleChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +42,22 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
     },
     [invoice]
   );
+
+  const isInvoiceUnique = useMemo(() => {
+    if (invoiceList) {
+      if (
+        originalInvoice.invoiceNumber?.toLowerCase()?.trim() ===
+        invoice?.invoiceNumber?.toLowerCase()?.trim()
+      ) {
+        return false;
+      }
+      return !invoiceList
+        .map((inv) => inv.invoiceNumber)
+        .includes(invoice.invoiceNumber.trim());
+    }
+
+    return false;
+  }, [invoiceList, invoice]);
 
   const onSubmit = useCallback(async () => {
     if (updateInvoice && invoice) {
@@ -50,7 +76,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         Expirey: moment(medicine.expirey).format(APP_TIME_FORMAT),
         Quantity: medicine.quantity,
         'Unit Price': medicine.unitSalePrice,
-        'Gross Amt': (medicine.unitSalePrice * medicine.quantity).toFixed(
+        Total: (medicine.unitSalePrice * medicine.quantity).toFixed(
           APP_ROUNDOFF_SETTING
         ),
         'Dis %': medicine?.discountPercentage,
@@ -60,8 +86,47 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
     } else return [];
   }, [invoice]);
 
+  useEffect(() => {
+    setInvoice({
+      ...invoice,
+      total:
+        invoice.InvoiceMedicine?.map(
+          (invoiceItem) => invoiceItem.netAmount
+        )?.reduce((a, b) => a + b, 0) ?? 0,
+    });
+  }, [invoice.InvoiceMedicine]);
+
   return (
     <div>
+      <Modal
+        isOpen={isMedicineSelectorOpen}
+        setIsOpen={setIsMedicineSelectorOpen}
+        title="Add New Medicine"
+      >
+        <InvoiceItemPicker invoiceData={invoice} setInvoiceData={setInvoice} />
+      </Modal>
+      <Modal
+        title="Edit entry"
+        isOpen={currentlyEditing !== -1}
+        onClosePressed={() => setCurrentlyEditing(-1)}
+      >
+        <InvoiceItemEditor
+          invoiceItem={(invoice.InvoiceMedicine ?? [])?.[currentlyEditing]}
+          onUpdate={(updatedItem) => {
+            if (invoice?.InvoiceMedicine) {
+              const updatedInvoiceItems = invoice.InvoiceMedicine.map(
+                (invoiceItem, index) =>
+                  index === currentlyEditing ? updatedItem : invoiceItem
+              );
+              setInvoice({
+                ...invoice,
+                InvoiceMedicine: updatedInvoiceItems,
+              });
+            }
+            setCurrentlyEditing(-1);
+          }}
+        />
+      </Modal>
       <div className="flex flex-row py-3">
         <div className="flex-1">
           {invoice.Supplier?.telephones && (
@@ -109,9 +174,46 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         </div>
       </div>
       <Divider className="py-3" />
+      <div className="my-4 flex flex-row flex-wrap gap-3">
+        <InputField
+          name={'invoiceNumber'}
+          value={invoice.invoiceNumber}
+          onChange={handleChange}
+          label="Invoice Number"
+          errorText={isInvoiceUnique ? '' : 'Invoice not unique'}
+        />
+        <InputField
+          name={'bookingDriver'}
+          value={invoice.bookingDriver ?? ''}
+          onChange={handleChange}
+          label="Booking Driver"
+        />
+        <InputField
+          name={'Delivered By'}
+          value={invoice.deliveredBy ?? ''}
+          onChange={handleChange}
+          label="Delivered By"
+        />
+      </div>
       <Table
         data={getFilteredHeader() as unknown as []}
         minHeight="min-h-[40vh]"
+        onAddData={() => setIsMedicineSelectorOpen(true)}
+        onEdit={(_, index) => {
+          if (invoice.InvoiceMedicine && invoice.InvoiceMedicine[index]) {
+            setCurrentlyEditing(index);
+          }
+        }}
+        onDelete={(_, index) => {
+          if (invoice.InvoiceMedicine && invoice.InvoiceMedicine[index]) {
+            setInvoice({
+              ...invoice,
+              InvoiceMedicine: [
+                ...invoice.InvoiceMedicine.filter((_, idx) => idx !== index),
+              ],
+            });
+          }
+        }}
       />
       <div className="flex flex-col items-end px-4 pb-4">
         <div className="text-lg text-gray-500">
@@ -120,6 +222,8 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
             name="advTax"
             value={sanitizeNaN(String(invoice.advTax) ?? '')}
             onChange={handleChange}
+            type="number"
+            min={0}
           />
         </div>
         <div className="text-lg text-gray-500 border-b py-2">

@@ -31,6 +31,7 @@ interface Props {
   max?: number;
   min?: number;
   className?: string;
+  errorText?: string;
 }
 
 const InputField = ({
@@ -48,6 +49,7 @@ const InputField = ({
   disabled = false,
   max,
   min,
+  errorText,
   className,
 }: Props) => {
   return (
@@ -73,6 +75,9 @@ const InputField = ({
         onFocus={onFocus}
         onBlur={onBlur}
       />
+      {errorText && (
+        <div className="text-red-500 px-1 text-sm">{errorText}</div>
+      )}
     </div>
   );
 };
