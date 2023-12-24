@@ -14,7 +14,8 @@ import MedicineEditor from '../../../shared/organisms/medicine/MedicineEditor';
 const Medicines = () => {
   const location = useLocation();
 
-  const { medicineList, isLoading } = useContext(MedicineContext);
+  const { medicineList, isLoading, deleteMedicine } =
+    useContext(MedicineContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IMedicine>();
@@ -44,6 +45,22 @@ const Medicines = () => {
 
   const clearCurrentlyViewing = useCallback(() => {
     setCurrentlyViewing(undefined);
+  }, []);
+
+  const onDeletingData = useCallback(async (_: IMedicine, index: number) => {
+    if (medicineList) {
+      if (
+        medicineList[index] &&
+        medicineList[index]._count &&
+        medicineList[index]._count?.InvoiceMedicine
+      ) {
+        alert(
+          `Medicine ${medicineList[index].name} shouldn't be deleted because it's associated to invoices`
+        );
+      } else if (deleteMedicine) {
+        await deleteMedicine(medicineList[index]);
+      }
+    }
   }, []);
 
   const clearCurrentlyEdting = useCallback(() => {
@@ -118,6 +135,7 @@ const Medicines = () => {
               data={getFilteredData() as unknown as []}
               onViewData={onViewData}
               onEdit={onEditingData}
+              onDelete={onDeletingData}
             />
           )}
         </LoaderWrapper>

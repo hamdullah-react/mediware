@@ -15,7 +15,7 @@ import InvoiceEditor from '../../../shared/organisms/invoice/InvoiceEditor';
 const Invoices = () => {
   const location = useLocation();
 
-  const { invoiceList, isLoading } = useContext(InvoiceContext);
+  const { invoiceList, isLoading, deleteInvoice } = useContext(InvoiceContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IInvoice>();
@@ -45,6 +45,12 @@ const Invoices = () => {
 
   const clearCurrentlyViewing = useCallback(() => {
     setCurrentlyViewing(undefined);
+  }, []);
+
+  const onDeletingData = useCallback(async (_: IInvoice, index: number) => {
+    if (invoiceList && invoiceList[index] && deleteInvoice) {
+      await deleteInvoice(invoiceList[index]);
+    }
   }, []);
 
   const clearCurrentlyEdting = useCallback(() => {
@@ -128,6 +134,7 @@ const Invoices = () => {
               data={getFilteredData() as unknown as []}
               onViewData={onViewData}
               onEdit={onEditingData}
+              onDelete={onDeletingData}
             />
           )}
         </LoaderWrapper>

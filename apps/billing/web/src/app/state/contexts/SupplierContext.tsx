@@ -7,6 +7,6 @@ export const SupplierContext = createContext<{
   getSuppliers?: () => Promise<void>;
   createSupplier?: (newSupplier: ISupplier) => Promise<void>;
   updateSupplier?: (updatedSupplier: ISupplier) => Promise<void>;
-  deleteSupplier?: (updatedSupplier: ISupplier) => Promise<void>;
+  deleteSupplier?: (targetSupplier: ISupplier) => Promise<void>;
   isLoading?: boolean;
 }>({});
