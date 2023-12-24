@@ -14,6 +14,7 @@ import {
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import InputField from '../../molecules/InputField';
 import Modal from '../Modal';
+import InvoiceItemPicker from './InvoiceItemPicker';
 
 interface Props {
   invoice: IInvoice;
@@ -72,8 +73,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         setIsOpen={setIsMedicineSelectorOpen}
         title="Add New Medicine"
       >
-        {/* TODO: Add an entirely new medicine on invoice being edited */}
-        Medicine Selector
+        <InvoiceItemPicker invoiceData={invoice} setInvoiceData={setInvoice} />
       </Modal>
       <Modal
         title="Edit entry"

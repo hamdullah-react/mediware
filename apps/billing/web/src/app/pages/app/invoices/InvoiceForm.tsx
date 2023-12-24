@@ -51,28 +51,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
 
   const [showInvoiceItem, setShowInvoiceItem] = useState(false);
 
-  const [newInvoiceItemBeingEntered, setNewInvoiceItemBeingEntered] =
-    useState<IInvoiceMedicine>({
-      Medicine: {
-        name: '',
-        brand: '',
-        formula: '',
-        type: '',
-        code: '',
-        packing: '',
-        unitTakePrice: 0,
-      },
-      batchIdentifier: '',
-      quantity: 1,
-      expirey: new Date(),
-      unitSalePrice: 0,
-      discountPercentage: 0,
-      advTax: 0,
-      gst: 0,
-      discountedAmount: 0,
-      netAmount: 0,
-    });
-
   const [invoiceData, setInvoiceData] = useState<IInvoice>({
     invoiceNumber: '',
     invoiceDate: new Date(),
@@ -130,25 +108,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
     }
   }, [invoiceData.InvoiceMedicine]);
 
-  const calculateNetAmount = () => {
-    const salePrice = newInvoiceItemBeingEntered.unitSalePrice || 0;
-    const quantity = newInvoiceItemBeingEntered.quantity || 0;
-    const discountPerc = newInvoiceItemBeingEntered.discountPercentage || 0;
-    const articleUnitGst = newInvoiceItemBeingEntered.gst || 0;
-    const advAmount = newInvoiceItemBeingEntered.advTax || 0;
-
-    const netAmount =
-      quantity * (salePrice - (salePrice * discountPerc) / 100) +
-      (articleUnitGst * quantity || 0) +
-      parseFloat(String(advAmount));
-    handleChange(
-      'netAmount',
-      netAmount,
-      newInvoiceItemBeingEntered,
-      setNewInvoiceItemBeingEntered
-    );
-  };
-
   const handleOnChangeInvoice = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
       handleChange(
@@ -176,14 +135,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
       }
     }
   }, [invoiceData]);
-
-  useEffect(calculateNetAmount, [
-    newInvoiceItemBeingEntered.unitSalePrice,
-    newInvoiceItemBeingEntered.quantity,
-    newInvoiceItemBeingEntered.discountPercentage,
-    newInvoiceItemBeingEntered.advTax,
-    newInvoiceItemBeingEntered.gst,
-  ]);
 
   return (
     <div className="gap-2 flex flex-col">
@@ -369,9 +320,9 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
           </Modal>
           <InvoiceItemPicker
             invoiceData={invoiceData}
-            newInvoiceItemBeingEntered={newInvoiceItemBeingEntered}
-            setInvoiceData={setInvoiceData}
-            setNewInvoiceItemBeingEntered={setNewInvoiceItemBeingEntered}
+            setInvoiceData={
+              setInvoiceData as Dispatch<SetStateAction<IInvoice | undefined>>
+            }
           />
           <Divider />
           <div className="flex flex-row items-end justify-end">

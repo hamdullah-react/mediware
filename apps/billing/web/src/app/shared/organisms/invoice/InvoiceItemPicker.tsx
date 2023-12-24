@@ -4,6 +4,7 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import { handleChange, sanitizeNaN } from '../../../utils/common';
@@ -16,23 +17,38 @@ import MedicineForm from '../../../pages/app/medicines/MedicineForm';
 import InputField from '../../molecules/InputField';
 
 interface Props {
-  newInvoiceItemBeingEntered: IInvoiceMedicine;
-  setNewInvoiceItemBeingEntered: Dispatch<SetStateAction<IInvoiceMedicine>>;
   invoiceData: IInvoice;
-  setInvoiceData: Dispatch<SetStateAction<IInvoice>>;
+  setInvoiceData: Dispatch<SetStateAction<IInvoice | undefined>>;
 }
 
-const InvoiceItemPicker = ({
-  newInvoiceItemBeingEntered,
-  setNewInvoiceItemBeingEntered,
-  invoiceData,
-  setInvoiceData,
-}: Props) => {
+const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
   const { medicineList } = useContext(MedicineContext);
 
   const [showMedicineCreationForm, setShowMedicineCreationForm] =
     useState(false);
   const [medicineSearchName, setMedicineSearchName] = useState('');
+
+  const [newInvoiceItemBeingEntered, setNewInvoiceItemBeingEntered] =
+    useState<IInvoiceMedicine>({
+      Medicine: {
+        name: '',
+        brand: '',
+        formula: '',
+        type: '',
+        code: '',
+        packing: '',
+        unitTakePrice: 0,
+      },
+      batchIdentifier: '',
+      quantity: 1,
+      expirey: new Date(),
+      unitSalePrice: 0,
+      discountPercentage: 0,
+      advTax: 0,
+      gst: 0,
+      discountedAmount: 0,
+      netAmount: 0,
+    });
 
   const handleChangeOnNewInvoiceItem = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
@@ -100,6 +116,33 @@ const InvoiceItemPicker = ({
     }
     return true;
   }, [newInvoiceItemBeingEntered]);
+
+  const calculateNetAmount = () => {
+    const salePrice = newInvoiceItemBeingEntered.unitSalePrice || 0;
+    const quantity = newInvoiceItemBeingEntered.quantity || 0;
+    const discountPerc = newInvoiceItemBeingEntered.discountPercentage || 0;
+    const articleUnitGst = newInvoiceItemBeingEntered.gst || 0;
+    const advAmount = newInvoiceItemBeingEntered.advTax || 0;
+
+    const netAmount =
+      quantity * (salePrice - (salePrice * discountPerc) / 100) +
+      (articleUnitGst * quantity || 0) +
+      parseFloat(String(advAmount));
+    handleChange(
+      'netAmount',
+      netAmount,
+      newInvoiceItemBeingEntered,
+      setNewInvoiceItemBeingEntered
+    );
+  };
+
+  useEffect(calculateNetAmount, [
+    newInvoiceItemBeingEntered.unitSalePrice,
+    newInvoiceItemBeingEntered.quantity,
+    newInvoiceItemBeingEntered.discountPercentage,
+    newInvoiceItemBeingEntered.advTax,
+    newInvoiceItemBeingEntered.gst,
+  ]);
 
   return (
     <div className="flex flex-col gap-3">
