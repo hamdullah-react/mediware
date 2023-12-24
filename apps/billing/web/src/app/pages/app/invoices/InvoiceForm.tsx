@@ -10,7 +10,6 @@ import {
 import {
   Button,
   Divider,
-  Input,
   MenuItem,
   Popover,
   PopoverSurface,
@@ -23,7 +22,6 @@ import {
   APP_TIME_FORMAT,
   IInvoice,
   IInvoiceMedicine,
-  IMedicine,
   ISupplier,
 } from '@billinglib';
 import clsx from 'clsx';
@@ -35,9 +33,8 @@ import Menu from '../../../shared/organisms/Menu';
 import { STATAUS } from '../../../utils/types';
 import moment from 'moment';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
-import { MedicineContext } from '../../../state/contexts/MedicineContext';
-import MedicineForm from '../medicines/MedicineForm';
 import Table from '../../../shared/organisms/Table';
+import InvoiceItemPicker from '../../../shared/organisms/invoice/InvoiceItemPicker';
 
 interface Props {
   formStateSetter?: Dispatch<SetStateAction<boolean>>;
@@ -46,16 +43,12 @@ interface Props {
 const InvoiceForm = ({ formStateSetter }: Props) => {
   const { supplierList } = useContext(SupplierContext);
   const { createInvoice, getInvoices } = useContext(InvoiceContext);
-  const { medicineList } = useContext(MedicineContext);
 
   const [stepCount, setStepCount] = useState(0);
 
   const [addingNewSupplier, setAddingNewSupplier] = useState(false);
   const [supplierSearchText, setSupplierSearchText] = useState('');
 
-  const [medicineSearchName, setMedicineSearchTaxName] = useState('');
-  const [showMedicineCreationForm, setShowMedicineCreationForm] =
-    useState(false);
   const [showInvoiceItem, setShowInvoiceItem] = useState(false);
 
   const [newInvoiceItemBeingEntered, setNewInvoiceItemBeingEntered] =
@@ -125,16 +118,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
     );
   }, [supplierList, supplierSearchText]);
 
-  const getFilteredMedicineList = () => {
-    const result = medicineList?.filter((med) =>
-      med.name.toLowerCase().includes(medicineSearchName.toLowerCase())
-    );
-    if (result && result.length) {
-      return result;
-    }
-    return [];
-  };
-
   useEffect(() => {
     const netAmounts = invoiceData.InvoiceMedicine?.map(
       (invoiceItem) => invoiceItem.netAmount
@@ -146,22 +129,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
       });
     }
   }, [invoiceData.InvoiceMedicine]);
-
-  const onClickSaveArticle = useCallback(() => {
-    if (invoiceData && invoiceData.InvoiceMedicine) {
-      setInvoiceData({
-        ...invoiceData,
-        InvoiceMedicine: [
-          ...invoiceData.InvoiceMedicine,
-          newInvoiceItemBeingEntered,
-        ],
-      });
-    }
-    setNewInvoiceItemBeingEntered({
-      ...newInvoiceItemBeingEntered,
-      batchIdentifier: '',
-    });
-  }, [newInvoiceItemBeingEntered, invoiceData]);
 
   const calculateNetAmount = () => {
     const salePrice = newInvoiceItemBeingEntered.unitSalePrice || 0;
@@ -194,18 +161,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
     [invoiceData]
   );
 
-  const handleChangeOnNewInvoiceItem = useCallback(
-    (ev: ChangeEvent<HTMLInputElement>) => {
-      handleChange(
-        ev.target.name,
-        ev.target.value,
-        newInvoiceItemBeingEntered,
-        setNewInvoiceItemBeingEntered
-      );
-    },
-    [newInvoiceItemBeingEntered]
-  );
-
   const deleteInvoiceItem = (rec: IInvoiceMedicine, index: number) => {
     invoiceData.InvoiceMedicine?.splice(index, 1);
     setInvoiceData(invoiceData);
@@ -221,35 +176,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
       }
     }
   }, [invoiceData]);
-
-  const onSelectInvoiceItem = useCallback(
-    (med: IMedicine) => {
-      setMedicineSearchTaxName(med.name);
-      setNewInvoiceItemBeingEntered({
-        ...newInvoiceItemBeingEntered,
-        Medicine: {
-          ...med,
-        },
-        unitSalePrice: med.unitTakePrice,
-      });
-    },
-    [medicineSearchName]
-  );
-
-  const checkUniqueBatchNumber = useCallback(() => {
-    if (!newInvoiceItemBeingEntered.batchIdentifier) {
-      return false;
-    }
-    const existingInvoiceItems = invoiceData.InvoiceMedicine?.map(
-      (rec) => rec.batchIdentifier
-    );
-    if (existingInvoiceItems && existingInvoiceItems.length > 0) {
-      return !existingInvoiceItems.includes(
-        newInvoiceItemBeingEntered.batchIdentifier
-      );
-    }
-    return true;
-  }, [newInvoiceItemBeingEntered]);
 
   useEffect(calculateNetAmount, [
     newInvoiceItemBeingEntered.unitSalePrice,
@@ -364,17 +290,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               </div>
             </div>
             <div className="flex flex-row gap-3">
-              {/* <InputField
-                name="salesTax"
-                value={String(invoiceData?.salesTax) ?? ''}
-                label="Sales Tax."
-                placeholder="Sales Tax Percentage (%)"
-                type="number"
-                onChange={handleOnChangeInvoice}
-                required
-              /> */}
-            </div>
-            <div className="flex flex-row gap-3">
               <InputField
                 name="deliveredBy"
                 value={invoiceData?.deliveredBy ?? ''}
@@ -391,7 +306,9 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               />
               <InputField
                 name="invoiceDate"
-                value={String(invoiceData?.invoiceDate)}
+                value={moment(invoiceData?.invoiceDate).format(
+                  'YYYY-MM-DDThh:mm'
+                )}
                 label="Invoice Date"
                 type="datetime-local"
                 onChange={handleOnChangeInvoice}
@@ -450,128 +367,12 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               }
             />
           </Modal>
-          <div className="flex flex-row gap-3">
-            <Menu
-              positioning={'below-start'}
-              button={
-                <Input
-                  size="large"
-                  className="w-full"
-                  placeholder="Search Medicine..."
-                  value={medicineSearchName}
-                  onChange={(e) => setMedicineSearchTaxName(e.target.value)}
-                />
-              }
-            >
-              {getFilteredMedicineList()?.map((med) => (
-                <div
-                  key={med.id}
-                  onClick={() => onSelectInvoiceItem(med)}
-                  className="cursor-pointer hover:bg-gray-100 p-2 min-w-[150pt] rounded-sm"
-                >
-                  <div className="text-md">
-                    {med?.name} {med?.packing ? `(${med?.packing})` : ''}
-                  </div>
-                  <div className="text-xs">{med?.type}</div>
-                </div>
-              ))}
-              <div
-                onClick={() => setShowMedicineCreationForm(true)}
-                className="cursor-pointer hover:bg-gray-100 p-2 min-w-[150pt] rounded-sm"
-              >
-                <div className="text-md">Add New</div>
-              </div>
-            </Menu>
-            <Input
-              size="large"
-              placeholder="Batch No."
-              name="batchIdentifier"
-              onChange={handleChangeOnNewInvoiceItem}
-              value={newInvoiceItemBeingEntered.batchIdentifier}
-            />
-            <Modal
-              isOpen={showMedicineCreationForm}
-              setIsOpen={setShowMedicineCreationForm}
-              onClosePressed={() => setShowMedicineCreationForm(false)}
-              triggerButton={
-                <Button
-                  onClick={() => setShowMedicineCreationForm(true)}
-                  size="large"
-                >
-                  New
-                </Button>
-              }
-            >
-              <MedicineForm
-                onCreateMedicine={() => setShowMedicineCreationForm(false)}
-              />
-            </Modal>
-          </div>
-          <div className="flex flex-row gap-3">
-            <InputField
-              label="Sale Price"
-              placeholder="Enter Sale Price"
-              name="unitSalePrice"
-              value={String(newInvoiceItemBeingEntered.unitSalePrice)}
-              onChange={handleChangeOnNewInvoiceItem}
-              type="number"
-              min={0}
-            />
-            <InputField
-              label="Quantity"
-              placeholder="Enter Quanitity"
-              name="quantity"
-              value={String(newInvoiceItemBeingEntered.quantity)}
-              onChange={handleChangeOnNewInvoiceItem}
-              type="number"
-              min={1}
-            />
-          </div>
-          <div className="flex flex-row gap-3">
-            <InputField
-              label="GST Amt."
-              placeholder="Enter GST Amount"
-              name="gst"
-              value={String(newInvoiceItemBeingEntered.gst)}
-              onChange={handleChangeOnNewInvoiceItem}
-              type="number"
-              min={0}
-            />
-            <InputField
-              label="Adv.Tax Amt"
-              placeholder="Enter Advance Amount"
-              name="advTax"
-              value={String(newInvoiceItemBeingEntered.advTax)}
-              onChange={handleChangeOnNewInvoiceItem}
-              type="number"
-              min={0}
-            />
-            <InputField
-              label="Disc. %"
-              placeholder="Enter Discount %"
-              name="discountPercentage"
-              value={String(newInvoiceItemBeingEntered.discountPercentage)}
-              onChange={handleChangeOnNewInvoiceItem}
-              type="number"
-              min={0}
-            />
-          </div>
-          <div className="flex flex-row items-center gap-3 justify-end">
-            <div className="bg-blue-100 text-blue-500 p-[7pt] text-md font-semibold px-3 rounded-md">
-              Net Amount{' '}
-              {sanitizeNaN(
-                String(newInvoiceItemBeingEntered.netAmount.toFixed(2))
-              )}
-            </div>
-
-            <Button
-              size="large"
-              onClick={onClickSaveArticle}
-              disabled={!checkUniqueBatchNumber()}
-            >
-              Save Article
-            </Button>
-          </div>
+          <InvoiceItemPicker
+            invoiceData={invoiceData}
+            newInvoiceItemBeingEntered={newInvoiceItemBeingEntered}
+            setInvoiceData={setInvoiceData}
+            setNewInvoiceItemBeingEntered={setNewInvoiceItemBeingEntered}
+          />
           <Divider />
           <div className="flex flex-row items-end justify-end">
             <div className="flex-1 text-end py-2.5">Advance Tax (if any)</div>

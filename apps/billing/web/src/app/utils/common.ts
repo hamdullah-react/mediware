@@ -42,3 +42,5 @@ export const sanitizeNaN = (value?: string) => {
 export const dashIfNull = (value?: string) => {
   return value ? value : '-';
 };
+
+export const formatJSON = (object: object) => JSON.stringify(object, null, 2);

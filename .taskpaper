@@ -3,6 +3,9 @@ Todo:
   ☐ Enable the editing 
   ☐ Add the login screen
   ☐ implement edit invoice
+  ☐ Fix the edit and delete bug `when we click the edit, delete or view sometimes the table wont show the data`
+  ☐ add memoization
+  ✔ Refactor the InvoiceItem Form @done(23-12-24 23:43)
   ✔ Add refresh button on all tables @done(23-12-24 06:02)
   ✔ implement delete on all 3 @done(23-12-24 05:16)
   ✔ Implement Search on 3 entities @done(23-12-24 04:08)

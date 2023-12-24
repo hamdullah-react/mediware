@@ -45,7 +45,7 @@ const MedicineProvider = ({ children }: Props) => {
   const deleteMedicine = useCallback(
     async (deletedMedicine: IMedicine) => {
       setIsLoading(true);
-      HttpClient().delete(`/medicine/${deletedMedicine.id}`);
+      await HttpClient().delete(`/medicine/${deletedMedicine.id}`);
       await getMedicines();
     },
     [medicineList]

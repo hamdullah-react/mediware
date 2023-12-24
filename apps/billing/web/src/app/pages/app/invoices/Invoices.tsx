@@ -32,31 +32,34 @@ const Invoices = () => {
     [isCreatingRecord]
   );
 
-  const onViewData = useCallback((_: IInvoice, index: number) => {
-    if (invoiceList) {
-      setCurrentlyViewing(invoiceList[index]);
-    }
-  }, []);
+  const onViewData = useCallback(
+    (_: IInvoice, index: number) => {
+      if (invoiceList) {
+        setCurrentlyViewing(invoiceList[index]);
+      }
+    },
+    [invoiceList, currentlyViewing]
+  );
 
-  const onEditingData = useCallback((_: IInvoice, index: number) => {
-    if (invoiceList) {
-      setCurrentlyEditing(invoiceList[index]);
-    }
-  }, []);
+  const onEditingData = useCallback(
+    (_: IInvoice, index: number) => {
+      if (invoiceList) {
+        setCurrentlyEditing(invoiceList[index]);
+      }
+    },
+    [invoiceList, currentlyEditing]
+  );
 
-  const clearCurrentlyViewing = useCallback(() => {
-    setCurrentlyViewing(undefined);
-  }, []);
-
-  const onDeletingData = useCallback(async (_: IInvoice, index: number) => {
+  const onDeletingData = async (_: IInvoice, index: number) => {
     if (invoiceList && invoiceList[index] && deleteInvoice) {
       await deleteInvoice(invoiceList[index]);
     }
-  }, []);
+  };
 
-  const clearCurrentlyEdting = useCallback(() => {
+  const closeModals = useCallback(() => {
+    setCurrentlyViewing(undefined);
     setCurrentlyEditing(undefined);
-  }, []);
+  }, [currentlyEditing, currentlyViewing]);
 
   const getFilteredData = useCallback(() => {
     if (invoiceList) {
@@ -85,7 +88,7 @@ const Invoices = () => {
     <div>
       <Modal
         isOpen={!!currentlyViewing}
-        onClosePressed={clearCurrentlyViewing}
+        onClosePressed={closeModals}
         width={'80vw'}
         maxWidth={'80vw'}
         title={`Invoice #${currentlyViewing?.id} from ${
@@ -96,7 +99,7 @@ const Invoices = () => {
       </Modal>
       <Modal
         isOpen={!!currentlyEditing}
-        onClosePressed={clearCurrentlyEdting}
+        onClosePressed={closeModals}
         width={'80vw'}
         maxWidth={'80vw'}
       >

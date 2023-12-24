@@ -59,7 +59,11 @@ export default async function (fastify: FastifyInstance) {
         },
         _count: {
           select: {
-            InvoiceMedicine: true,
+            InvoiceMedicine: {
+              where: {
+                deletedAt: null,
+              },
+            },
           },
         },
       },

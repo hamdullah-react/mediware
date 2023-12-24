@@ -31,23 +31,25 @@ const Medicines = () => {
     [isCreatingRecord]
   );
 
-  const onViewData = useCallback((_: IMedicine, index: number) => {
-    if (medicineList) {
-      setCurrentlyViewing(medicineList[index]);
-    }
-  }, []);
+  const onViewData = useCallback(
+    (_: IMedicine, index: number) => {
+      if (medicineList) {
+        setCurrentlyViewing(medicineList[index]);
+      }
+    },
+    [currentlyViewing, medicineList]
+  );
 
-  const onEditingData = useCallback((_: IMedicine, index: number) => {
-    if (medicineList) {
-      setCurrentlyEditing(medicineList[index]);
-    }
-  }, []);
+  const onEditingData = useCallback(
+    (_: IMedicine, index: number) => {
+      if (medicineList) {
+        setCurrentlyEditing(medicineList[index]);
+      }
+    },
+    [currentlyEditing, medicineList]
+  );
 
-  const clearCurrentlyViewing = useCallback(() => {
-    setCurrentlyViewing(undefined);
-  }, []);
-
-  const onDeletingData = useCallback(async (_: IMedicine, index: number) => {
+  const onDeletingData = async (_: IMedicine, index: number) => {
     if (medicineList) {
       if (
         medicineList[index] &&
@@ -61,11 +63,12 @@ const Medicines = () => {
         await deleteMedicine(medicineList[index]);
       }
     }
-  }, []);
+  };
 
-  const clearCurrentlyEdting = useCallback(() => {
+  const closeModals = useCallback(() => {
+    setCurrentlyViewing(undefined);
     setCurrentlyEditing(undefined);
-  }, []);
+  }, [currentlyEditing, currentlyViewing]);
 
   const getFilteredData = useCallback(() => {
     if (medicineList) {
@@ -94,12 +97,12 @@ const Medicines = () => {
     <div>
       <Modal
         isOpen={!!currentlyViewing}
-        onClosePressed={clearCurrentlyViewing}
+        onClosePressed={closeModals}
         title={`Medicine #${currentlyViewing?.id} ${currentlyViewing?.name} (${currentlyViewing?.type})`}
       >
         {!!currentlyViewing && <MedicineViewer medicine={currentlyViewing} />}
       </Modal>
-      <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
+      <Modal isOpen={!!currentlyEditing} onClosePressed={closeModals}>
         {!!currentlyEditing && (
           <MedicineEditor
             medicine={currentlyEditing}

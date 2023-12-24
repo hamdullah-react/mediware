@@ -31,19 +31,25 @@ const Suppliers = () => {
     [isCreatingRecord]
   );
 
-  const onViewData = useCallback((_: ISupplier, index: number) => {
-    if (supplierList) {
-      setCurrentlyViewing(supplierList[index]);
-    }
-  }, []);
+  const onViewData = useCallback(
+    (_: ISupplier, index: number) => {
+      if (supplierList) {
+        setCurrentlyViewing(supplierList[index]);
+      }
+    },
+    [currentlyViewing, supplierList]
+  );
 
-  const onEditingData = useCallback((_: ISupplier, index: number) => {
-    if (supplierList) {
-      setCurrentlyEditing(supplierList[index]);
-    }
-  }, []);
+  const onEditingData = useCallback(
+    (_: ISupplier, index: number) => {
+      if (supplierList) {
+        setCurrentlyEditing(supplierList[index]);
+      }
+    },
+    [currentlyEditing, supplierList]
+  );
 
-  const onDeletingData = useCallback(async (_: ISupplier, index: number) => {
+  const onDeletingData = async (_: ISupplier, index: number) => {
     if (supplierList) {
       if (
         supplierList[index] &&
@@ -57,15 +63,12 @@ const Suppliers = () => {
         await deleteSupplier(supplierList[index]);
       }
     }
-  }, []);
+  };
 
-  const clearCurrentlyViewing = useCallback(() => {
+  const closeModals = useCallback(() => {
     setCurrentlyViewing(undefined);
-  }, []);
-
-  const clearCurrentlyEdting = useCallback(() => {
     setCurrentlyEditing(undefined);
-  }, []);
+  }, [currentlyEditing, currentlyViewing]);
 
   const getFilteredData = useCallback(() => {
     if (supplierList)
@@ -90,14 +93,12 @@ const Suppliers = () => {
     <div>
       <Modal
         isOpen={!!currentlyViewing}
-        onClosePressed={clearCurrentlyViewing}
+        onClosePressed={closeModals}
         title={`Supplier #${currentlyViewing?.id} - ${currentlyViewing?.name}`}
       >
-        {!!clearCurrentlyViewing && (
-          <SupplierViewer supplier={currentlyViewing} />
-        )}
+        {!!closeModals && <SupplierViewer supplier={currentlyViewing} />}
       </Modal>
-      <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
+      <Modal isOpen={!!currentlyEditing} onClosePressed={closeModals}>
         {!!currentlyEditing && (
           <SupplierEditor
             supplier={currentlyEditing}
