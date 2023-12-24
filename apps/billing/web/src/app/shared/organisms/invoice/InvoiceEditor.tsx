@@ -49,7 +49,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         originalInvoice.invoiceNumber?.toLowerCase()?.trim() ===
         invoice?.invoiceNumber?.toLowerCase()?.trim()
       ) {
-        return false;
+        return true;
       }
       return !invoiceList
         .map((inv) => inv.invoiceNumber)
@@ -180,7 +180,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
           value={invoice.invoiceNumber}
           onChange={handleChange}
           label="Invoice Number"
-          errorText={isInvoiceUnique ? '' : 'Invoice not unique'}
+          errorText={isInvoiceUnique ? '' : 'Invoice not number unique'}
         />
         <InputField
           name={'bookingDriver'}

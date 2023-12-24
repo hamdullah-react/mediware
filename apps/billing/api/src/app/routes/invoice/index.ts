@@ -199,6 +199,14 @@ export default async function (fastify: FastifyInstance) {
 
       const prisma = DBClient();
 
+      await prisma.invoiceMedicine.deleteMany({
+        where: {
+          Invoice: {
+            id: id,
+          },
+        },
+      });
+
       await prisma.invoice.update({
         where: {
           id: id,
@@ -220,17 +228,6 @@ export default async function (fastify: FastifyInstance) {
             },
           },
           updatedAt: new Date(),
-        },
-      });
-
-      await prisma.invoiceMedicine.updateMany({
-        data: {
-          deletedAt: new Date(),
-        },
-        where: {
-          Invoice: {
-            id: id,
-          },
         },
       });
 

@@ -78,7 +78,7 @@ const Medicines = () => {
           'Medicine Name': medicine.name,
           Packing: medicine.packing,
           Brand: medicine.brand,
-          Formula: medicine.formula,
+          Quantity: medicine.quantityInStock,
           Type: medicine.type,
         }))
         ?.filter(
@@ -87,7 +87,6 @@ const Medicines = () => {
               ?.toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
             data.Brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data.Formula?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             data.Type?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }

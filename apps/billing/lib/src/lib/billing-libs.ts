@@ -65,6 +65,7 @@ export interface IMedicine {
   updatedAt?: Date;
   deletedAt?: Date;
   InvoiceMedicine?: IInvoiceMedicine[];
+  quantityInStock?: number;
   _count?: {
     InvoiceMedicine?: number;
   };

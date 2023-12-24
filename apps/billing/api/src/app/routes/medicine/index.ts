@@ -38,7 +38,27 @@ export default async function (fastify: FastifyInstance) {
         id: 'desc',
       },
     });
-    return reply.status(200).send(medicine);
+
+    const medicineCount = await prisma.invoiceMedicine.groupBy({
+      where: {
+        deletedAt: null,
+      },
+      by: 'medicineId',
+      _sum: {
+        quantity: true,
+      },
+    });
+
+    const medicineWithCount = medicine?.map((medicine) => {
+      const count = medicineCount?.find((mc) => mc.medicineId === medicine.id);
+
+      return {
+        ...medicine,
+        quantityInStock: count._sum.quantity,
+      };
+    });
+
+    return reply.status(200).send(medicineWithCount);
   });
 
   fastify.get('/:id', async function (request, reply) {

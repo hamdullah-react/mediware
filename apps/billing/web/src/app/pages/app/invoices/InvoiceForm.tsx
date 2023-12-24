@@ -217,7 +217,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
                   placeholder="Enter invoice number"
                   onChange={handleOnChangeInvoice}
                   required
-                  errorText={isInvoiceUnique ? '' : 'Invoice not unique'}
+                  errorText={isInvoiceUnique ? '' : 'Invoice number not unique'}
                 />
               </div>
               <div className="flex-col flex justify-end">
