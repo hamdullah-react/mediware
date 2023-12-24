@@ -72,6 +72,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         setIsOpen={setIsMedicineSelectorOpen}
         title="Add New Medicine"
       >
+        {/* TODO: Add an entirely new medicine on invoice being edited */}
         Medicine Selector
       </Modal>
       <Modal
@@ -79,6 +80,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         isOpen={currentlyEditing !== -1}
         onClosePressed={() => setCurrentlyEditing(-1)}
       >
+        {/* TODO: Edit the existing medicine on the index `currentlyEditing` */}
         Medicine Editing window
       </Modal>
       <div className="flex flex-row py-3">
