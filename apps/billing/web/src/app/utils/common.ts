@@ -35,8 +35,8 @@ export const getFormElementValue = (elementId: string) => {
   }
 };
 
-export const sanitizeNaN = (value: string) => {
-  return value === 'NaN' || !value ? '0' : value;
+export const sanitizeNaN = (value?: string) => {
+  return (value && value === 'NaN') || !value ? '0' : value;
 };
 
 export const dashIfNull = (value?: string) => {

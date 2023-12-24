@@ -5,8 +5,8 @@ import { IMedicine } from '@billinglib';
 const prisma = new PrismaClient();
 
 export default async function (fastify: FastifyInstance) {
-  fastify.get('/', async function () {
-    const suppliers = await prisma.medicine.findMany({
+  fastify.get('/', async function (request, reply) {
+    const medicine = await prisma.medicine.findMany({
       select: {
         id: true,
         brand: true,
@@ -34,23 +34,23 @@ export default async function (fastify: FastifyInstance) {
         id: 'desc',
       },
     });
-    return suppliers;
+    return reply.status(200).send(medicine);
   });
 
   fastify.get('/:id', async function (request, reply) {
     const id = request.params['id'];
 
-    const foundSupplier = await prisma.medicine.findUnique({
+    const foundMedicine = await prisma.medicine.findUnique({
       where: { id: parseInt(id), deletedAt: null },
     });
 
-    if (!foundSupplier) {
-      return reply.status(404).send({ message: 'Supplier not found' });
+    if (!foundMedicine) {
+      return reply.status(404).send({ message: 'Medicine not found' });
     }
 
     return reply.status(200).send({
-      message: 'Supplier retrieved successfully',
-      data: foundSupplier,
+      message: 'Medicine retrieved successfully',
+      data: foundMedicine,
     });
   });
 
@@ -82,7 +82,7 @@ export default async function (fastify: FastifyInstance) {
     const id = request.params['id'];
     const requestBody = request.body as IMedicine;
 
-    const updatedSupplier = await prisma.medicine.update({
+    const updatedMedicine = await prisma.medicine.update({
       where: { id: parseInt(id, 10) },
       data: {
         name: requestBody.name,
@@ -97,22 +97,22 @@ export default async function (fastify: FastifyInstance) {
     });
 
     return reply.status(200).send({
-      message: 'Supplier updated successfully',
-      data: updatedSupplier,
+      message: 'Medicine updated successfully',
+      data: updatedMedicine,
     });
   });
 
   fastify.delete('/:id', async function (request, reply) {
     const id = request.params['id'];
 
-    const deletedSupplier = await prisma.medicine.update({
+    const deletedMedicine = await prisma.medicine.update({
       where: { id: parseInt(id, 10) },
       data: { deletedAt: new Date() },
     });
 
     return reply.status(200).send({
-      message: 'Supplier deleted successfully',
-      data: deletedSupplier,
+      message: 'Medicine deleted successfully',
+      data: deletedMedicine,
     });
   });
 }

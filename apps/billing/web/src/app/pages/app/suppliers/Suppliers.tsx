@@ -14,7 +14,8 @@ import SupplierEditor from '../../../shared/organisms/supplier/SupplierEditor';
 const Suppliers = () => {
   const location = useLocation();
 
-  const { supplierList, isLoading } = useContext(SupplierContext);
+  const { supplierList, isLoading, deleteSupplier } =
+    useContext(SupplierContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<ISupplier>();
@@ -39,6 +40,22 @@ const Suppliers = () => {
   const onEditingData = useCallback((_: ISupplier, index: number) => {
     if (supplierList) {
       setCurrentlyEditing(supplierList[index]);
+    }
+  }, []);
+
+  const onDeletingData = useCallback(async (_: ISupplier, index: number) => {
+    if (supplierList) {
+      if (
+        supplierList[index] &&
+        supplierList[index]._count &&
+        supplierList[index]._count?.Invoice
+      ) {
+        alert(
+          `Supplier ${supplierList[index].name} shouldn't be deleted because they're associated to invoices`
+        );
+      } else if (deleteSupplier) {
+        await deleteSupplier(supplierList[index]);
+      }
     }
   }, []);
 
@@ -116,6 +133,7 @@ const Suppliers = () => {
               data={getFilteredData() as unknown as []}
               onViewData={onViewData}
               onEdit={onEditingData}
+              onDelete={onDeletingData}
             />
           )}
         </LoaderWrapper>

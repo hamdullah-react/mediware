@@ -1,13 +1,18 @@
 import { Button, MenuItem, MenuList } from '@fluentui/react-components';
 import { ReactNode } from 'react';
 import Menu from '../organisms/Menu';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
   children?: ReactNode | ReactNode[];
   sidebar?: ReactNode | ReactNode[];
-  pageTitle?: string;
 }
-function SidebarLayout({ children, sidebar, pageTitle }: Props) {
+function SidebarLayout({ children, sidebar }: Props) {
+  const location = useLocation();
+  const pageTitle =
+    location.pathname === '/'
+      ? 'Welcome'
+      : location.pathname.split('/').reverse()?.[0].replace(/\//g, '');
   return (
     <div className="flex">
       <div className="min-w-[170pt] h-screen overflow-auto border-r border-r-gray-200">

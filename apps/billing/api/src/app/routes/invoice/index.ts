@@ -183,4 +183,18 @@ export default async function (fastify: FastifyInstance) {
       console.log(error);
     }
   });
+
+  fastify.delete('/:id', async function (request, reply) {
+    const id = request.params['id'];
+
+    const deletedInvoice = await prisma.invoice.update({
+      where: { id: parseInt(id, 10) },
+      data: { deletedAt: new Date() },
+    });
+
+    return reply.status(200).send({
+      message: 'Invoice deleted successfully',
+      data: deletedInvoice,
+    });
+  });
 }
