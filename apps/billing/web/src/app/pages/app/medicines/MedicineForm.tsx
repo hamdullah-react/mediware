@@ -118,6 +118,7 @@ const MedicineForm = ({ onCreateMedicine }: Props) => {
           label="Price"
           placeholder="Enter Price"
           type="number"
+          min={0}
         />
       </div>
       <Divider className="my-3" />

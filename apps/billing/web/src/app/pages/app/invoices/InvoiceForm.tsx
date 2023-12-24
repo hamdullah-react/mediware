@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import {
@@ -20,6 +21,7 @@ import { SupplierContext } from '../../../state/contexts/SupplierContext';
 import {
   APP_ROUNDOFF_SETTING,
   APP_TIME_FORMAT,
+  APP_UI_FORM_TIME_FORMAT,
   IInvoice,
   IInvoiceMedicine,
   ISupplier,
@@ -42,7 +44,8 @@ interface Props {
 
 const InvoiceForm = ({ formStateSetter }: Props) => {
   const { supplierList } = useContext(SupplierContext);
-  const { createInvoice, getInvoices } = useContext(InvoiceContext);
+  const { createInvoice, getInvoices, invoiceList } =
+    useContext(InvoiceContext);
 
   const [stepCount, setStepCount] = useState(0);
 
@@ -126,6 +129,16 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
     setShowInvoiceItem(false);
   };
 
+  const isInvoiceUnique = useMemo(() => {
+    if (invoiceList) {
+      return !invoiceList
+        .map((inv) => inv.invoiceNumber)
+        .includes(invoiceData.invoiceNumber.trim());
+    }
+
+    return false;
+  }, [invoiceList, invoiceData]);
+
   const handleSubmit = useCallback(async () => {
     if (createInvoice && getInvoices) {
       await createInvoice(invoiceData);
@@ -204,6 +217,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
                   placeholder="Enter invoice number"
                   onChange={handleOnChangeInvoice}
                   required
+                  errorText={isInvoiceUnique ? '' : 'Invoice not unique'}
                 />
               </div>
               <div className="flex-col flex justify-end">
@@ -258,7 +272,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               <InputField
                 name="invoiceDate"
                 value={moment(invoiceData?.invoiceDate).format(
-                  'YYYY-MM-DDThh:mm'
+                  APP_UI_FORM_TIME_FORMAT
                 )}
                 label="Invoice Date"
                 type="datetime-local"
@@ -306,9 +320,9 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
                   Expirey: moment(medicine.expirey).format(APP_TIME_FORMAT),
                   Quantity: medicine.quantity,
                   'Unit Price': medicine.unitSalePrice,
-                  'Gross Amt': (
-                    medicine.unitSalePrice * medicine.quantity
-                  ).toFixed(APP_ROUNDOFF_SETTING),
+                  Total: (medicine.unitSalePrice * medicine.quantity).toFixed(
+                    APP_ROUNDOFF_SETTING
+                  ),
                   'Dis (%)': medicine?.discountPercentage,
                   'GST (%)': medicine?.gst,
                   'Adv.Tax': medicine?.advTax,
@@ -334,6 +348,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               type="number"
               placeholder="Advance Tax (if any)"
               className="ml-5"
+              min={0}
             />
           </div>
         </div>
@@ -373,7 +388,8 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               disabled={
                 invoiceData &&
                 !!invoiceData.InvoiceMedicine &&
-                invoiceData.InvoiceMedicine.length <= 0
+                invoiceData.InvoiceMedicine.length <= 0 &&
+                (!isInvoiceUnique || !invoiceData.invoiceNumber)
               }
             >
               Submit

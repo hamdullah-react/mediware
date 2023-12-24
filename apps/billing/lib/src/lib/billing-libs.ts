@@ -5,6 +5,8 @@ export function billingLibs(): string {
 export const APP_ROUNDOFF_SETTING = 2;
 export const APP_TIME_FORMAT = 'MMM Do, YYYY hh:mm:ss';
 export const APP_DB_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+export const APP_UI_FORM_TIME_FORMAT = 'YYYY-MM-DDThh:mm';
+export const APP_UI_FORM_DATE_FORMAT = 'YYYY-MM-DD';
 
 export type MedicineTypes =
   | 'Capsule'

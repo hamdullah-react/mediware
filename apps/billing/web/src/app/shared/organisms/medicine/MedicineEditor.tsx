@@ -110,6 +110,7 @@ const MedicineEditor = ({ medicine, setMedicine }: Props) => {
                   value={String(medicine.unitTakePrice)}
                   onChange={handleChange}
                   type="number"
+                  min={0}
                 />
               </TableCell>
             </TableRow>
