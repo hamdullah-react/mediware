@@ -88,7 +88,10 @@ export default async function (fastify: FastifyInstance) {
         name: requestBody.name,
         brand: requestBody.brand || '',
         formula: requestBody.formula || '',
-        type: requestBody.formula || '',
+        type: requestBody.type || '',
+        code: requestBody.code || '',
+        packing: requestBody.packing || '',
+        unitTakePrice: parseFloat(String(requestBody.unitTakePrice)),
         updatedAt: new Date(),
       },
     });

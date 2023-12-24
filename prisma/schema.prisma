@@ -54,6 +54,7 @@ model Invoice {
   deliveredBy     String?
   bookingDriver   String?
   status          String?
+  advTax          Float?            @default(0.0)
   supplierId      Int
   Supplier        Supplier          @relation(fields: [supplierId], references: [id])
   InvoiceMedicine InvoiceMedicine[]

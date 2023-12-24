@@ -1,4 +1,11 @@
-import { ChangeEvent, useCallback, useContext, useState } from 'react';
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 import { Button, Divider } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
 import InputField from '../../../shared/molecules/InputField';
@@ -7,9 +14,10 @@ import { SupplierContext } from '../../../state/contexts/SupplierContext';
 
 interface Props {
   onCreateSupplier?: () => void;
+  formStateSetter?: Dispatch<SetStateAction<boolean>>;
 }
 
-const SupplierForm = ({ onCreateSupplier }: Props) => {
+const SupplierForm = ({ onCreateSupplier, formStateSetter }: Props) => {
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 
   const { createSupplier } = useContext(SupplierContext);
@@ -67,17 +75,20 @@ const SupplierForm = ({ onCreateSupplier }: Props) => {
     [newSupplier]
   );
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = async () => {
     if (createSupplier) {
       const error = invalidForm(newSupplier);
       if (!error) {
+        if (formStateSetter) {
+          formStateSetter(false);
+        }
         await createSupplier(newSupplier);
         if (onCreateSupplier) onCreateSupplier();
       } else {
         alert(error);
       }
     }
-  }, [createSupplier, newSupplier]);
+  };
 
   return (
     <div className="gap-2 flex flex-col">

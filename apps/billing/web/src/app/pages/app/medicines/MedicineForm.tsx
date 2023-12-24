@@ -82,7 +82,7 @@ const MedicineForm = ({ onCreateMedicine }: Props) => {
         <div className="flex-1">
           <InputField
             name="code"
-            value={newMedicine?.code?.toString() ?? ''}
+            value={newMedicine?.code ?? ''}
             onChange={handleOnChange}
             label="Medicine Code"
             placeholder="Enter product code"

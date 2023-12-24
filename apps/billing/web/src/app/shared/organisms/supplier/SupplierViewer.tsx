@@ -1,7 +1,7 @@
 import { APP_TIME_FORMAT, ISupplier } from '@billinglib';
 import { TableBody, TableCell, TableRow } from '@fluentui/react-components';
 import { Table as FUITable } from '@fluentui/react-components';
-import { dashIfNull } from '../../utils/common';
+import { dashIfNull } from '../../../utils/common';
 import moment from 'moment';
 
 interface Props {
@@ -65,7 +65,7 @@ const SupplierViewer = ({ supplier }: Props) => {
             </TableCell>
             <TableCell colSpan={2}>
               {dashIfNull(
-                ((supplier._count ?? { Invoice: 0 })?.Invoice ?? 0)?.toString()
+                String((supplier._count ?? { Invoice: 0 })?.Invoice ?? 0)
               )}{' '}
               Invoices
             </TableCell>

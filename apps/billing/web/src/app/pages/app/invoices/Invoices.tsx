@@ -3,20 +3,21 @@ import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
 import InvoiceForm from './InvoiceForm';
 import Modal from '../../../shared/organisms/Modal';
-import { Button } from '@fluentui/react-components';
+import { Button, Input } from '@fluentui/react-components';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import moment from 'moment';
 import Table from '../../../shared/organisms/Table';
 import { APP_ROUNDOFF_SETTING, APP_TIME_FORMAT, IInvoice } from '@billinglib';
-import InvoiceViewer from '../../../shared/organisms/InvoiceViewer';
+import InvoiceViewer from '../../../shared/organisms/invoice/InvoiceViewer';
 import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
+import InvoiceEditor from '../../../shared/organisms/invoice/InvoiceEditor';
 
 const Invoices = () => {
   const location = useLocation();
 
   const { invoiceList, isLoading } = useContext(InvoiceContext);
 
-  const [searchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IInvoice>();
 
   const [currentlyEditing, setCurrentlyEditing] = useState<IInvoice>();
@@ -50,8 +51,6 @@ const Invoices = () => {
     setCurrentlyEditing(undefined);
   }, []);
 
-  const onUpdateSuppler = useCallback(() => {}, []);
-
   const getFilteredData = useCallback(() => {
     if (invoiceList) {
       return invoiceList
@@ -59,7 +58,7 @@ const Invoices = () => {
           'Invoice Number': invoice.invoiceNumber,
           Company: invoice.Supplier?.name,
           Date: moment(invoice.invoiceDate).format(APP_TIME_FORMAT),
-          'Booking Driver': invoice.bookingDriver,
+          'Adv Tax': String(invoice.advTax),
           Total: (invoice?.total ?? 0).toFixed(APP_ROUNDOFF_SETTING),
         }))
         ?.filter(
@@ -69,9 +68,7 @@ const Invoices = () => {
               .includes(searchQuery.toLowerCase()) ||
             data?.Company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             data?.Date?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data?.['Booking Driver']
-              ?.toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
+            data?.['Adv Tax']?.includes(searchQuery.toLowerCase()) ||
             data.Total?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }
@@ -88,7 +85,7 @@ const Invoices = () => {
         title="Add Invoice"
         triggerButton={<Button onClick={toggleModel}>Add Invoice</Button>}
       >
-        <InvoiceForm />
+        <InvoiceForm formStateSetter={() => setIsCreatingRecord(false)} />
       </Modal>
       <Modal
         isOpen={!!currentlyViewing}
@@ -101,23 +98,28 @@ const Invoices = () => {
       >
         {!!currentlyViewing && <InvoiceViewer invoice={currentlyViewing} />}
       </Modal>
-      <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
+      <Modal
+        isOpen={!!currentlyEditing}
+        onClosePressed={clearCurrentlyEdting}
+        width={'80vw'}
+        maxWidth={'80vw'}
+      >
         {!!currentlyEditing && (
-          <div>
-            {JSON.stringify(currentlyEditing)}
-            <div className="flex flex-row justify-end mt-4">
-              <Button onClick={onUpdateSuppler}>Editing</Button>
-            </div>
-          </div>
+          <InvoiceEditor
+            invoice={currentlyEditing}
+            setInvoice={setCurrentlyEditing}
+          />
         )}
       </Modal>
       <div className="flex flex-row justify-end">
-        {/* <Input
-          disabled={isCreatingRecord}
+        <Input
+          disabled={
+            isCreatingRecord || !!currentlyEditing || !!currentlyViewing
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
-        /> */}
+        />
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>

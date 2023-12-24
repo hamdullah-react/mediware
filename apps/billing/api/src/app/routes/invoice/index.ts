@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { PrismaClient } from '@prisma/client';
-import { APP_DB_FORMAT, IInvoice } from '@billinglib';
+import { APP_DB_TIME_FORMAT, IInvoice } from '@billinglib';
 import moment from 'moment';
 
 const prisma = new PrismaClient();
@@ -21,6 +21,7 @@ export default async function (fastify: FastifyInstance) {
         status: true,
         total: true,
         updatedAt: true,
+        advTax: true,
         InvoiceMedicine: {
           select: {
             advTax: true,
@@ -80,12 +81,15 @@ export default async function (fastify: FastifyInstance) {
       const newInvoice = await prisma.invoice.create({
         data: {
           invoiceNumber: requestBody.invoiceNumber,
-          invoiceDate: moment(requestBody.invoiceDate).format(APP_DB_FORMAT),
+          invoiceDate: moment(requestBody.invoiceDate).format(
+            APP_DB_TIME_FORMAT
+          ),
           bookingDriver: requestBody.bookingDriver,
           deliveredBy: requestBody.deliveredBy,
-          salesTax: parseFloat(requestBody.salesTax.toString()),
+          salesTax: parseFloat(String(requestBody.salesTax)),
           status: requestBody.status,
-          total: parseFloat(requestBody.total.toString()),
+          total: parseFloat(String(requestBody.total)),
+          advTax: parseFloat(String(requestBody.advTax)),
           Supplier: {
             connect: {
               id: requestBody.Supplier.id,
@@ -100,21 +104,21 @@ export default async function (fastify: FastifyInstance) {
             return prisma.invoiceMedicine.create({
               data: {
                 batchIdentifier: invoiceMedicine.batchIdentifier,
-                quantity: parseInt(invoiceMedicine.quantity.toString()) || 1,
+                quantity: parseInt(String(invoiceMedicine.quantity)) || 1,
 
-                expirey: moment(invoiceMedicine.expirey).format(APP_DB_FORMAT),
+                expirey: moment(invoiceMedicine.expirey).format(
+                  APP_DB_TIME_FORMAT
+                ),
                 unitSalePrice: parseFloat(
-                  invoiceMedicine.unitSalePrice.toString()
+                  String(invoiceMedicine.unitSalePrice)
                 ),
                 discountPercentage:
-                  parseFloat(invoiceMedicine.discountPercentage.toString()) ||
-                  0,
-                gst: parseFloat(invoiceMedicine.gst.toString()),
-                netAmount:
-                  parseFloat(invoiceMedicine.netAmount.toString()) || 0,
-                advTax: parseFloat(invoiceMedicine.advTax.toString()) || 0,
+                  parseFloat(String(invoiceMedicine.discountPercentage)) || 0,
+                gst: parseFloat(String(invoiceMedicine.gst)),
+                netAmount: parseFloat(String(invoiceMedicine.netAmount)) || 0,
+                advTax: parseFloat(String(invoiceMedicine.advTax)) || 0,
                 discountedAmount: parseFloat(
-                  invoiceMedicine.discountedAmount.toString()
+                  String(invoiceMedicine.discountedAmount)
                 ),
                 Invoice: {
                   connect: {
@@ -132,22 +136,22 @@ export default async function (fastify: FastifyInstance) {
             return prisma.invoiceMedicine.create({
               data: {
                 batchIdentifier: invoiceMedicine.batchIdentifier,
-                quantity: parseInt(invoiceMedicine.quantity.toString()) || 1,
+                quantity: parseInt(String(invoiceMedicine.quantity)) || 1,
 
-                expirey: moment(invoiceMedicine.expirey).format(APP_DB_FORMAT),
+                expirey: moment(invoiceMedicine.expirey).format(
+                  APP_DB_TIME_FORMAT
+                ),
 
                 unitSalePrice: parseFloat(
-                  invoiceMedicine.unitSalePrice.toString()
+                  String(invoiceMedicine.unitSalePrice)
                 ),
                 discountPercentage:
-                  parseFloat(invoiceMedicine.discountPercentage.toString()) ||
-                  0,
-                gst: parseFloat(invoiceMedicine.gst.toString()),
-                netAmount:
-                  parseFloat(invoiceMedicine.netAmount.toString()) || 0,
-                advTax: parseFloat(invoiceMedicine.advTax.toString()) || 0,
+                  parseFloat(String(invoiceMedicine.discountPercentage)) || 0,
+                gst: parseFloat(String(invoiceMedicine.gst)),
+                netAmount: parseFloat(String(invoiceMedicine.netAmount)) || 0,
+                advTax: parseFloat(String(invoiceMedicine.advTax)) || 0,
                 discountedAmount: parseFloat(
-                  invoiceMedicine.discountedAmount.toString()
+                  String(invoiceMedicine.discountedAmount)
                 ),
                 Invoice: {
                   connect: {

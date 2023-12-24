@@ -3,19 +3,20 @@ import MedicineForm from './MedicineForm';
 import Modal from '../../../shared/organisms/Modal';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
-import { Button } from '@fluentui/react-components';
+import { Button, Input } from '@fluentui/react-components';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 import Table from '../../../shared/organisms/Table';
 import { IMedicine } from '@billinglib';
-import MedicineViewer from '../../../shared/organisms/MedicineViewer';
+import MedicineViewer from '../../../shared/organisms/medicine/MedicineViewer';
 import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
+import MedicineEditor from '../../../shared/organisms/medicine/MedicineEditor';
 
 const Medicines = () => {
   const location = useLocation();
 
   const { medicineList, isLoading } = useContext(MedicineContext);
 
-  const [searchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<IMedicine>();
 
   const [currentlyEditing, setCurrentlyEditing] = useState<IMedicine>();
@@ -49,15 +50,13 @@ const Medicines = () => {
     setCurrentlyEditing(undefined);
   }, []);
 
-  const onUpdateSuppler = useCallback(() => {}, []);
-
   const getFilteredData = useCallback(() => {
     if (medicineList) {
       return medicineList
         .map((medicine) => ({
-          Id: medicine.id,
           Code: medicine.code,
           'Medicine Name': medicine.name,
+          Packing: medicine.packing,
           Brand: medicine.brand,
           Formula: medicine.formula,
           Type: medicine.type,
@@ -85,7 +84,7 @@ const Medicines = () => {
         title="Add Medicine"
         triggerButton={<Button onClick={toggleModel}>Add Medicine</Button>}
       >
-        <MedicineForm />
+        <MedicineForm onCreateMedicine={() => setIsCreatingRecord(false)} />
       </Modal>
       <Modal
         isOpen={!!currentlyViewing}
@@ -96,20 +95,21 @@ const Medicines = () => {
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={clearCurrentlyEdting}>
         {!!currentlyEditing && (
-          <div>
-            {JSON.stringify(currentlyEditing)}
-            <div className="flex flex-row justify-end mt-4">
-              <Button onClick={onUpdateSuppler}>Editing</Button>
-            </div>
-          </div>
+          <MedicineEditor
+            medicine={currentlyEditing}
+            setMedicine={setCurrentlyEditing}
+          />
         )}
       </Modal>
       <div className="flex flex-row justify-end">
-        {/* <Input
+        <Input
+          disabled={
+            isCreatingRecord || !!currentlyViewing || !!currentlyEditing
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search..."
-        /> */}
+        />
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>

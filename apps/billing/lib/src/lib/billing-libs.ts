@@ -4,7 +4,7 @@ export function billingLibs(): string {
 
 export const APP_ROUNDOFF_SETTING = 2;
 export const APP_TIME_FORMAT = 'MMM Do, YYYY hh:mm:ss';
-export const APP_DB_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+export const APP_DB_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 
 export type MedicineTypes =
   | 'Capsule'
@@ -80,6 +80,7 @@ export interface IInvoice {
   deliveredBy?: string;
   bookingDriver?: string;
   status?: string;
+  advTax: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;

@@ -2,8 +2,15 @@
 Todo:
   ☐ Enable the editing 
   ☐ Add the login screen
-  ☐ batchidentifier to be unique throughout and check on database too not just current invoice
-  ☐ Implement Search on 3 entities
+  ☐ make invoice items (while editing) editable
+  ☐ implement delete on all 3
+  ☐ Add refresh button on all tables
+  ☐ implement edit invoice
+  ✔ Implement Search on 3 entities @done(23-12-24 04:08)
+  ✔ Increase size of invoiceItems previewer @done(23-12-24 04:02)
+  ✔ batchidentifier to be unique throughout and check on database too not just current invoice @done(23-12-24 02:39)
+  ✔ Show the total on the invoice, show advance tax on invoice viewer @done(23-12-24 02:39)
+  ✔ add the advTax column on the invoice as well @done(23-12-24 02:25)
   ✔ remove the take price and add the currentPrice of the article in its price @done(23-12-24 01:22)
   ✔ Move the packing and sales tax to medicine @done(23-12-24 00:07)
   ✔ Fix the focus issue of the form @done(23-12-24 00:07)

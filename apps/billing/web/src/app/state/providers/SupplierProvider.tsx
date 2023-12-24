@@ -24,7 +24,6 @@ const SupplierProvider = ({ children }: Props) => {
       setIsLoading(true);
       await HttpClient().post('/supplier', newSupplier);
       await getSuppliers();
-      setIsLoading(false);
     },
     [supplierList]
   );
