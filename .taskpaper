@@ -1,9 +1,12 @@
 
 Todo:
-  ☐ Enable the editing 
-  ☐ Add the login screen
-  ☐ implement edit invoice
   ☐ show previous batches for that medicine while selecting batchNumber so its easier
+  ✔ implement login @done(23-12-25 19:16)
+  ✔ implement logout @done(23-12-25 19:16)
+  ✔ login if cookie hasn't expired @done(23-12-25 19:16)
+  ✔ implement edit invoice @done(23-12-25 17:00)
+  ✔ Enable the editing @done(23-12-25 17:00)
+  ✔ Add the login screen @done(23-12-25 17:00)
   ✔ Fix the edit and delete bug `when we click the edit, delete or view sometimes thetable wont show the data` @done(23-12-25 00:59)
   ✔ add memoization @done(23-12-25 00:59)
   ✔ Refactor the InvoiceItem Form @done(23-12-24 23:43)
@@ -19,5 +22,3 @@ Todo:
   ✔ Fix the focus issue of the form @done(23-12-24 00:07)
   ✔ Put the article entry in a separate form, link with the "add new" button on the search @done(23-12-24 00:07)
 
-Editing:
-  ✘ Lock the entities if the invoice is posted @cancelled(23-12-24 05:17)

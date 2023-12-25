@@ -1,32 +1,47 @@
 import Fastify from 'fastify';
 import { app } from './app/app';
 import cors from '@fastify/cors';
-// import { networkInterfaces } from 'os';
+import fastifyJwt from '@fastify/jwt';
+import { jwtOptions } from './app/contants';
 
 const host = process.env.HOST ?? '0.0.0.0';
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
-// Instantiate Fastify with some config
 const server = Fastify({
   logger: true,
+  ignoreDuplicateSlashes: true,
 });
 
-// Register your application as a normal plugin.
-server.register(app);
+server.register(cors, {
+  preflight: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  hideOptionsRoute: false,
+});
 
-server.register(cors, { hideOptionsRoute: true });
+server.register(fastifyJwt, jwtOptions);
+
+server.addHook('onRequest', (req, reply, done) => {
+  try {
+    if (req.url !== '/user/login') server.jwt.verify(req.headers.authorization);
+  } catch (error) {
+    reply.status(401).send({
+      message: "You've been been logged out. Log in again",
+    });
+  }
+  done();
+});
+
+server.register(app);
 
 server.listen({ port, host }, (err) => {
   if (err) {
     server.log.error(err);
     process.exit(1);
   } else {
-    console.log(server.printRoutes({ commonPrefix: true }));
-    console.log('Available NICs');
+    console.log(
+      server.printRoutes({ commonPrefix: false, includeHooks: false })
+    );
     console.log(`[ ready ] http://${host}:${port}`);
-    // console.log(JSON.stringify(networkInterfaces(), null, 2));
-    // print routes
-    // console.log(server.printRoutes())
 
     process.on('SIGINT', () => {
       console.log('\n\nServer shutdown at', new Date(), '\n\n');

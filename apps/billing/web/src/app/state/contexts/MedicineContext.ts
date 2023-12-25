@@ -5,8 +5,8 @@ export const MedicineContext = createContext<{
   medicineList?: IMedicine[];
   setMedicineList?: React.Dispatch<React.SetStateAction<IMedicine[]>>;
   getMedicines?: () => Promise<void>;
-  createMedicine?: (newMedicine: IMedicine) => Promise<void>;
-  updateMedicine?: (updatedMedicine: IMedicine) => Promise<void>;
-  deleteMedicine?: (updatedMedicine: IMedicine) => Promise<void>;
+  createMedicine?: (_: IMedicine) => Promise<void>;
+  updateMedicine?: (_: IMedicine) => Promise<void>;
+  deleteMedicine?: (_: IMedicine) => Promise<void>;
   isLoading?: boolean;
 }>({});

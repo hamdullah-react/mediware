@@ -54,7 +54,7 @@ export default async function (fastify: FastifyInstance) {
 
       return {
         ...medicine,
-        quantityInStock: count._sum.quantity,
+        quantityInStock: count?._sum?.quantity || 0,
       };
     });
 

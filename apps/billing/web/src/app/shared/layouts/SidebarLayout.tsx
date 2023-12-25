@@ -1,7 +1,8 @@
 import { Button, MenuItem, MenuList } from '@fluentui/react-components';
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
 import Menu from '../organisms/Menu';
 import { useLocation } from 'react-router-dom';
+import { AuthContext } from '../../state/contexts/AuthContext';
 
 interface Props {
   children?: ReactNode | ReactNode[];
@@ -13,6 +14,7 @@ function SidebarLayout({ children, sidebar }: Props) {
     location.pathname === '/'
       ? 'Welcome'
       : location.pathname.split('/').reverse()?.[0].replace(/\//g, '');
+  const { logoutUser, activeUser } = useContext(AuthContext);
   return (
     <div className="flex">
       <div className="min-w-[170pt] h-screen overflow-auto border-r border-r-gray-200">
@@ -29,6 +31,9 @@ function SidebarLayout({ children, sidebar }: Props) {
               <MenuList>
                 <MenuItem>Account</MenuItem>
                 <MenuItem>Profile</MenuItem>
+                {logoutUser && activeUser?.token && (
+                  <MenuItem onClick={logoutUser}>Logout</MenuItem>
+                )}
               </MenuList>
             </Menu>
           </div>

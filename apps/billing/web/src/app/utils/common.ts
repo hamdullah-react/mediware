@@ -2,16 +2,41 @@ import axios from 'axios';
 import { HOST } from '../../environment';
 import { Dispatch, SetStateAction } from 'react';
 
-const axiosInstance = axios.create({
-  baseURL: HOST,
-});
-
 export const getLastRouteItem = (route: string) => {
   return route?.split('/')?.reverse()?.at(0);
 };
 
-export const HttpClient = () => {
-  return axiosInstance;
+export const HttpClient = (token?: string) => {
+  return axios.create({
+    baseURL: HOST,
+    headers: {
+      Authorization: token,
+    },
+  });
+};
+
+export const apiCallAlertWrapper = async <Type>(
+  task: () => Promise<void>,
+  setAlert?: Dispatch<SetStateAction<Type>>,
+  setIsLoading?: Dispatch<SetStateAction<boolean>>,
+  onError?: () => void
+) => {
+  try {
+    await task();
+  } catch (error) {
+    const message = (error as { response: { data: { message: string } } })
+      .response.data.message;
+    if (message && setAlert) {
+      setAlert({
+        error: 'Error',
+        message: message,
+        shown: true,
+      } as Type);
+      if (onError) onError();
+    }
+  } finally {
+    if (setIsLoading) setIsLoading(false);
+  }
 };
 
 export const errorHandler = (errorBody: unknown, alert: boolean = false) => {};

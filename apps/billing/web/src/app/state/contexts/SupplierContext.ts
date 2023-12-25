@@ -5,8 +5,8 @@ export const SupplierContext = createContext<{
   supplierList?: ISupplier[];
   setSupplierList?: React.Dispatch<React.SetStateAction<ISupplier[]>>;
   getSuppliers?: () => Promise<void>;
-  createSupplier?: (newSupplier: ISupplier) => Promise<void>;
-  updateSupplier?: (updatedSupplier: ISupplier) => Promise<void>;
-  deleteSupplier?: (targetSupplier: ISupplier) => Promise<void>;
+  createSupplier?: (_: ISupplier) => Promise<void>;
+  updateSupplier?: (_: ISupplier) => Promise<void>;
+  deleteSupplier?: (_: ISupplier) => Promise<void>;
   isLoading?: boolean;
 }>({});

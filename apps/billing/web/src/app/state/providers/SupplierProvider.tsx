@@ -1,7 +1,9 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { ISupplier } from '@billinglib';
 import { SupplierContext } from '../contexts/SupplierContext';
-import { HttpClient } from '../../utils/common';
+import { HttpClient, apiCallAlertWrapper } from '../../utils/common';
+import { AuthContext } from '../contexts/AuthContext';
+import { useAlert } from './AlertProvider';
 
 interface Props {
   children?: ReactNode | ReactNode[];
@@ -9,42 +11,81 @@ interface Props {
 
 const SupplierProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-
   const [supplierList, setSupplierList] = useState<ISupplier[]>([]);
+  const { activeUser, logoutUser } = useContext(AuthContext);
+  const { setAlert } = useAlert();
 
   const getSuppliers = useCallback(async () => {
-    setIsLoading(true);
-    const data = (await HttpClient().get('/supplier')).data;
-    setSupplierList(data);
-    setIsLoading(false);
-  }, [supplierList]);
+    await apiCallAlertWrapper(
+      async () => {
+        setIsLoading(true);
+        const data = (await HttpClient(activeUser?.token).get('/supplier'))
+          .data;
+        setSupplierList(data);
+      },
+      setAlert,
+      setIsLoading,
+      () => {
+        if (logoutUser) logoutUser();
+      }
+    );
+  }, []);
 
   const createSupplier = useCallback(
     async (newSupplier: ISupplier) => {
-      setIsLoading(true);
-      await HttpClient().post('/supplier', newSupplier);
-      await getSuppliers();
+      await apiCallAlertWrapper(
+        async () => {
+          setIsLoading(true);
+          await HttpClient(activeUser?.token).post('/supplier', newSupplier);
+          await getSuppliers();
+        },
+        setAlert,
+        setIsLoading,
+        () => {
+          if (logoutUser) logoutUser();
+        }
+      );
     },
     [supplierList]
   );
 
   const updateSupplier = useCallback(
     async (updatedSupplier: ISupplier) => {
-      setIsLoading(true);
-      await HttpClient().put(
-        `/supplier/${updatedSupplier.id}`,
-        updatedSupplier
+      await apiCallAlertWrapper(
+        async () => {
+          setIsLoading(true);
+          await HttpClient(activeUser?.token).put(
+            `/supplier/${updatedSupplier.id}`,
+            updatedSupplier
+          );
+          await getSuppliers();
+        },
+        setAlert,
+        setIsLoading,
+        () => {
+          if (logoutUser) logoutUser();
+        }
       );
-      await getSuppliers();
     },
     [supplierList]
   );
 
   const deleteSupplier = useCallback(
     async (deletedSupplier: ISupplier) => {
-      setIsLoading(true);
-      await HttpClient().delete(`/supplier/${deletedSupplier.id}`);
-      await getSuppliers();
+      await apiCallAlertWrapper(
+        async () => {
+          setIsLoading(true);
+          await HttpClient(activeUser?.token).delete(
+            `/supplier/${deletedSupplier.id}`
+          );
+          await getSuppliers();
+        },
+        setAlert,
+        setIsLoading,
+        () => {
+          if (logoutUser) logoutUser();
+        }
+      );
     },
     [supplierList]
   );

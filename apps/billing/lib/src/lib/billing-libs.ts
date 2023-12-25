@@ -108,3 +108,18 @@ export interface IInvoiceMedicine {
   updatedAt?: Date;
   deletedAt?: Date;
 }
+
+export interface IUser {
+  id?: number;
+  username: string;
+  email: string;
+  password: string;
+  telephone?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+  token?: string;
+  lastLoginAt?: Date;
+}

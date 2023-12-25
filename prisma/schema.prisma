@@ -55,8 +55,8 @@ model Invoice {
   bookingDriver   String?
   status          String?
   advTax          Float?            @default(0.0)
-  supplierId      Int
   Supplier        Supplier          @relation(fields: [supplierId], references: [id])
+  supplierId      Int
   InvoiceMedicine InvoiceMedicine[]
   createdAt       DateTime?         @default(now())
   updatedAt       DateTime?         @default(now())
@@ -64,9 +64,8 @@ model Invoice {
 }
 
 model InvoiceMedicine {
-  id              Int    @id @default(autoincrement())
-  batchIdentifier String @unique
-
+  id                 Int       @id @default(autoincrement())
+  batchIdentifier    String    @unique
   expirey            DateTime
   unitSalePrice      Float
   discountPercentage Float     @default(0.0)
@@ -82,4 +81,48 @@ model InvoiceMedicine {
   createdAt          DateTime? @default(now())
   updatedAt          DateTime? @default(now())
   deletedAt          DateTime? @default(dbgenerated("NULL"))
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  Role         Role      @relation(fields: [roleId], references: [id])
+  roleId       Int
+  username     String    @unique
+  email        String    @unique
+  password     String
+  telephone    String?
+  addressLine1 String?
+  addressLine2 String?
+  lastLoginAt  DateTime? @default(now())
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @default(now())
+  deletedAt    DateTime? @default(dbgenerated("NULL"))
+}
+
+model Role {
+  id          Int           @id @default(autoincrement())
+  User        User[]
+  Permissions Permissions[]
+}
+
+model Resources {
+  id          Int           @id @default(autoincrement())
+  name        String
+  Permissions Permissions[]
+}
+
+model Actions {
+  id          Int           @id @default(autoincrement())
+  action      String
+  Permissions Permissions[]
+}
+
+model Permissions {
+  id          Int       @id @default(autoincrement())
+  roleId      Int
+  Role        Role      @relation(fields: [roleId], references: [id])
+  resourcesId Int
+  Resource    Resources @relation(fields: [resourcesId], references: [id])
+  actionsId   Int
+  Action      Actions   @relation(fields: [actionsId], references: [id])
 }

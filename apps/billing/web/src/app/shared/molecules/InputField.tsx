@@ -74,6 +74,7 @@ const InputField = ({
         placeholder={placeholder}
         onFocus={onFocus}
         onBlur={onBlur}
+        autoComplete=""
       />
       {errorText && (
         <div className="text-red-500 px-1 text-sm">{errorText}</div>

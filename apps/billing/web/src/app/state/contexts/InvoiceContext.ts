@@ -5,8 +5,8 @@ export const InvoiceContext = createContext<{
   invoiceList?: IInvoice[];
   setInvoiceList?: Dispatch<SetStateAction<IInvoice[]>>;
   getInvoices?: () => Promise<void>;
-  createInvoice?: (newInvoice: IInvoice) => Promise<void>;
-  updateInvoice?: (updatedInvoice: IInvoice) => Promise<void>;
-  deleteInvoice?: (updatedInvoice: IInvoice) => Promise<void>;
+  createInvoice?: (_: IInvoice) => Promise<void>;
+  updateInvoice?: (_: IInvoice) => Promise<void>;
+  deleteInvoice?: (_: IInvoice) => Promise<void>;
   isLoading?: boolean;
 }>({});

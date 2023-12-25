@@ -1,7 +1,9 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { IInvoice } from '@billinglib';
-import { HttpClient } from '../../utils/common';
+import { HttpClient, apiCallAlertWrapper } from '../../utils/common';
 import { InvoiceContext } from '../contexts/InvoiceContext';
+import { AuthContext } from '../contexts/AuthContext';
+import { useAlert } from './AlertProvider';
 
 interface Props {
   children?: ReactNode | ReactNode[];
@@ -9,42 +11,83 @@ interface Props {
 
 const InvoiceProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-
   const [invoiceList, setInvoiceList] = useState<IInvoice[]>([]);
+  const { activeUser, logoutUser } = useContext(AuthContext);
+  const { setAlert } = useAlert();
 
   const getInvoices = useCallback(async () => {
-    setIsLoading(true);
-    const data = (await HttpClient().get('/invoice')).data;
-    setInvoiceList(data);
-    setIsLoading(false);
+    await apiCallAlertWrapper(
+      async () => {
+        setIsLoading(true);
+        const data = (await HttpClient(activeUser?.token).get('/invoice')).data;
+        setInvoiceList(data);
+        setIsLoading(false);
+      },
+      setAlert,
+      setIsLoading,
+      () => {
+        if (logoutUser) logoutUser();
+      }
+    );
   }, []);
 
   const createInvoice = useCallback(
     async (newInvoice: IInvoice) => {
-      setIsLoading(true);
-      const responseData = (await HttpClient().post('/invoice', newInvoice))
-        .data;
-      await getInvoices();
-      setIsLoading(false);
-      return responseData;
+      await apiCallAlertWrapper(
+        async () => {
+          setIsLoading(true);
+          const responseData = (
+            await HttpClient(activeUser?.token).post('/invoice', newInvoice)
+          ).data;
+          await getInvoices();
+          setIsLoading(false);
+          return responseData;
+        },
+        setAlert,
+        setIsLoading,
+        () => {
+          if (logoutUser) logoutUser();
+        }
+      );
     },
     [invoiceList]
   );
 
   const updateInvoice = useCallback(
     async (updatedInvoice: IInvoice) => {
-      setIsLoading(true);
-      await HttpClient().put(`/invoice/${updatedInvoice.id}`, updatedInvoice);
-      await getInvoices();
+      await apiCallAlertWrapper(
+        async () => {
+          setIsLoading(true);
+          await HttpClient().put(
+            `/invoice/${updatedInvoice.id}`,
+            updatedInvoice
+          );
+          await getInvoices();
+        },
+        setAlert,
+        setIsLoading,
+        () => {
+          if (logoutUser) logoutUser();
+        }
+      );
     },
     [invoiceList]
   );
 
   const deleteInvoice = useCallback(
     async (deletedMedicine: IInvoice) => {
-      setIsLoading(true);
-      await HttpClient().delete(`/invoice/${deletedMedicine.id}`);
-      await getInvoices();
+      await apiCallAlertWrapper(
+        async () => {
+          setIsLoading(true);
+          await HttpClient().delete(`/invoice/${deletedMedicine.id}`);
+          await getInvoices();
+        },
+        setAlert,
+        setIsLoading,
+        () => {
+          if (logoutUser) logoutUser();
+        }
+      );
     },
     [invoiceList]
   );
