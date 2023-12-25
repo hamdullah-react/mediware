@@ -62,12 +62,24 @@ export default async (instance: FastifyInstance) => {
     }
     return rep.badRequest('No username found');
   });
-  instance.get('/', (req, reply) => {
-    const loggedInUser = instance.jwt.decode(req.headers.authorization);
-
-    const jwtToken = instance.jwt.sign(loggedInUser);
-
-    reply.status(200).send({ ...loggedInUser['payload'], token: jwtToken });
+  instance.get('/', async (req, reply) => {
+    try {
+      const loggedInUser = instance.jwt.decode(req.headers.authorization);
+      const jwtToken = instance.jwt.sign(loggedInUser);
+      await prisma.user.update({
+        where: {
+          id: parseInt(loggedInUser['payload']['id']),
+        },
+        data: {
+          lastLoginAt: new Date(),
+        },
+      });
+      reply.status(200).send({ ...loggedInUser['payload'], token: jwtToken });
+    } catch (error) {
+      reply
+        .status(401)
+        .send({ message: "You've been unauthorized, please re-login" });
+    }
   });
 };
 

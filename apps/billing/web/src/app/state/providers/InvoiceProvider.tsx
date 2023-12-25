@@ -58,7 +58,7 @@ const InvoiceProvider = ({ children }: Props) => {
       await apiCallAlertWrapper(
         async () => {
           setIsLoading(true);
-          await HttpClient().put(
+          await HttpClient(activeUser?.token).put(
             `/invoice/${updatedInvoice.id}`,
             updatedInvoice
           );
@@ -79,7 +79,9 @@ const InvoiceProvider = ({ children }: Props) => {
       await apiCallAlertWrapper(
         async () => {
           setIsLoading(true);
-          await HttpClient().delete(`/invoice/${deletedMedicine.id}`);
+          await HttpClient(activeUser?.token).delete(
+            `/invoice/${deletedMedicine.id}`
+          );
           await getInvoices();
         },
         setAlert,

@@ -5,16 +5,18 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { handleChange, sanitizeNaN } from '../../../utils/common';
 import { IInvoice, IInvoiceMedicine, IMedicine } from '@billinglib';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 import Menu from '../Menu';
-import { Button, Input } from '@fluentui/react-components';
+import { Button, Input, MenuItem } from '@fluentui/react-components';
 import Modal from '../Modal';
 import MedicineForm from '../../../pages/app/medicines/MedicineForm';
 import InputField from '../../molecules/InputField';
+import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 
 interface Props {
   invoiceData: IInvoice;
@@ -23,6 +25,7 @@ interface Props {
 
 const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
   const { medicineList } = useContext(MedicineContext);
+  const { invoiceList } = useContext(InvoiceContext);
 
   const [showMedicineCreationForm, setShowMedicineCreationForm] =
     useState(false);
@@ -136,6 +139,20 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
     );
   };
 
+  const allBatchNumbers = useMemo(() => {
+    if (invoiceList) {
+      const allbatches = invoiceList.map((invoice) =>
+        invoice.InvoiceMedicine?.map(
+          (invoiceItem) => invoiceItem.batchIdentifier
+        )
+      );
+
+      return allbatches.reduce((a, b) => [...(a ?? []), ...(b ?? [])], []);
+    }
+
+    return [];
+  }, [invoiceData]);
+
   useEffect(calculateNetAmount, [
     newInvoiceItemBeingEntered.unitSalePrice,
     newInvoiceItemBeingEntered.quantity,
@@ -178,13 +195,34 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
             <div className="text-md">Add New</div>
           </div>
         </Menu>
-        <Input
-          size="large"
-          placeholder="Batch No."
-          name="batchIdentifier"
-          onChange={handleChangeOnNewInvoiceItem}
-          value={newInvoiceItemBeingEntered.batchIdentifier}
-        />
+
+        <Menu
+          button={
+            <Input
+              size="large"
+              placeholder="Batch No."
+              name="batchIdentifier"
+              onChange={handleChangeOnNewInvoiceItem}
+              value={newInvoiceItemBeingEntered.batchIdentifier}
+              autoComplete=""
+            />
+          }
+        >
+          {allBatchNumbers?.map((batch) => (
+            <MenuItem
+              key={batch}
+              onClick={() =>
+                setNewInvoiceItemBeingEntered({
+                  ...newInvoiceItemBeingEntered,
+                  batchIdentifier: batch,
+                })
+              }
+            >
+              {batch}
+            </MenuItem>
+          ))}
+        </Menu>
+
         <Modal
           isOpen={showMedicineCreationForm}
           setIsOpen={setShowMedicineCreationForm}

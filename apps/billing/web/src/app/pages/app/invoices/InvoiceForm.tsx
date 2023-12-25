@@ -386,10 +386,11 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               size="large"
               appearance="primary"
               disabled={
-                invoiceData &&
-                !!invoiceData.InvoiceMedicine &&
-                invoiceData.InvoiceMedicine.length <= 0 &&
-                (!isInvoiceUnique || !invoiceData.invoiceNumber)
+                (invoiceData &&
+                  !!invoiceData.InvoiceMedicine &&
+                  invoiceData.InvoiceMedicine.length <= 0) ||
+                !invoiceData.invoiceNumber ||
+                !isInvoiceUnique
               }
             >
               Submit
