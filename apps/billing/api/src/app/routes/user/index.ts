@@ -46,7 +46,7 @@ export default async (instance: FastifyInstance) => {
             id: loggedInUser.id,
           },
           data: {
-            updatedAt: new Date(),
+            lastLoginAt: new Date(),
           },
         });
 
