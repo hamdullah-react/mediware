@@ -1,6 +1,7 @@
 
 Todo:
-  ☐ show previous batches for that medicine while selecting batchNumber so its easier
+  ☐ lastEditedBy, createdBy
+  ✔ show previous batches for that medicine while selecting batchNumber so its easier @done(23-12-26 04:31)
   ✔ implement login @done(23-12-25 19:16)
   ✔ implement logout @done(23-12-25 19:16)
   ✔ login if cookie hasn't expired @done(23-12-25 19:16)

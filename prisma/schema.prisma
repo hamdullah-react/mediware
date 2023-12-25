@@ -10,8 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Supplier {
-  id            Int       @id @default(autoincrement())
+model Suppliers {
+  id            Int        @id @default(autoincrement())
   emails        String
   name          String
   city          String
@@ -24,46 +24,46 @@ model Supplier {
   licenseNumber String?
   TNNumber      String?
   TRNNumber     String?
-  createdAt     DateTime? @default(now())
-  updatedAt     DateTime? @default(now())
-  deletedAt     DateTime? @default(dbgenerated("NULL"))
-  Invoice       Invoice[]
+  createdAt     DateTime?  @default(now())
+  updatedAt     DateTime?  @default(now())
+  deletedAt     DateTime?  @default(dbgenerated("NULL"))
+  Invoices      Invoices[]
 }
 
-model Medicine {
-  id              Int               @id @default(autoincrement())
-  name            String
-  code            String?           @unique
-  formula         String?
-  brand           String?
-  type            String?
-  packing         String
-  unitTakePrice   Float
-  InvoiceMedicine InvoiceMedicine[]
-  createdAt       DateTime?         @default(now())
-  updatedAt       DateTime?         @default(now())
-  deletedAt       DateTime?         @default(dbgenerated("NULL"))
+model Medicines {
+  id               Int                @id @default(autoincrement())
+  name             String
+  code             String?            @unique
+  formula          String?
+  brand            String?
+  type             String?
+  packing          String
+  unitTakePrice    Float
+  InvoiceMedicines InvoiceMedicines[]
+  createdAt        DateTime?          @default(now())
+  updatedAt        DateTime?          @default(now())
+  deletedAt        DateTime?          @default(dbgenerated("NULL"))
 }
 
-model Invoice {
-  id              Int               @id @default(autoincrement())
-  invoiceNumber   String
-  invoiceDate     DateTime          @default(now())
-  total           Float
-  salesTax        Float             @default(0.0)
-  deliveredBy     String?
-  bookingDriver   String?
-  status          String?
-  advTax          Float?            @default(0.0)
-  Supplier        Supplier          @relation(fields: [supplierId], references: [id])
-  supplierId      Int
-  InvoiceMedicine InvoiceMedicine[]
-  createdAt       DateTime?         @default(now())
-  updatedAt       DateTime?         @default(now())
-  deletedAt       DateTime?         @default(dbgenerated("NULL"))
+model Invoices {
+  id               Int                @id @default(autoincrement())
+  invoiceNumber    String
+  invoiceDate      DateTime           @default(now())
+  total            Float
+  salesTax         Float              @default(0.0)
+  deliveredBy      String?
+  bookingDriver    String?
+  status           String?
+  advTax           Float?             @default(0.0)
+  Supplier         Suppliers          @relation(fields: [supplierId], references: [id])
+  supplierId       Int
+  InvoiceMedicines InvoiceMedicines[]
+  createdAt        DateTime?          @default(now())
+  updatedAt        DateTime?          @default(now())
+  deletedAt        DateTime?          @default(dbgenerated("NULL"))
 }
 
-model InvoiceMedicine {
+model InvoiceMedicines {
   id                 Int       @id @default(autoincrement())
   batchIdentifier    String    @unique
   expirey            DateTime
@@ -74,18 +74,18 @@ model InvoiceMedicine {
   advTax             Float     @default(0.0)
   quantity           Int
   medicineId         Int
-  Medicine           Medicine  @relation(fields: [medicineId], references: [id])
+  Medicine           Medicines @relation(fields: [medicineId], references: [id])
   invoiceId          Int
-  Invoice            Invoice   @relation(fields: [invoiceId], references: [id])
+  Invoice            Invoices  @relation(fields: [invoiceId], references: [id])
   netAmount          Float
   createdAt          DateTime? @default(now())
   updatedAt          DateTime? @default(now())
   deletedAt          DateTime? @default(dbgenerated("NULL"))
 }
 
-model User {
+model Users {
   id           Int       @id @default(autoincrement())
-  Role         Role      @relation(fields: [roleId], references: [id])
+  Role         Roles     @relation(fields: [roleId], references: [id])
   roleId       Int
   username     String    @unique
   email        String    @unique
@@ -99,9 +99,9 @@ model User {
   deletedAt    DateTime? @default(dbgenerated("NULL"))
 }
 
-model Role {
+model Roles {
   id          Int           @id @default(autoincrement())
-  User        User[]
+  User        Users[]
   Permissions Permissions[]
 }
 
@@ -120,9 +120,13 @@ model Actions {
 model Permissions {
   id          Int       @id @default(autoincrement())
   roleId      Int
-  Role        Role      @relation(fields: [roleId], references: [id])
+  Role        Roles     @relation(fields: [roleId], references: [id])
   resourcesId Int
   Resource    Resources @relation(fields: [resourcesId], references: [id])
   actionsId   Int
   Action      Actions   @relation(fields: [actionsId], references: [id])
+}
+
+model SaleInvoices {
+  id Int @id @default(autoincrement())
 }

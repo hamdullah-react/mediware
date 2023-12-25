@@ -9,7 +9,7 @@ export default async (instance: FastifyInstance) => {
   instance.post('/login', async (req, rep) => {
     const requestBody = req.body as IUser;
     if (requestBody.username) {
-      const loggedInUser = await prisma.user.findFirst({
+      const loggedInUser = await prisma.users.findFirst({
         where: {
           email: {
             mode: 'insensitive',
@@ -41,7 +41,7 @@ export default async (instance: FastifyInstance) => {
         },
       });
       if (loggedInUser && loggedInUser.username) {
-        await prisma.user.update({
+        await prisma.users.update({
           where: {
             id: loggedInUser.id,
           },
@@ -66,7 +66,7 @@ export default async (instance: FastifyInstance) => {
     try {
       const loggedInUser = instance.jwt.decode(req.headers.authorization);
       const jwtToken = instance.jwt.sign(loggedInUser);
-      await prisma.user.update({
+      await prisma.users.update({
         where: {
           id: parseInt(loggedInUser['payload']['id']),
         },
@@ -84,7 +84,7 @@ export default async (instance: FastifyInstance) => {
 };
 
 export const intialSeed = async () => {
-  const admin = await prisma.user.findFirst({
+  const admin = await prisma.users.findFirst({
     where: {
       Role: {
         Permissions: {
@@ -102,7 +102,7 @@ export const intialSeed = async () => {
   });
 
   if (!admin) {
-    await prisma.user.create({
+    await prisma.users.create({
       data: {
         email: 'admin',
         password: 'admin',

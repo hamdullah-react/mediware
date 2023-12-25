@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 export default async function (fastify: FastifyInstance) {
   fastify.get('/', async (req, rep) => {
-    const invoices = await prisma.invoice.findMany({
+    const invoices = await prisma.invoices.findMany({
       select: {
         id: true,
         bookingDriver: true,
@@ -23,7 +23,7 @@ export default async function (fastify: FastifyInstance) {
         total: true,
         updatedAt: true,
         advTax: true,
-        InvoiceMedicine: {
+        InvoiceMedicines: {
           where: {
             deletedAt: null,
           },
@@ -63,7 +63,7 @@ export default async function (fastify: FastifyInstance) {
         },
         _count: {
           select: {
-            InvoiceMedicine: {
+            InvoiceMedicines: {
               where: {
                 deletedAt: null,
               },
@@ -86,7 +86,7 @@ export default async function (fastify: FastifyInstance) {
     try {
       const requestBody = req.body as IInvoice;
 
-      const newInvoice = await prisma.invoice.create({
+      const newInvoice = await prisma.invoices.create({
         data: {
           invoiceNumber: requestBody.invoiceNumber,
           invoiceDate: moment(requestBody.invoiceDate).format(
@@ -109,7 +109,7 @@ export default async function (fastify: FastifyInstance) {
       const creationTasks = requestBody.InvoiceMedicine.map(
         (invoiceMedicine) => {
           if (invoiceMedicine.Medicine.id)
-            return prisma.invoiceMedicine.create({
+            return prisma.invoiceMedicines.create({
               data: {
                 batchIdentifier: invoiceMedicine.batchIdentifier,
                 quantity: parseInt(String(invoiceMedicine.quantity)) || 1,
@@ -140,47 +140,6 @@ export default async function (fastify: FastifyInstance) {
                 },
               },
             });
-          else {
-            return prisma.invoiceMedicine.create({
-              data: {
-                batchIdentifier: invoiceMedicine.batchIdentifier,
-                quantity: parseInt(String(invoiceMedicine.quantity)) || 1,
-
-                expirey: moment(invoiceMedicine.expirey).format(
-                  APP_DB_TIME_FORMAT
-                ),
-
-                unitSalePrice: parseFloat(
-                  String(invoiceMedicine.unitSalePrice)
-                ),
-                discountPercentage:
-                  parseFloat(String(invoiceMedicine.discountPercentage)) || 0,
-                gst: parseFloat(String(invoiceMedicine.gst)),
-                netAmount: parseFloat(String(invoiceMedicine.netAmount)) || 0,
-                advTax: parseFloat(String(invoiceMedicine.advTax)) || 0,
-                discountedAmount: parseFloat(
-                  String(invoiceMedicine.discountedAmount)
-                ),
-                Invoice: {
-                  connect: {
-                    id: newInvoice.id,
-                  },
-                },
-                Medicine: {
-                  create: {
-                    name: invoiceMedicine.Medicine.name,
-                    brand: invoiceMedicine.Medicine.brand,
-                    formula: invoiceMedicine.Medicine.formula,
-                    type: invoiceMedicine.Medicine.type,
-                    packing: invoiceMedicine.Medicine.packing,
-                    unitTakePrice: parseFloat(
-                      String(invoiceMedicine.Medicine.unitTakePrice)
-                    ),
-                  },
-                },
-              },
-            });
-          }
         }
       );
 
@@ -199,7 +158,7 @@ export default async function (fastify: FastifyInstance) {
 
       const prisma = DBClient();
 
-      await prisma.invoiceMedicine.deleteMany({
+      await prisma.invoiceMedicines.deleteMany({
         where: {
           Invoice: {
             id: id,
@@ -207,7 +166,7 @@ export default async function (fastify: FastifyInstance) {
         },
       });
 
-      await prisma.invoice.update({
+      await prisma.invoices.update({
         where: {
           id: id,
         },
@@ -234,7 +193,7 @@ export default async function (fastify: FastifyInstance) {
       const creationTasks = requestBody.InvoiceMedicine.map(
         (invoiceMedicine) => {
           if (invoiceMedicine.Medicine.id)
-            return prisma.invoiceMedicine.create({
+            return prisma.invoiceMedicines.create({
               data: {
                 batchIdentifier: invoiceMedicine.batchIdentifier,
                 quantity: parseInt(String(invoiceMedicine.quantity)) || 1,
@@ -282,7 +241,7 @@ export default async function (fastify: FastifyInstance) {
     try {
       const id = request.params['id'];
 
-      const deletedInvoice = await prisma.invoice.update({
+      const deletedInvoice = await prisma.invoices.update({
         where: { id: parseInt(id, 10) },
         data: { deletedAt: new Date() },
       });
