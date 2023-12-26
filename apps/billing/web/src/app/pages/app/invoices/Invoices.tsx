@@ -74,12 +74,12 @@ const Invoices = () => {
         ?.filter(
           (data) =>
             data['Invoice Number']
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            data?.Company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data?.Date?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data?.['Adv Tax']?.includes(searchQuery.toLowerCase()) ||
-            data.Total?.toLowerCase().includes(searchQuery.toLowerCase())
+              ?.toLowerCase()
+              .includes(searchQuery?.toLowerCase()) ||
+            data?.Company?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data?.Date?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data?.['Adv Tax']?.includes(searchQuery?.toLowerCase()) ||
+            data.Total?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     }
   }, [searchQuery, invoiceList]);

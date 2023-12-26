@@ -68,7 +68,7 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
 
   const getFilteredMedicineList = () => {
     const result = medicineList?.filter((med) =>
-      med.name.toLowerCase().includes(medicineSearchName.toLowerCase())
+      med.name?.toLowerCase().includes(medicineSearchName?.toLowerCase())
     );
     if (result && result.length) {
       return result;

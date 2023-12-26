@@ -125,3 +125,33 @@ export interface IUser {
   deletedAt?: Date;
   token?: string;
 }
+
+export interface ISaleInvoice {
+  id?: number;
+  saleInvoiceId: string;
+  Items: ISaleInvoiceItem[];
+  customerName: string;
+  telephone?: string;
+  address?: string;
+  whatsapp?: string;
+  dicountPrice: string;
+  totalRecieved: string;
+  createAt?: string;
+  deletedAt?: string;
+  updatedAt?: string;
+}
+
+export interface ISaleInvoiceItem {
+  id?: number;
+  SaleInvoices?: ISaleInvoice;
+  saleInvoicesId?: number;
+  Medicine?: IMedicine;
+  medicinesId: number;
+  quantity: number;
+  comments: number;
+  unitSalePrice: number;
+  quantitySoldFromPack: number;
+  createAt?: string;
+  deletedAt?: string;
+  updatedAt?: string;
+}

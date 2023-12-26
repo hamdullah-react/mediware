@@ -85,8 +85,8 @@ const Medicines = () => {
           (data) =>
             data['Medicine Name']
               ?.toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            data.Brand?.toLowerCase().includes(searchQuery.toLowerCase())
+              .includes(searchQuery?.toLowerCase()) ||
+            data.Brand?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     }
   }, [searchQuery, medicineList]);

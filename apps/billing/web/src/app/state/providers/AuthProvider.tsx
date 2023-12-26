@@ -4,6 +4,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import Login from '../../pages/auth/Login';
 import { HttpClient, apiCallAlertWrapper } from '../../utils/common';
 import { useAlert } from './AlertProvider';
+import { Button, Spinner } from '@fluentui/react-components';
 
 interface Props {
   children?: ReactNode | ReactNode[];
@@ -12,6 +13,7 @@ interface Props {
 const AuthProvider = ({ children }: Props) => {
   const [activeUser, setActiveUser] = useState<IUser>();
   const { setAlert } = useAlert();
+  const [isLoading, setIsLoading] = useState(true);
 
   const isLoggedIn = useMemo((): boolean => {
     if (activeUser && activeUser?.token) {
@@ -22,6 +24,7 @@ const AuthProvider = ({ children }: Props) => {
 
   const loginUser = useCallback(
     async (userInfo: IUser) => {
+      setIsLoading(true);
       const loginResponse = (await HttpClient().post('/user/login', userInfo))
         .data;
       if (loginResponse?.message && setAlert) {
@@ -34,6 +37,7 @@ const AuthProvider = ({ children }: Props) => {
         localStorage.setItem('id', loginResponse?.token);
         setActiveUser(loginResponse);
       }
+      setIsLoading(false);
     },
     [activeUser]
   );
@@ -49,6 +53,7 @@ const AuthProvider = ({ children }: Props) => {
         } else {
           logoutUser();
         }
+        setIsLoading(false);
       },
       setAlert,
       undefined,
@@ -60,7 +65,8 @@ const AuthProvider = ({ children }: Props) => {
     setActiveUser(undefined);
     localStorage.clear();
     sessionStorage.clear();
-  }, [activeUser]);
+    setIsLoading(false);
+  }, [activeUser, isLoading]);
 
   useEffect(() => {
     getUserInfo()
@@ -72,7 +78,25 @@ const AuthProvider = ({ children }: Props) => {
     <AuthContext.Provider
       value={{ activeUser, setActiveUser, loginUser, logoutUser }}
     >
-      {isLoggedIn ? children : <Login />}
+      {!isLoading ? (
+        isLoggedIn ? (
+          children
+        ) : (
+          <Login />
+        )
+      ) : (
+        <div className="min-h-screen flex flex-col justify-center items-center">
+          <Spinner
+            label="Mediware"
+            labelPosition="above"
+            className="my-6"
+            size="huge"
+          />
+          <Button onClick={logoutUser} className="px-4">
+            Log out
+          </Button>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };

@@ -48,7 +48,7 @@ model Medicines {
 
 model Invoices {
   id               Int                @id @default(autoincrement())
-  invoiceNumber    String
+  invoiceNumber    String             @unique
   invoiceDate      DateTime           @default(now())
   salesTax         Float              @default(0.0)
   deliveredBy      String?
@@ -132,13 +132,17 @@ model Permissions {
 
 model SaleInvoices {
   id            Int                @id @default(autoincrement())
+  saleInvoiceId String             @unique
   Items         SaleInvoiceItems[]
   customerName  String
-  createAt      String
-  deletedAt     String
-  updatedAt     String
+  telephone     String?
+  address       String?
+  whatsapp      String?
   dicountPrice  String
   totalRecieved String
+  createdAt     DateTime?          @default(now())
+  updatedAt     DateTime?          @default(now())
+  deletedAt     DateTime?          @default(dbgenerated("NULL"))
 }
 
 model SaleInvoiceItems {
@@ -151,4 +155,7 @@ model SaleInvoiceItems {
   comments             Float
   unitSalePrice        Float
   quantitySoldFromPack Int           @default(1)
+  createdAt            DateTime?     @default(now())
+  updatedAt            DateTime?     @default(now())
+  deletedAt            DateTime?     @default(dbgenerated("NULL"))
 }

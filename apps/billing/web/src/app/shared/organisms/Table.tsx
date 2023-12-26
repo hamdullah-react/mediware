@@ -68,7 +68,7 @@ const Table = <Type,>({
                     const value = Object.values(row as object).at(index);
                     return (
                       <TableCell key={`${index}${JSON.stringify(value)}`}>
-                        {column.toLowerCase().includes('tedat')
+                        {column?.toLowerCase().includes('tedat')
                           ? moment(value).format(APP_TIME_FORMAT)
                           : value}
                       </TableCell>

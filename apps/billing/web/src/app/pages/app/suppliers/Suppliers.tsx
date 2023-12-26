@@ -80,11 +80,11 @@ const Suppliers = () => {
         }))
         ?.filter(
           (data) =>
-            data.Emails.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            data.Emails?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
             data['Phone No.']
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            data.Supplier.toLowerCase().includes(searchQuery.toLowerCase())
+              ?.toLowerCase()
+              .includes(searchQuery?.toLowerCase()) ||
+            data.Supplier?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     return [];
   }, [searchQuery, supplierList]);
