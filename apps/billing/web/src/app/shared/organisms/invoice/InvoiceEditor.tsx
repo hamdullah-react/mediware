@@ -68,7 +68,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
 
   const getFilteredHeader = useCallback(() => {
     if (invoice) {
-      const returnable = invoice.InvoiceMedicine;
+      const returnable = invoice.InvoiceMedicines;
       return returnable?.map((medicine) => ({
         Name: medicine.Medicine?.name,
         Packing: medicine.Medicine?.packing,
@@ -87,14 +87,20 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
   }, [invoice]);
 
   useEffect(() => {
+    const total =
+      invoice.InvoiceMedicines?.map(
+        (invoiceItem) => invoiceItem.netAmount
+      )?.reduce((a, b) => a + b, 0) ?? 0;
+
     setInvoice({
       ...invoice,
-      total:
-        invoice.InvoiceMedicine?.map(
-          (invoiceItem) => invoiceItem.netAmount
-        )?.reduce((a, b) => a + b, 0) ?? 0,
+      total: total,
+      balance:
+        total -
+        parseFloat(sanitizeNaN(String(invoice.received))) +
+        parseFloat(sanitizeNaN(String(invoice.advTax))),
     });
-  }, [invoice.InvoiceMedicine]);
+  }, [invoice.InvoiceMedicines, invoice.received]);
 
   return (
     <div>
@@ -111,16 +117,16 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         onClosePressed={() => setCurrentlyEditing(-1)}
       >
         <InvoiceItemEditor
-          invoiceItem={(invoice.InvoiceMedicine ?? [])?.[currentlyEditing]}
+          invoiceItem={(invoice.InvoiceMedicines ?? [])?.[currentlyEditing]}
           onUpdate={(updatedItem) => {
-            if (invoice?.InvoiceMedicine) {
-              const updatedInvoiceItems = invoice.InvoiceMedicine.map(
+            if (invoice?.InvoiceMedicines) {
+              const updatedInvoiceItems = invoice.InvoiceMedicines.map(
                 (invoiceItem, index) =>
                   index === currentlyEditing ? updatedItem : invoiceItem
               );
               setInvoice({
                 ...invoice,
-                InvoiceMedicine: updatedInvoiceItems,
+                InvoiceMedicines: updatedInvoiceItems,
               });
             }
             setCurrentlyEditing(-1);
@@ -200,16 +206,16 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         minHeight="min-h-[40vh]"
         onAddData={() => setIsMedicineSelectorOpen(true)}
         onEdit={(_, index) => {
-          if (invoice.InvoiceMedicine && invoice.InvoiceMedicine[index]) {
+          if (invoice.InvoiceMedicines && invoice.InvoiceMedicines[index]) {
             setCurrentlyEditing(index);
           }
         }}
         onDelete={(_, index) => {
-          if (invoice.InvoiceMedicine && invoice.InvoiceMedicine[index]) {
+          if (invoice.InvoiceMedicines && invoice.InvoiceMedicines[index]) {
             setInvoice({
               ...invoice,
-              InvoiceMedicine: [
-                ...invoice.InvoiceMedicine.filter((_, idx) => idx !== index),
+              InvoiceMedicines: [
+                ...invoice.InvoiceMedicines.filter((_, idx) => idx !== index),
               ],
             });
           }
@@ -229,12 +235,26 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         <div className="text-lg text-gray-500 border-b py-2">
           Total: {invoice.total}
         </div>
+        <div className="text-lg text-gray-500">
+          <InputField
+            label="Recieved Amount"
+            name="received"
+            value={sanitizeNaN(String(invoice.received) ?? '')}
+            onChange={handleChange}
+            type="number"
+            min={0}
+          />
+        </div>
+
         <div className="text-lg text-gray-500 pt-3">
           Grand Total:{' '}
           {(
             parseFloat(String(invoice.total)) +
             parseFloat(sanitizeNaN(String(invoice.advTax)))
           ).toFixed(APP_ROUNDOFF_SETTING)}
+        </div>
+        <div className="text-lg text-gray-500 border-b py-2">
+          Balance: {invoice.balance}
         </div>
       </div>
       <Divider className="py-4" />

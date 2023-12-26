@@ -26,6 +26,11 @@ export default async function (fastify: FastifyInstance) {
         deletedAt: true,
         // incomment if you need all the invoices for this client
         // Invoices: true,
+        Invoices: {
+          where: {
+            deletedAt: null,
+          },
+        },
         _count: {
           select: {
             Invoices: {

@@ -77,7 +77,7 @@ const InputField = ({
         autoComplete=""
       />
       {errorText && (
-        <div className="text-red-500 px-1 text-sm">{errorText}</div>
+        <div className="text-red-500 pl-1 text-sm">{errorText}</div>
       )}
     </div>
   );

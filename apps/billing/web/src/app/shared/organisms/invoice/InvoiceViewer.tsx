@@ -12,7 +12,7 @@ interface Props {
 const InvoiceViewer = ({ invoice }: Props) => {
   const getFilteredHeader = useCallback(() => {
     if (invoice) {
-      const returnable = invoice.InvoiceMedicine;
+      const returnable = invoice.InvoiceMedicines;
       return returnable?.map((medicine) => ({
         Name: medicine.Medicine?.name,
         Packing: medicine.Medicine?.packing,
@@ -87,8 +87,9 @@ const InvoiceViewer = ({ invoice }: Props) => {
         <div className="text-lg text-gray-500">
           Advance Tax (adjustment): {invoice.advTax}
         </div>
+        <div className="text-lg text-gray-500 pb-2">Total: {invoice.total}</div>
         <div className="text-lg text-gray-500 border-b pb-2">
-          Total: {invoice.total}
+          Recieved: {invoice.received}
         </div>
         <div className="text-lg text-gray-500 pt-3">
           Grand Total:{' '}
@@ -96,6 +97,9 @@ const InvoiceViewer = ({ invoice }: Props) => {
             parseFloat(String(invoice.total)) +
             parseFloat(String(invoice.advTax))
           ).toFixed(APP_ROUNDOFF_SETTING)}
+        </div>
+        <div className="text-lg text-gray-500 border-b pb-2">
+          Balance: {invoice.balance}
         </div>
       </div>
     </div>

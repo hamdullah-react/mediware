@@ -48,7 +48,7 @@ export interface ISupplier {
   updatedAt?: Date;
   deletedAt?: Date;
   _count?: {
-    Invoice?: number;
+    Invoices?: number;
   };
 }
 
@@ -61,10 +61,10 @@ export interface IMedicine {
   type?: MedicineTypes;
   packing: string;
   unitTakePrice: number;
+  InvoiceMedicines?: IInvoiceMedicine[];
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  InvoiceMedicine?: IInvoiceMedicine[];
   quantityInStock?: number;
   _count?: {
     InvoiceMedicine?: number;
@@ -75,15 +75,17 @@ export interface IInvoice {
   id?: number;
   invoiceNumber: string;
   invoiceDate: Date;
-  total: number;
-  InvoiceMedicine?: IInvoiceMedicine[];
   salesTax?: number;
-  supplierId?: number;
-  Supplier?: ISupplier;
   deliveredBy?: string;
   bookingDriver?: string;
   status?: string;
   advTax: number;
+  total: number;
+  received?: number;
+  balance?: number;
+  Supplier?: ISupplier;
+  supplierId?: number;
+  InvoiceMedicines?: IInvoiceMedicine[];
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -92,18 +94,18 @@ export interface IInvoice {
 export interface IInvoiceMedicine {
   id?: number;
   batchIdentifier: string;
-  quantity: number;
   expirey: Date;
   unitSalePrice: number;
   discountPercentage: number;
   gst?: number;
-  advTax: number;
   discountedAmount: number;
-  netAmount: number;
+  advTax: number;
+  quantity: number;
   medicineId?: number;
   Medicine?: IMedicine;
   invoiceId?: number;
   Invoice?: IInvoice;
+  netAmount: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -117,9 +119,9 @@ export interface IUser {
   telephone?: string;
   addressLine1?: string;
   addressLine2?: string;
+  lastLoginAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
   token?: string;
-  lastLoginAt?: Date;
 }

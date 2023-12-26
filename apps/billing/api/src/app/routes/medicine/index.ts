@@ -42,6 +42,9 @@ export default async function (fastify: FastifyInstance) {
     const medicineCount = await prisma.invoiceMedicines.groupBy({
       where: {
         deletedAt: null,
+        Invoice: {
+          deletedAt: null,
+        },
       },
       by: 'medicineId',
       _sum: {

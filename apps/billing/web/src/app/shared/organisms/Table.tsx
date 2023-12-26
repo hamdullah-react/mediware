@@ -40,7 +40,7 @@ const Table = <Type,>({
           </Button>
         </div>
       )}
-      {data.length > 0 ? (
+      {data && data?.length > 0 ? (
         <FUITable>
           <TableHeader>
             {headers && headers.length > 0 ? (

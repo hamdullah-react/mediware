@@ -23,6 +23,8 @@ export default async function (fastify: FastifyInstance) {
         total: true,
         updatedAt: true,
         advTax: true,
+        balance: true,
+        received: true,
         InvoiceMedicines: {
           where: {
             deletedAt: null,
@@ -98,6 +100,8 @@ export default async function (fastify: FastifyInstance) {
           status: requestBody.status,
           total: parseFloat(String(requestBody.total)),
           advTax: parseFloat(String(requestBody.advTax)),
+          balance: parseFloat(String(requestBody.balance)),
+          received: parseFloat(String(requestBody.received)),
           Supplier: {
             connect: {
               id: requestBody.Supplier.id,
@@ -106,7 +110,7 @@ export default async function (fastify: FastifyInstance) {
         },
       });
 
-      const creationTasks = requestBody.InvoiceMedicine.map(
+      const creationTasks = requestBody.InvoiceMedicines.map(
         (invoiceMedicine) => {
           if (invoiceMedicine.Medicine.id)
             return prisma.invoiceMedicines.create({
@@ -181,6 +185,8 @@ export default async function (fastify: FastifyInstance) {
           status: requestBody.status,
           total: parseFloat(String(requestBody.total)),
           advTax: parseFloat(String(requestBody.advTax)),
+          received: parseFloat(String(requestBody.received)),
+          balance: parseFloat(String(requestBody.balance)),
           Supplier: {
             connect: {
               id: requestBody.Supplier.id,
@@ -190,7 +196,7 @@ export default async function (fastify: FastifyInstance) {
         },
       });
 
-      const creationTasks = requestBody.InvoiceMedicine.map(
+      const creationTasks = requestBody.InvoiceMedicines.map(
         (invoiceMedicine) => {
           if (invoiceMedicine.Medicine.id)
             return prisma.invoiceMedicines.create({

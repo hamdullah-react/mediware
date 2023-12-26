@@ -75,19 +75,18 @@ const Medicines = () => {
       return medicineList
         .map((medicine) => ({
           Code: medicine.code,
-          'Medicine Name': medicine.name,
+          'Medicine Name': `${medicine.name} (${medicine.type})`,
           Packing: medicine.packing,
           Brand: medicine.brand,
           Quantity: medicine.quantityInStock,
-          Type: medicine.type,
+          Price: medicine.unitTakePrice,
         }))
         ?.filter(
           (data) =>
             data['Medicine Name']
               ?.toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
-            data.Brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data.Type?.toLowerCase().includes(searchQuery.toLowerCase())
+            data.Brand?.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }
   }, [searchQuery, medicineList]);
@@ -125,7 +124,6 @@ const Medicines = () => {
         <Modal
           isOpen={isCreatingRecord}
           hideClose={false}
-          modalType="modal"
           setIsOpen={setIsCreatingRecord}
           title="Add Medicine"
           triggerButton={

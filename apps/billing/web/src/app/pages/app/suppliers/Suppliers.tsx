@@ -54,7 +54,7 @@ const Suppliers = () => {
       if (
         supplierList[index] &&
         supplierList[index]._count &&
-        supplierList[index]._count?.Invoice
+        supplierList[index]._count?.Invoices
       ) {
         alert(
           `Supplier ${supplierList[index].name} shouldn't be deleted because they're associated to invoices`
@@ -122,7 +122,6 @@ const Suppliers = () => {
         <Modal
           isOpen={isCreatingRecord}
           hideClose={false}
-          modalType="modal"
           setIsOpen={setIsCreatingRecord}
           title="Add Supplier"
           triggerButton={

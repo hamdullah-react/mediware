@@ -43,18 +43,21 @@ model Medicines {
   createdAt        DateTime?          @default(now())
   updatedAt        DateTime?          @default(now())
   deletedAt        DateTime?          @default(dbgenerated("NULL"))
+  SaleInvoiceItems SaleInvoiceItems[]
 }
 
 model Invoices {
   id               Int                @id @default(autoincrement())
   invoiceNumber    String
   invoiceDate      DateTime           @default(now())
-  total            Float
   salesTax         Float              @default(0.0)
   deliveredBy      String?
   bookingDriver    String?
   status           String?
   advTax           Float?             @default(0.0)
+  total            Float
+  received         Float?             @default(0)
+  balance          Float?             @default(0)
   Supplier         Suppliers          @relation(fields: [supplierId], references: [id])
   supplierId       Int
   InvoiceMedicines InvoiceMedicines[]
@@ -65,7 +68,7 @@ model Invoices {
 
 model InvoiceMedicines {
   id                 Int       @id @default(autoincrement())
-  batchIdentifier    String    @unique
+  batchIdentifier    String
   expirey            DateTime
   unitSalePrice      Float
   discountPercentage Float     @default(0.0)
@@ -128,5 +131,24 @@ model Permissions {
 }
 
 model SaleInvoices {
-  id Int @id @default(autoincrement())
+  id            Int                @id @default(autoincrement())
+  Items         SaleInvoiceItems[]
+  customerName  String
+  createAt      String
+  deletedAt     String
+  updatedAt     String
+  dicountPrice  String
+  totalRecieved String
+}
+
+model SaleInvoiceItems {
+  id                   Int           @id @default(autoincrement())
+  SaleInvoices         SaleInvoices? @relation(fields: [saleInvoicesId], references: [id])
+  saleInvoicesId       Int?
+  Medicine             Medicines     @relation(fields: [medicinesId], references: [id])
+  medicinesId          Int
+  quantity             Int
+  comments             Float
+  unitSalePrice        Float
+  quantitySoldFromPack Int           @default(1)
 }

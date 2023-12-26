@@ -17,6 +17,7 @@ import Modal from '../Modal';
 import MedicineForm from '../../../pages/app/medicines/MedicineForm';
 import InputField from '../../molecules/InputField';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
+import { Delete16Regular as ClearFormIcon } from '@fluentui/react-icons';
 
 interface Props {
   invoiceData: IInvoice;
@@ -90,11 +91,12 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
   );
 
   const onClickSaveArticle = useCallback(() => {
-    if (invoiceData && invoiceData.InvoiceMedicine) {
+    if (invoiceData && invoiceData.InvoiceMedicines) {
+      setMedicineSearchName('');
       setInvoiceData({
         ...invoiceData,
-        InvoiceMedicine: [
-          ...invoiceData.InvoiceMedicine,
+        InvoiceMedicines: [
+          ...invoiceData.InvoiceMedicines,
           newInvoiceItemBeingEntered,
         ],
       });
@@ -103,22 +105,22 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
       ...newInvoiceItemBeingEntered,
       batchIdentifier: '',
     });
-  }, [newInvoiceItemBeingEntered, invoiceData]);
+  }, [newInvoiceItemBeingEntered, invoiceData, medicineSearchName]);
 
-  const checkUniqueBatchNumber = useCallback(() => {
-    if (!newInvoiceItemBeingEntered.batchIdentifier) {
-      return false;
-    }
-    const existingInvoiceItems = invoiceData.InvoiceMedicine?.map(
-      (rec) => rec.batchIdentifier
-    );
-    if (existingInvoiceItems && existingInvoiceItems.length > 0) {
-      return !existingInvoiceItems.includes(
-        newInvoiceItemBeingEntered.batchIdentifier
-      );
-    }
-    return true;
-  }, [newInvoiceItemBeingEntered]);
+  // const checkUniqueBatchNumber = useCallback(() => {
+  //   if (!newInvoiceItemBeingEntered.batchIdentifier) {
+  //     return false;
+  //   }
+  //   const existingInvoiceItems = invoiceData.InvoiceMedicines?.map(
+  //     (rec) => rec.batchIdentifier
+  //   );
+  //   if (existingInvoiceItems && existingInvoiceItems.length > 0) {
+  //     return !existingInvoiceItems.includes(
+  //       newInvoiceItemBeingEntered.batchIdentifier
+  //     );
+  //   }
+  //   return true;
+  // }, [newInvoiceItemBeingEntered]);
 
   const calculateNetAmount = () => {
     const salePrice = newInvoiceItemBeingEntered.unitSalePrice || 0;
@@ -142,16 +144,20 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
   const allBatchNumbers = useMemo(() => {
     if (invoiceList) {
       const allbatches = invoiceList.map((invoice) =>
-        invoice.InvoiceMedicine?.map(
-          (invoiceItem) => invoiceItem.batchIdentifier
-        )
+        invoice.InvoiceMedicines?.filter(
+          (e) => e.Medicine?.id === newInvoiceItemBeingEntered.Medicine?.id
+        )?.map((invoiceItem) => invoiceItem.batchIdentifier)
       );
 
-      return allbatches.reduce((a, b) => [...(a ?? []), ...(b ?? [])], []);
+      return [
+        ...new Set(
+          allbatches.reduce((a, b) => [...(a ?? []), ...(b ?? [])], [])
+        ),
+      ];
     }
 
     return [];
-  }, [invoiceData]);
+  }, [invoiceData, newInvoiceItemBeingEntered]);
 
   useEffect(calculateNetAmount, [
     newInvoiceItemBeingEntered.unitSalePrice,
@@ -173,6 +179,12 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
               placeholder="Search Medicine..."
               value={medicineSearchName}
               onChange={(e) => setMedicineSearchName(e.target.value)}
+              contentAfter={
+                <ClearFormIcon
+                  className="cursor-pointer"
+                  onClick={() => setMedicineSearchName('')}
+                />
+              }
             />
           }
         >
@@ -299,7 +311,7 @@ const InvoiceItemPicker = ({ invoiceData, setInvoiceData }: Props) => {
         <Button
           size="large"
           onClick={onClickSaveArticle}
-          disabled={!checkUniqueBatchNumber()}
+          disabled={!medicineSearchName}
         >
           Save Article
         </Button>

@@ -4,6 +4,7 @@ import { HttpClient, apiCallAlertWrapper } from '../../utils/common';
 import { InvoiceContext } from '../contexts/InvoiceContext';
 import { AuthContext } from '../contexts/AuthContext';
 import { useAlert } from './AlertProvider';
+import { MedicineContext } from '../contexts/MedicineContext';
 
 interface Props {
   children?: ReactNode | ReactNode[];
@@ -13,6 +14,7 @@ const InvoiceProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [invoiceList, setInvoiceList] = useState<IInvoice[]>([]);
   const { activeUser, logoutUser } = useContext(AuthContext);
+  const { getMedicines } = useContext(MedicineContext);
   const { setAlert } = useAlert();
 
   const getInvoices = useCallback(async () => {
@@ -20,6 +22,9 @@ const InvoiceProvider = ({ children }: Props) => {
       async () => {
         setIsLoading(true);
         const data = (await HttpClient(activeUser?.token).get('/invoice')).data;
+        if (getMedicines) {
+          await getMedicines();
+        }
         setInvoiceList(data);
         setIsLoading(false);
       },

@@ -126,7 +126,6 @@ const Invoices = () => {
         <Modal
           isOpen={isCreatingRecord}
           hideClose={false}
-          modalType="modal"
           setIsOpen={setIsCreatingRecord}
           title="Add Invoice"
           triggerButton={
