@@ -1,7 +1,7 @@
 import { Button, MenuItem, MenuList } from '@fluentui/react-components';
 import { ReactNode, useContext } from 'react';
 import Menu from '../organisms/Menu';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../state/contexts/AuthContext';
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 }
 function SidebarLayout({ children, sidebar }: Props) {
   const location = useLocation();
+  const navigate = useNavigate();
   const pageTitle =
     location.pathname === '/'
       ? 'Welcome'
@@ -29,8 +30,12 @@ function SidebarLayout({ children, sidebar }: Props) {
           <div>
             <Menu button={<Button>Settings</Button>}>
               <MenuList>
-                <MenuItem>Account</MenuItem>
-                <MenuItem>Profile</MenuItem>
+                <MenuItem onClick={() => navigate('/account')}>
+                  Account
+                </MenuItem>
+                <MenuItem onClick={() => navigate('/settings')}>
+                  Settings
+                </MenuItem>
                 {logoutUser && activeUser?.token && (
                   <MenuItem onClick={logoutUser}>Logout</MenuItem>
                 )}

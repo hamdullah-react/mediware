@@ -14,7 +14,7 @@ import { MedicineContext } from '../../../state/contexts/MedicineContext';
 import Menu from '../Menu';
 import { Button, Input, MenuItem } from '@fluentui/react-components';
 import Modal from '../Modal';
-import MedicineForm from '../../../pages/app/medicines/MedicineForm';
+import MedicineForm from '../medicine/MedicineForm';
 import InputField from '../../molecules/InputField';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
 import { Delete16Regular as ClearFormIcon } from '@fluentui/react-icons';

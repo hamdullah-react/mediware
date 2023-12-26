@@ -3,7 +3,7 @@ import Modal from '../../../shared/organisms/Modal';
 import { useCallback, useContext, useState } from 'react';
 import { Button, Input } from '@fluentui/react-components';
 import { getLastRouteItem } from '../../../utils/common';
-import SupplierForm from './SupplierForm';
+import SupplierForm from '../../../shared/organisms/supplier/SupplierForm';
 import Table from '../../../shared/organisms/Table';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 import { ISupplier } from '@billinglib';

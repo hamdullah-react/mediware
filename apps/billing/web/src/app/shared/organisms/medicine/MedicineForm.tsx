@@ -1,9 +1,9 @@
 import { ChangeEvent, useCallback, useContext, useState } from 'react';
 import { Button, Divider, MenuItem } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
-import InputField from '../../../shared/molecules/InputField';
+import InputField from '../../molecules/InputField';
 import { IMedicine, MedicineTypes } from '@billinglib';
-import Menu from '../../../shared/organisms/Menu';
+import Menu from '../Menu';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 
 interface Props {

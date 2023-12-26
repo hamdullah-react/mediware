@@ -16,7 +16,7 @@ import {
   PopoverSurface,
   PopoverTrigger,
 } from '@fluentui/react-components';
-import ListSelectors from '../../../shared/organisms/ListSelectors';
+import ListSelectors from '../ListSelectors';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 import {
   APP_ROUNDOFF_SETTING,
@@ -27,16 +27,16 @@ import {
   ISupplier,
 } from '@billinglib';
 import clsx from 'clsx';
-import Modal from '../../../shared/organisms/Modal';
-import SupplierForm from '../suppliers/SupplierForm';
-import InputField from '../../../shared/molecules/InputField';
+import Modal from '../Modal';
+import SupplierForm from '../supplier/SupplierForm';
+import InputField from '../../molecules/InputField';
 import { handleChange, sanitizeNaN } from '../../../utils/common';
-import Menu from '../../../shared/organisms/Menu';
+import Menu from '../Menu';
 import { STATAUS } from '../../../utils/types';
 import moment from 'moment';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
-import Table from '../../../shared/organisms/Table';
-import InvoiceItemPicker from '../../../shared/organisms/invoice/InvoiceItemPicker';
+import Table from '../Table';
+import InvoiceItemPicker from './InvoiceItemPicker';
 
 interface Props {
   formStateSetter?: Dispatch<SetStateAction<boolean>>;

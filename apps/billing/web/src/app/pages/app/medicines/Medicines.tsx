@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
-import MedicineForm from './MedicineForm';
+import MedicineForm from '../../../shared/organisms/medicine/MedicineForm';
 import Modal from '../../../shared/organisms/Modal';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';

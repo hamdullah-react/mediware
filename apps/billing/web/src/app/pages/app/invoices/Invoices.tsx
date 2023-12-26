@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
-import InvoiceForm from './InvoiceForm';
+import InvoiceForm from '../../../shared/organisms/invoice/InvoiceForm';
 import Modal from '../../../shared/organisms/Modal';
 import { Button, Input } from '@fluentui/react-components';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';

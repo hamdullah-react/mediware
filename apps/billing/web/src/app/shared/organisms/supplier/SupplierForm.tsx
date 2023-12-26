@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { Button, Divider } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
-import InputField from '../../../shared/molecules/InputField';
+import InputField from '../../molecules/InputField';
 import { ISupplier } from '@billinglib';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 

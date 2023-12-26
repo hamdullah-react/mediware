@@ -4,6 +4,7 @@ export interface IRoute {
   hasInsertForm?: boolean;
   nestRoutes?: IRoute[];
   label: string;
+  showInSidebar?: boolean;
 }
 
 export const STATAUS = ['Posted', 'Unposted'];

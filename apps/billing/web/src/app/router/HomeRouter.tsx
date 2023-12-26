@@ -6,7 +6,7 @@ const HomeRouter = () => {
   return (
     <Routes>
       <Route Component={Home} path="/" />
-      {routes.map((route, index) => (
+      {routes?.map((route, index) => (
         <Route key={`${index}_${route.path}`} path={route.path}>
           <Route Component={route.component} path="" index />
           {route.hasInsertForm && (

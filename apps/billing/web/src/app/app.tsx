@@ -17,13 +17,15 @@ const App = () => {
           <AuthProvider>
             <HashRouter>
               <SidebarLayout
-                sidebar={routes.map((route, index) => (
-                  <SidebarItem
-                    key={`${route.label}_${index}`}
-                    slug={route.path}
-                    label={route.label}
-                  />
-                ))}
+                sidebar={routes
+                  ?.filter((route) => route.showInSidebar)
+                  ?.map((route, index) => (
+                    <SidebarItem
+                      key={`${route.label}_${index}`}
+                      slug={route.path}
+                      label={route.label}
+                    />
+                  ))}
               >
                 <AppProvider>
                   <HomeRouter />
