@@ -56,6 +56,9 @@ export default async (instance: FastifyInstance) => {
       where: {
         deletedAt: null,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
     reply.status(200).send(data);
   });

@@ -92,9 +92,11 @@ const Sales = () => {
       <Modal
         isOpen={!!currentlyViewing}
         onClosePressed={closeModals}
+        maxWidth={'80vw'}
+        width={'80vw'}
         title={`Customer #${currentlyViewing?.saleInvoiceId} - ${currentlyViewing?.customerName}`}
       >
-        {!!closeModals && <SalesViewer supplier={currentlyViewing} />}
+        {!!closeModals && <SalesViewer data={currentlyViewing} />}
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={closeModals}>
         {!!currentlyEditing && (
