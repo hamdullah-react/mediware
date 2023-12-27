@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export default async function (fastify: FastifyInstance) {
   fastify.get('/', async function (request, reply) {
-    const suppliers = await prisma.supplier.findMany({
+    const suppliers = await prisma.suppliers.findMany({
       select: {
         id: true,
         emails: true,
@@ -25,10 +25,15 @@ export default async function (fastify: FastifyInstance) {
         updatedAt: true,
         deletedAt: true,
         // incomment if you need all the invoices for this client
-        // Invoice: true,
+        // Invoices: true,
+        Invoices: {
+          where: {
+            deletedAt: null,
+          },
+        },
         _count: {
           select: {
-            Invoice: {
+            Invoices: {
               where: {
                 deletedAt: null,
               },
@@ -50,7 +55,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.get('/:id', async function (request, reply) {
     const id = request.params['id'];
 
-    const foundSupplier = await prisma.supplier.findUnique({
+    const foundSupplier = await prisma.suppliers.findUnique({
       where: { id: parseInt(id), deletedAt: null },
     });
 
@@ -67,7 +72,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.post('/', async function (request, reply) {
     try {
       const requestBody = request.body as ISupplier;
-      const newSupplier = await prisma.supplier.create({
+      const newSupplier = await prisma.suppliers.create({
         data: {
           emails: requestBody.emails,
           name: requestBody.name,
@@ -96,7 +101,7 @@ export default async function (fastify: FastifyInstance) {
     const id = request.params['id'];
     const requestBody = request.body as ISupplier;
 
-    const updatedSupplier = await prisma.supplier.update({
+    const updatedSupplier = await prisma.suppliers.update({
       where: { id: parseInt(id, 10) },
       data: {
         emails: requestBody.emails,
@@ -124,7 +129,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.delete('/:id', async function (request, reply) {
     const id = request.params['id'];
 
-    const deletedSupplier = await prisma.supplier.update({
+    const deletedSupplier = await prisma.suppliers.update({
       where: { id: parseInt(id, 10) },
       data: { deletedAt: new Date() },
     });

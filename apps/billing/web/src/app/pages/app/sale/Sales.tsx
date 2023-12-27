@@ -3,24 +3,24 @@ import Modal from '../../../shared/organisms/Modal';
 import { useCallback, useContext, useState } from 'react';
 import { Button, Input } from '@fluentui/react-components';
 import { getLastRouteItem } from '../../../utils/common';
-import SupplierForm from '../../../shared/organisms/supplier/SupplierForm';
 import Table from '../../../shared/organisms/Table';
-import { SupplierContext } from '../../../state/contexts/SupplierContext';
-import { ISupplier } from '@billinglib';
-import SupplierViewer from '../../../shared/organisms/supplier/SupplierViewer';
+import { ISaleInvoice } from '@billinglib';
 import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
-import SupplierEditor from '../../../shared/organisms/supplier/SupplierEditor';
+import { SalesContext } from '../../../state/contexts/SalesContext';
+import SalesForm from '../../../shared/organisms/sales/SalesForm';
+import SalesEditor from '../../../shared/organisms/sales/SalesEditor';
+import SalesViewer from '../../../shared/organisms/sales/SalesViewer';
 
-const Suppliers = () => {
+const Sales = () => {
   const location = useLocation();
 
-  const { supplierList, isLoading, getSuppliers, deleteSupplier } =
-    useContext(SupplierContext);
+  const { saleInvoiceList, isLoading, getSaleInvoices, deleteSaleInvoice } =
+    useContext(SalesContext);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentlyViewing, setCurrentlyViewing] = useState<ISupplier>();
+  const [currentlyViewing, setCurrentlyViewing] = useState<ISaleInvoice>();
 
-  const [currentlyEditing, setCurrentlyEditing] = useState<ISupplier>();
+  const [currentlyEditing, setCurrentlyEditing] = useState<ISaleInvoice>();
 
   const [isCreatingRecord, setIsCreatingRecord] = useState(
     getLastRouteItem(location.pathname) === 'new'
@@ -32,35 +32,27 @@ const Suppliers = () => {
   );
 
   const onViewData = useCallback(
-    (_: ISupplier, index: number) => {
-      if (supplierList) {
-        setCurrentlyViewing(supplierList[index]);
+    (_: ISaleInvoice, index: number) => {
+      if (saleInvoiceList) {
+        setCurrentlyViewing(saleInvoiceList[index]);
       }
     },
-    [currentlyViewing, supplierList]
+    [currentlyViewing, saleInvoiceList]
   );
 
   const onEditingData = useCallback(
-    (_: ISupplier, index: number) => {
-      if (supplierList) {
-        setCurrentlyEditing(supplierList[index]);
+    (_: ISaleInvoice, index: number) => {
+      if (saleInvoiceList) {
+        setCurrentlyEditing(saleInvoiceList[index]);
       }
     },
-    [currentlyEditing, supplierList]
+    [currentlyEditing, saleInvoiceList]
   );
 
-  const onDeletingData = async (_: ISupplier, index: number) => {
-    if (supplierList) {
-      if (
-        supplierList[index] &&
-        supplierList[index]._count &&
-        supplierList[index]._count?.Invoices
-      ) {
-        alert(
-          `Supplier ${supplierList[index].name} shouldn't be deleted because they're associated to invoices`
-        );
-      } else if (deleteSupplier) {
-        await deleteSupplier(supplierList[index]);
+  const onDeletingData = async (_: ISaleInvoice, index: number) => {
+    if (saleInvoiceList) {
+      if (deleteSaleInvoice && saleInvoiceList[index]) {
+        await deleteSaleInvoice(saleInvoiceList[index]);
       }
     }
   };
@@ -71,38 +63,44 @@ const Suppliers = () => {
   }, [currentlyEditing, currentlyViewing]);
 
   const getFilteredData = useCallback(() => {
-    if (supplierList)
-      return supplierList
-        .map((supplier) => ({
-          Supplier: supplier.name,
-          'Phone No.': supplier.telephones,
-          Email: supplier.emails,
+    if (saleInvoiceList)
+      return saleInvoiceList
+        .map((customer) => ({
+          Invoice: customer.saleInvoiceId,
+          Customer: customer.customerName,
+          'Phone No.': customer.telephone,
+          Whatsapp: customer.whatsapp,
         }))
         ?.filter(
           (data) =>
-            data.Email?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-            data['Phone No.']
+            data?.Invoice?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data?.Customer?.toLowerCase().includes(
+              searchQuery?.toLowerCase()
+            ) ||
+            (data?.['Phone No.'] ?? '')
               ?.toLowerCase()
               .includes(searchQuery?.toLowerCase()) ||
-            data.Supplier?.toLowerCase().includes(searchQuery?.toLowerCase())
+            (data?.Whatsapp ?? '')
+              ?.toLowerCase()
+              .includes(searchQuery?.toLowerCase())
         );
     return [];
-  }, [searchQuery, supplierList]);
+  }, [searchQuery, saleInvoiceList]);
 
   return (
     <div>
       <Modal
         isOpen={!!currentlyViewing}
         onClosePressed={closeModals}
-        title={`Supplier #${currentlyViewing?.id} - ${currentlyViewing?.name}`}
+        title={`Customer #${currentlyViewing?.saleInvoiceId} - ${currentlyViewing?.customerName}`}
       >
-        {!!closeModals && <SupplierViewer supplier={currentlyViewing} />}
+        {!!closeModals && <SalesViewer supplier={currentlyViewing} />}
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={closeModals}>
         {!!currentlyEditing && (
-          <SupplierEditor
-            supplier={currentlyEditing}
-            setSupplier={setCurrentlyEditing}
+          <SalesEditor
+            invoice={currentlyEditing}
+            setInvoice={setCurrentlyEditing}
           />
         )}
       </Modal>
@@ -116,26 +114,26 @@ const Suppliers = () => {
           placeholder="Search..."
           size="medium"
         />
-        <Button size="medium" onClick={getSuppliers}>
+        <Button size="medium" onClick={getSaleInvoices}>
           Refresh
         </Button>
         <Modal
           isOpen={isCreatingRecord}
           hideClose={false}
           setIsOpen={setIsCreatingRecord}
-          title="Add Supplier"
+          title="Add Sales Record"
           triggerButton={
             <Button size="medium" onClick={toggleModel}>
               Add New
             </Button>
           }
         >
-          <SupplierForm formStateSetter={setIsCreatingRecord} />
+          <SalesForm formStateSetter={setIsCreatingRecord} />
         </Modal>
       </div>
       <div>
         <LoaderWrapper isLoading={isLoading}>
-          {supplierList && supplierList?.length > 0 && (
+          {saleInvoiceList && saleInvoiceList?.length > 0 && (
             <Table
               data={getFilteredData() as unknown as []}
               onViewData={onViewData}
@@ -149,4 +147,4 @@ const Suppliers = () => {
   );
 };
 
-export default Suppliers;
+export default Sales;

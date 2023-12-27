@@ -2,6 +2,7 @@
 
 
 # compiled output
+.env
 dist
 tmp
 /out-tsc

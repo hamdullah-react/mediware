@@ -1,5 +1,5 @@
+import { Button } from '@fluentui/react-components';
 import {
-  Button,
   Dialog,
   DialogBody,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogTriggerChildProps,
-} from '@fluentui/react-components';
+} from '@fluentui/react-dialog';
 import { Dismiss24Regular } from '@fluentui/react-icons';
 import {
   Dispatch,
@@ -15,7 +15,6 @@ import {
   ReactElement,
   ReactNode,
   SetStateAction,
-  useCallback,
 } from 'react';
 
 interface Props {
@@ -40,7 +39,7 @@ const Modal = ({
   children,
   title,
   triggerButton,
-  modalType,
+  modalType = 'non-modal',
   isOpen = false,
   setIsOpen,
   hideClose = false,
@@ -49,37 +48,35 @@ const Modal = ({
   width,
   onClosePressed,
 }: Props) => {
-  const onClose = useCallback(() => {
+  const onClose = () => {
     if (onClosePressed) onClosePressed();
     else if (setIsOpen) setIsOpen(false);
-  }, [isOpen]);
+  };
 
   return (
-    <div>
-      <Dialog modalType={modalType} open={isOpen}>
-        <DialogTrigger disableButtonEnhancement>{triggerButton}</DialogTrigger>
-        <DialogSurface style={{ maxWidth, minWidth, width }}>
-          <DialogBody>
-            <DialogTitle
-              action={
-                <DialogTrigger action="close">
-                  <Button
-                    disabled={hideClose}
-                    onClick={onClose}
-                    appearance="subtle"
-                    aria-label="close"
-                    icon={<Dismiss24Regular />}
-                  />
-                </DialogTrigger>
-              }
-            >
-              {title}
-            </DialogTitle>
-            <DialogContent>{children}</DialogContent>
-          </DialogBody>
-        </DialogSurface>
-      </Dialog>
-    </div>
+    <Dialog modalType={modalType} open={isOpen}>
+      <DialogTrigger disableButtonEnhancement>{triggerButton}</DialogTrigger>
+      <DialogSurface style={{ maxWidth, minWidth, width }}>
+        <DialogBody>
+          <DialogTitle
+            action={
+              <DialogTrigger action="close">
+                <Button
+                  disabled={hideClose}
+                  onClick={onClose}
+                  appearance="subtle"
+                  aria-label="close"
+                  icon={<Dismiss24Regular />}
+                />
+              </DialogTrigger>
+            }
+          >
+            {title}
+          </DialogTitle>
+          <DialogContent>{children}</DialogContent>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
   );
 };
 

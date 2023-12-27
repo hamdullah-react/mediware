@@ -44,13 +44,7 @@ const MedicineViewer = ({ medicine }: Props) => {
           <TableRow>
             <TableCell>Occurances in Invoices</TableCell>
             <TableCell>
-              {dashIfNull(
-                String(
-                  (medicine?._count ?? { InvoiceMedicine: 0 })
-                    ?.InvoiceMedicine ?? 0
-                )
-              )}{' '}
-              Invoices
+              {dashIfNull(String(medicine?.quantityInStock))}
             </TableCell>
           </TableRow>
         </TableBody>

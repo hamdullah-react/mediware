@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
-import MedicineForm from './MedicineForm';
+import MedicineForm from '../../../shared/organisms/medicine/MedicineForm';
 import Modal from '../../../shared/organisms/Modal';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
@@ -75,19 +75,18 @@ const Medicines = () => {
       return medicineList
         .map((medicine) => ({
           Code: medicine.code,
-          'Medicine Name': medicine.name,
+          'Medicine Name': `${medicine.name} (${medicine.type})`,
           Packing: medicine.packing,
           Brand: medicine.brand,
           Quantity: medicine.quantityInStock,
-          Type: medicine.type,
+          'Unit Price': medicine.unitTakePrice,
         }))
         ?.filter(
           (data) =>
             data['Medicine Name']
               ?.toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            data.Brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data.Type?.toLowerCase().includes(searchQuery.toLowerCase())
+              .includes(searchQuery?.toLowerCase()) ||
+            data.Brand?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     }
   }, [searchQuery, medicineList]);
@@ -125,7 +124,6 @@ const Medicines = () => {
         <Modal
           isOpen={isCreatingRecord}
           hideClose={false}
-          modalType="modal"
           setIsOpen={setIsCreatingRecord}
           title="Add Medicine"
           triggerButton={

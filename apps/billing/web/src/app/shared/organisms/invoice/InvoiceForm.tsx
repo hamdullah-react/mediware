@@ -16,7 +16,7 @@ import {
   PopoverSurface,
   PopoverTrigger,
 } from '@fluentui/react-components';
-import ListSelectors from '../../../shared/organisms/ListSelectors';
+import ListSelectors from '../ListSelectors';
 import { SupplierContext } from '../../../state/contexts/SupplierContext';
 import {
   APP_ROUNDOFF_SETTING,
@@ -27,16 +27,16 @@ import {
   ISupplier,
 } from '@billinglib';
 import clsx from 'clsx';
-import Modal from '../../../shared/organisms/Modal';
-import SupplierForm from '../suppliers/SupplierForm';
-import InputField from '../../../shared/molecules/InputField';
+import Modal from '../Modal';
+import SupplierForm from '../supplier/SupplierForm';
+import InputField from '../../molecules/InputField';
 import { handleChange, sanitizeNaN } from '../../../utils/common';
-import Menu from '../../../shared/organisms/Menu';
+import Menu from '../Menu';
 import { STATAUS } from '../../../utils/types';
 import moment from 'moment';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
-import Table from '../../../shared/organisms/Table';
-import InvoiceItemPicker from '../../../shared/organisms/invoice/InvoiceItemPicker';
+import Table from '../Table';
+import InvoiceItemPicker from './InvoiceItemPicker';
 
 interface Props {
   formStateSetter?: Dispatch<SetStateAction<boolean>>;
@@ -63,7 +63,9 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
     status: '',
     total: 0,
     advTax: 0,
-    InvoiceMedicine: [],
+    received: 0,
+    balance: 0,
+    InvoiceMedicines: [],
   });
 
   const onSelectSupplier = useCallback(
@@ -100,16 +102,22 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
   }, [supplierList, supplierSearchText]);
 
   useEffect(() => {
-    const netAmounts = invoiceData.InvoiceMedicine?.map(
+    const netAmounts = invoiceData.InvoiceMedicines?.map(
       (invoiceItem) => invoiceItem.netAmount
     );
+    const netTotal = (netAmounts ?? [0])?.reduce((a, b) => a + b, 0);
+    const balance =
+      parseFloat(sanitizeNaN(String(netTotal))) -
+      parseFloat(sanitizeNaN(String(invoiceData.received))) +
+      parseFloat(sanitizeNaN(String(invoiceData.advTax)));
     if (netAmounts && netAmounts.length > 0) {
       setInvoiceData({
         ...invoiceData,
-        total: (netAmounts ?? [0])?.reduce((a, b) => a + b, 0),
+        total: netTotal,
+        balance: balance ?? 0,
       });
     }
-  }, [invoiceData.InvoiceMedicine]);
+  }, [invoiceData.InvoiceMedicines, invoiceData.received, invoiceData.advTax]);
 
   const handleOnChangeInvoice = useCallback(
     (ev: ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +132,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
   );
 
   const deleteInvoiceItem = (rec: IInvoiceMedicine, index: number) => {
-    invoiceData.InvoiceMedicine?.splice(index, 1);
+    invoiceData.InvoiceMedicines?.splice(index, 1);
     setInvoiceData(invoiceData);
     setShowInvoiceItem(false);
   };
@@ -156,7 +164,6 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
           <Modal
             isOpen={addingNewSupplier}
             hideClose={false}
-            modalType="modal"
             setIsOpen={setAddingNewSupplier}
             title="Add Supplier"
           >
@@ -300,20 +307,22 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
             setIsOpen={setShowInvoiceItem}
             title="Enter New Medicine"
             triggerButton={
-              <Button
-                size="small"
-                appearance="subtle"
-                onClick={() => setShowInvoiceItem(!showInvoiceItem)}
-              >
-                Show Items ({invoiceData.InvoiceMedicine?.length})
-              </Button>
+              <div>
+                <Button
+                  size="small"
+                  appearance="primary"
+                  onClick={() => setShowInvoiceItem(!showInvoiceItem)}
+                >
+                  Show Items ({invoiceData.InvoiceMedicines?.length})
+                </Button>
+              </div>
             }
           >
             <Table
               minHeight="min-h-[40vh]"
               onDelete={deleteInvoiceItem}
               data={
-                invoiceData?.InvoiceMedicine?.map((medicine) => ({
+                invoiceData?.InvoiceMedicines?.map((medicine) => ({
                   Name: medicine.Medicine?.name,
                   Packing: medicine.Medicine?.packing,
                   Batch: medicine.batchIdentifier,
@@ -339,6 +348,9 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
             }
           />
           <Divider />
+          <div className="text-gray-500 border-b pb-3 pl-2">
+            Invoice Amount & Tax
+          </div>
           <div className="flex flex-row items-end justify-end">
             <div className="flex-1 text-end py-2.5">Advance Tax (if any)</div>
             <InputField
@@ -350,6 +362,35 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               className="ml-5"
               min={0}
             />
+          </div>
+          <div className="flex flex-row items-end justify-end">
+            <div className="flex-1 text-end py-2.5">Total Amount Recieved</div>
+            <InputField
+              name="received"
+              onChange={handleOnChangeInvoice}
+              value={String(invoiceData.received)}
+              type="number"
+              placeholder="Amount Recieved"
+              className="ml-5"
+              min={0}
+            />
+          </div>
+          <div className="flex flex-row items-center justify-end">
+            <div
+              className={clsx([
+                'font-bold px-4 py-2 rounded-md transition-all duration-300 text-center',
+                parseFloat(sanitizeNaN(String(invoiceData.balance))) > 100
+                  ? 'bg-red-200 text-red-600'
+                  : 'bg-green-200 text-green-600',
+              ])}
+            >
+              <span className="flex-1 text-end mr-1">Balance</span>
+              <span>
+                {sanitizeNaN(
+                  String(invoiceData.balance?.toFixed(APP_ROUNDOFF_SETTING))
+                )}
+              </span>
+            </div>
           </div>
         </div>
       )}
@@ -387,8 +428,8 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               appearance="primary"
               disabled={
                 (invoiceData &&
-                  !!invoiceData.InvoiceMedicine &&
-                  invoiceData.InvoiceMedicine.length <= 0) ||
+                  !!invoiceData.InvoiceMedicines &&
+                  invoiceData.InvoiceMedicines.length <= 0) ||
                 !invoiceData.invoiceNumber ||
                 !isInvoiceUnique
               }

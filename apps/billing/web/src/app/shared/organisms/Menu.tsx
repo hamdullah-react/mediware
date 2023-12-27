@@ -19,9 +19,11 @@ const Menu = ({ children, button, positioning = 'below-end' }: Props) => {
   return (
     <FUIMenu positioning={positioning}>
       <MenuTrigger disableButtonEnhancement>{button}</MenuTrigger>
-      <MenuPopover className="max-h-[200pt] min-w-[400pt] overscroll-auto">
-        {children}
-      </MenuPopover>
+      {
+        <MenuPopover className="max-h-[200pt] min-w-[400pt] overscroll-auto">
+          {children}
+        </MenuPopover>
+      }
     </FUIMenu>
   );
 };

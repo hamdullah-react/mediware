@@ -1,32 +1,37 @@
-import { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import { IInvoice } from '@billinglib';
+import React, {
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { SalesContext } from '../contexts/SalesContext';
+import { ISaleInvoice } from '@billinglib';
 import { HttpClient, apiCallAlertWrapper } from '../../utils/common';
-import { InvoiceContext } from '../contexts/InvoiceContext';
 import { AuthContext } from '../contexts/AuthContext';
 import { useAlert } from './AlertProvider';
 import { MedicineContext } from '../contexts/MedicineContext';
 
 interface Props {
-  children?: ReactNode | ReactNode[];
+  children: ReactNode | ReactNode[];
 }
 
-const InvoiceProvider = ({ children }: Props) => {
+const SalesProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [invoiceList, setInvoiceList] = useState<IInvoice[]>([]);
+  const [saleInvoiceList, setSaleInvoiceList] = useState<ISaleInvoice[]>([]);
   const { activeUser, logoutUser } = useContext(AuthContext);
   const { getMedicines } = useContext(MedicineContext);
   const { setAlert } = useAlert();
 
-  const getInvoices = useCallback(async () => {
+  const getSaleInvoices = useCallback(async () => {
     await apiCallAlertWrapper(
       async () => {
         setIsLoading(true);
-        const data = (await HttpClient(activeUser?.token).get('/invoice')).data;
+        const data = (await HttpClient(activeUser?.token).get('/sales')).data;
+        setSaleInvoiceList(data);
         if (getMedicines) {
           await getMedicines();
         }
-        setInvoiceList(data);
-        setIsLoading(false);
       },
       setAlert,
       setIsLoading,
@@ -36,17 +41,13 @@ const InvoiceProvider = ({ children }: Props) => {
     );
   }, []);
 
-  const createInvoice = useCallback(
-    async (newInvoice: IInvoice) => {
+  const createSaleInvoice = useCallback(
+    async (newSaleInvoice: ISaleInvoice) => {
       await apiCallAlertWrapper(
         async () => {
           setIsLoading(true);
-          const responseData = (
-            await HttpClient(activeUser?.token).post('/invoice', newInvoice)
-          ).data;
-          await getInvoices();
-          setIsLoading(false);
-          return responseData;
+          await HttpClient(activeUser?.token).post('/sales', newSaleInvoice);
+          await getSaleInvoices();
         },
         setAlert,
         setIsLoading,
@@ -55,19 +56,19 @@ const InvoiceProvider = ({ children }: Props) => {
         }
       );
     },
-    [invoiceList]
+    [saleInvoiceList]
   );
 
-  const updateInvoice = useCallback(
-    async (updatedInvoice: IInvoice) => {
+  const updateSaleInvoice = useCallback(
+    async (updatedSaleInvoice: ISaleInvoice) => {
       await apiCallAlertWrapper(
         async () => {
           setIsLoading(true);
           await HttpClient(activeUser?.token).put(
-            `/invoice/${updatedInvoice.id}`,
-            updatedInvoice
+            `/sales/${updatedSaleInvoice.id}`,
+            updatedSaleInvoice
           );
-          await getInvoices();
+          await getSaleInvoices();
         },
         setAlert,
         setIsLoading,
@@ -76,18 +77,18 @@ const InvoiceProvider = ({ children }: Props) => {
         }
       );
     },
-    [invoiceList]
+    [saleInvoiceList]
   );
 
-  const deleteInvoice = useCallback(
-    async (deletedMedicine: IInvoice) => {
+  const deleteSaleInvoice = useCallback(
+    async (deletedSaleInvoice: ISaleInvoice) => {
       await apiCallAlertWrapper(
         async () => {
           setIsLoading(true);
           await HttpClient(activeUser?.token).delete(
-            `/invoice/${deletedMedicine.id}`
+            `/sales/${deletedSaleInvoice.id}`
           );
-          await getInvoices();
+          await getSaleInvoices();
         },
         setAlert,
         setIsLoading,
@@ -96,29 +97,29 @@ const InvoiceProvider = ({ children }: Props) => {
         }
       );
     },
-    [invoiceList]
+    [saleInvoiceList]
   );
 
   useEffect(() => {
-    getInvoices().then((e) => {});
+    getSaleInvoices().then(() => {});
     return () => {};
-  }, [getInvoices]);
+  }, []);
 
   return (
-    <InvoiceContext.Provider
+    <SalesContext.Provider
       value={{
-        invoiceList,
-        setInvoiceList,
-        createInvoice,
-        getInvoices,
-        updateInvoice,
-        deleteInvoice,
+        saleInvoiceList,
+        setSaleInvoiceList,
+        getSaleInvoices,
+        createSaleInvoice,
+        updateSaleInvoice,
+        deleteSaleInvoice,
         isLoading,
       }}
     >
       {children}
-    </InvoiceContext.Provider>
+    </SalesContext.Provider>
   );
 };
 
-export default InvoiceProvider;
+export default SalesProvider;

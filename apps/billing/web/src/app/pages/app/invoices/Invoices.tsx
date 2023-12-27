@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLastRouteItem } from '../../../utils/common';
-import InvoiceForm from './InvoiceForm';
+import InvoiceForm from '../../../shared/organisms/invoice/InvoiceForm';
 import Modal from '../../../shared/organisms/Modal';
 import { Button, Input } from '@fluentui/react-components';
 import { InvoiceContext } from '../../../state/contexts/InvoiceContext';
@@ -74,12 +74,12 @@ const Invoices = () => {
         ?.filter(
           (data) =>
             data['Invoice Number']
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            data?.Company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data?.Date?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            data?.['Adv Tax']?.includes(searchQuery.toLowerCase()) ||
-            data.Total?.toLowerCase().includes(searchQuery.toLowerCase())
+              ?.toLowerCase()
+              .includes(searchQuery?.toLowerCase()) ||
+            data?.Company?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data?.Date?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data?.['Adv Tax']?.includes(searchQuery?.toLowerCase()) ||
+            data.Total?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     }
   }, [searchQuery, invoiceList]);
@@ -126,7 +126,6 @@ const Invoices = () => {
         <Modal
           isOpen={isCreatingRecord}
           hideClose={false}
-          modalType="modal"
           setIsOpen={setIsCreatingRecord}
           title="Add Invoice"
           triggerButton={

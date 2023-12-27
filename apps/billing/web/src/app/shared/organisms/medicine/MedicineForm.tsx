@@ -1,16 +1,17 @@
 import { ChangeEvent, useCallback, useContext, useState } from 'react';
 import { Button, Divider, MenuItem } from '@fluentui/react-components';
 import { handleChange } from '../../../utils/common';
-import InputField from '../../../shared/molecules/InputField';
+import InputField from '../../molecules/InputField';
 import { IMedicine, MedicineTypes } from '@billinglib';
-import Menu from '../../../shared/organisms/Menu';
+import Menu from '../Menu';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 
 interface Props {
+  disableInput?: boolean;
   onCreateMedicine?: () => void;
 }
 
-const MedicineForm = ({ onCreateMedicine }: Props) => {
+const MedicineForm = ({ disableInput = false, onCreateMedicine }: Props) => {
   const [newMedicine, setNewMedicine] = useState<IMedicine>({
     name: '',
     brand: '',
@@ -67,8 +68,8 @@ const MedicineForm = ({ onCreateMedicine }: Props) => {
   }, [createMedicine, newMedicine]);
 
   return (
-    <div className="gap-2 flex flex-col">
-      <div className="flex flex-row items-end gap-3">
+    <div className="gap-2 flex flex-col w-full">
+      <div className="grid grid-flow-row grid-cols-3 gap-3">
         <div className="flex-1">
           <InputField
             name="name"
@@ -95,14 +96,13 @@ const MedicineForm = ({ onCreateMedicine }: Props) => {
           label="Brand"
           placeholder="Brand"
         />
-      </div>
-      <div className="flex flex-row items-end gap-3">
         <InputField
           name="formula"
           value={newMedicine?.formula ?? ''}
           onChange={handleOnChange}
           label="Forumula"
           placeholder="Medicine Formula"
+          className="flex-1"
         />
         <InputField
           name="packing"
@@ -110,6 +110,7 @@ const MedicineForm = ({ onCreateMedicine }: Props) => {
           onChange={handleOnChange}
           label="Packing"
           placeholder="Packing Type"
+          className="flex-1"
         />
         <InputField
           name="unitTakePrice"
@@ -118,6 +119,7 @@ const MedicineForm = ({ onCreateMedicine }: Props) => {
           label="Price"
           placeholder="Enter Price"
           type="number"
+          className="flex-1"
           min={0}
         />
       </div>

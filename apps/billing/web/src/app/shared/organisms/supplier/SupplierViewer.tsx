@@ -65,7 +65,7 @@ const SupplierViewer = ({ supplier }: Props) => {
             </TableCell>
             <TableCell colSpan={2}>
               {dashIfNull(
-                String((supplier._count ?? { Invoice: 0 })?.Invoice ?? 0)
+                String((supplier._count ?? { Invoice: 0 })?.Invoices ?? 0)
               )}{' '}
               Invoices
             </TableCell>
