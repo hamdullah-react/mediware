@@ -31,14 +31,14 @@ const routes: IRoute[] = [
     label: 'Invoice',
     showInSidebar: true,
   },
-  {
-    path: '/sales',
-    component: Sales,
-    hasInsertForm: true,
-    nestRoutes: [],
-    label: 'Sales',
-    showInSidebar: true,
-  },
+  // {
+  //   path: '/sales',
+  //   component: Sales,
+  //   hasInsertForm: true,
+  //   nestRoutes: [],
+  //   label: 'Sales',
+  //   showInSidebar: true,
+  // },
   {
     path: '/account',
     component: Account,
