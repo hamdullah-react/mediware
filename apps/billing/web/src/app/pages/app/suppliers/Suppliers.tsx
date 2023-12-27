@@ -76,11 +76,11 @@ const Suppliers = () => {
         .map((supplier) => ({
           Supplier: supplier.name,
           'Phone No.': supplier.telephones,
-          Emails: supplier.emails,
+          Email: supplier.emails,
         }))
         ?.filter(
           (data) =>
-            data.Emails?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data.Email?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
             data['Phone No.']
               ?.toLowerCase()
               .includes(searchQuery?.toLowerCase()) ||

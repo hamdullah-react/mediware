@@ -3,11 +3,13 @@ import Modal from '../../../shared/organisms/Modal';
 import { useCallback, useContext, useState } from 'react';
 import { Button, Input } from '@fluentui/react-components';
 import { getLastRouteItem } from '../../../utils/common';
-import SupplierForm from '../../../shared/organisms/supplier/SupplierForm';
 import Table from '../../../shared/organisms/Table';
 import { ISaleInvoice } from '@billinglib';
 import LoaderWrapper from '../../../shared/molecules/LoaderWrapper';
 import { SalesContext } from '../../../state/contexts/SalesContext';
+import SalesForm from '../../../shared/organisms/sales/SalesForm';
+import SalesEditor from '../../../shared/organisms/sales/SalesEditor';
+import SalesViewer from '../../../shared/organisms/sales/SalesViewer';
 
 const Sales = () => {
   const location = useLocation();
@@ -92,15 +94,14 @@ const Sales = () => {
         onClosePressed={closeModals}
         title={`Customer #${currentlyViewing?.saleInvoiceId} - ${currentlyViewing?.customerName}`}
       >
-        {/* {!!closeModals && <SupplierViewer supplier={currentlyViewing} />} */}
+        {!!closeModals && <SalesViewer supplier={currentlyViewing} />}
       </Modal>
       <Modal isOpen={!!currentlyEditing} onClosePressed={closeModals}>
         {!!currentlyEditing && (
-          <>hello</>
-          // <SupplierEditor
-          //   supplier={currentlyEditing}
-          //   setSupplier={setCurrentlyEditing}
-          // />
+          <SalesEditor
+            invoice={currentlyEditing}
+            setInvoice={setCurrentlyEditing}
+          />
         )}
       </Modal>
       <div className="flex flex-row justify-end gap-2 py-5">
@@ -120,14 +121,14 @@ const Sales = () => {
           isOpen={isCreatingRecord}
           hideClose={false}
           setIsOpen={setIsCreatingRecord}
-          title="Add Supplier"
+          title="Add Sales Record"
           triggerButton={
             <Button size="medium" onClick={toggleModel}>
               Add New
             </Button>
           }
         >
-          <SupplierForm formStateSetter={setIsCreatingRecord} />
+          <SalesForm formStateSetter={setIsCreatingRecord} />
         </Modal>
       </div>
       <div>

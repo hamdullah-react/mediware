@@ -134,11 +134,11 @@ export interface ISaleInvoice {
   telephone?: string;
   address?: string;
   whatsapp?: string;
-  dicountPrice: string;
-  totalRecieved: string;
-  createAt?: string;
-  deletedAt?: string;
-  updatedAt?: string;
+  dicountPrice: number;
+  totalRecieved: number;
+  createAt?: Date;
+  deletedAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ISaleInvoiceItem {
@@ -151,7 +151,7 @@ export interface ISaleInvoiceItem {
   comments: number;
   unitSalePrice: number;
   quantitySoldFromPack: number;
-  createAt?: string;
-  deletedAt?: string;
-  updatedAt?: string;
+  createAt?: Date;
+  deletedAt?: Date;
+  updatedAt?: Date;
 }
