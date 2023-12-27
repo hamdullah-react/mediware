@@ -2,7 +2,7 @@ import Account from '../pages/app/Account';
 import Settings from '../pages/app/Settings';
 import Invoices from '../pages/app/invoices/Invoices';
 import Medicines from '../pages/app/medicines/Medicines';
-import Sales from '../pages/app/sale/Sales';
+// import Sales from '../pages/app/sale/Sales';
 import Suppliers from '../pages/app/suppliers/Suppliers';
 import { IRoute } from '../utils/types';
 
