@@ -6,6 +6,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
+        "no-tabs":"error",
         "react-hooks/exhaustive-deps":"off",
         "@nx/enforce-module-boundaries": [
           "error",

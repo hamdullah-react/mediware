@@ -45,6 +45,7 @@ server.listen({ port, host }, (err) => {
 
     process.on('SIGINT', () => {
       console.log('\n\nServer shutdown at', new Date(), '\n\n');
+      server.close();
       process.exit(0);
     });
   }

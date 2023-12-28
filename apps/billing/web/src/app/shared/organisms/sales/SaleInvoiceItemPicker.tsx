@@ -95,14 +95,14 @@ const SaleInvoiceItemPicker = ({
       );
     }
     return [];
-  }, [searchString]);
+  }, [searchString, invoiceItems]);
 
   const disableSelection = useCallback(
     (med: IMedicine) => {
       if (!med.quantityInStock) {
         return true;
       }
-      return invoiceItems?.map((m) => m.Medicine)?.includes(med);
+      return invoiceItems?.map((m) => m.Medicine?.id)?.includes(med.id);
     },
     [invoiceItems]
   );
@@ -121,6 +121,34 @@ const SaleInvoiceItemPicker = ({
     [newInvoiceItem, searchString, newInvoiceItem]
   );
 
+  const getQuantityOfItemBeforeInInvoice_forDropdown = useCallback(
+    (medicine: IMedicine) => {
+      const selected = invoiceItems?.find(
+        (invoice) => invoice.Medicine?.id === medicine.id
+      );
+      if (selected) {
+        return selected.quantity;
+      }
+      return 0;
+    },
+    [invoiceItems]
+  );
+
+  const getQuanityOfItemAfterInInvoice = useCallback(
+    (item: ISaleInvoiceItem) => {
+      return (item?.Medicine?.quantityInStock ?? 0) - (item?.quantity ?? 0) < 0
+        ? 'Out of Stock'
+        : '';
+    },
+    [invoiceItems]
+  );
+  const outOfStockExistsOnInvoice = useMemo(() => {
+    return (
+      invoiceItems.findIndex(
+        (item) => getQuanityOfItemAfterInInvoice(item) === 'Out of Stock'
+      ) !== -1
+    );
+  }, [invoiceItems]);
   return (
     <div>
       <div>
@@ -148,7 +176,14 @@ const SaleInvoiceItemPicker = ({
                   <div>${item?.unitSalePrice}</div>
                 </TableCell>
                 <TableCell>
-                  <div>{item?.quantity}</div>
+                  {item && item?.Medicine && (
+                    <div>
+                      <span>{item?.quantity}</span>
+                      <span className="text-red-600 mx-2">
+                        {getQuanityOfItemAfterInInvoice(item)}
+                      </span>
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell>
                   <Button
@@ -198,7 +233,10 @@ const SaleInvoiceItemPicker = ({
                         </div>
                         <div className="text-xs">{med?.type}</div>
                       </div>
-                      <div>{med?.quantityInStock}</div>
+                      <div>
+                        {(med?.quantityInStock ?? 0) -
+                          getQuantityOfItemBeforeInInvoice_forDropdown(med)}
+                      </div>
                     </div>
                   ))}
                   <div
@@ -265,13 +303,19 @@ const SaleInvoiceItemPicker = ({
       </div>
       <Divider />
       <div className="flex flex-row gap-3 justify-end pt-4">
-        <Button size="large" onClick={onCloseForm}>
+        <Button
+          disabled={outOfStockExistsOnInvoice}
+          size="large"
+          onClick={onCloseForm}
+        >
           Close
         </Button>
         <Button
           size="large"
           appearance="primary"
-          disabled={!invoiceItems || !invoiceItems?.length}
+          disabled={
+            !invoiceItems || !invoiceItems?.length || outOfStockExistsOnInvoice
+          }
           onClick={onSaveItems}
         >
           Save

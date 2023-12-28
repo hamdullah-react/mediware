@@ -43,7 +43,7 @@ const Sales = () => {
   const onEditingData = useCallback(
     (_: ISaleInvoice, index: number) => {
       if (saleInvoiceList) {
-        setCurrentlyEditing(saleInvoiceList[index]);
+        setCurrentlyEditing(JSON.parse(JSON.stringify(saleInvoiceList[index])));
       }
     },
     [currentlyEditing, saleInvoiceList]
@@ -98,7 +98,13 @@ const Sales = () => {
       >
         {!!closeModals && <SalesViewer data={currentlyViewing} />}
       </Modal>
-      <Modal isOpen={!!currentlyEditing} onClosePressed={closeModals}>
+      <Modal
+        title="Edit Invoice"
+        maxWidth={'80vw'}
+        width={'80vw'}
+        isOpen={!!currentlyEditing}
+        onClosePressed={closeModals}
+      >
         {!!currentlyEditing && (
           <SalesEditor
             invoice={currentlyEditing}

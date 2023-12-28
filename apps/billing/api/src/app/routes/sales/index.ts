@@ -132,9 +132,22 @@ export default async (instance: FastifyInstance) => {
     reply.status(200).send(requestBody);
   });
 
-  instance.delete('/:id', (req, reply) => {
+  instance.delete('/:id', async (req, reply) => {
     const id = parseInt(req.params['id']);
-    console.log(id);
-    reply.status(200).send({});
+
+    const response = await prisma.saleInvoices.update({
+      where: {
+        id: id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    console.log('response');
+    console.log('response');
+    console.log('response');
+    console.log(response);
+
+    reply.status(200).send(response);
   });
 };
