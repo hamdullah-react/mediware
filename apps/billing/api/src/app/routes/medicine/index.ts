@@ -125,7 +125,7 @@ export default async function (fastify: FastifyInstance) {
         .status(200)
         .send({ message: 'Medicine created successfully', data: newMedicine });
     } catch (error) {
-      console.log(error);
+      return reply.status(500).send({ message: "Couldn't create medicine" });
     }
   });
 

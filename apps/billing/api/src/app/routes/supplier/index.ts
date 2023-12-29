@@ -93,7 +93,7 @@ export default async function (fastify: FastifyInstance) {
         .status(201)
         .send({ message: 'Supplier created successfully', data: newSupplier });
     } catch (error) {
-      console.log(error);
+      return reply.status(500).send({ message: "Couldn't create supplier" });
     }
   });
 

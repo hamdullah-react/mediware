@@ -21,6 +21,7 @@ interface Props {
   onSaveItems: () => void;
   onDeleteItem: (index: number) => void;
   onCloseForm: () => void;
+  isEdititng?: boolean;
 }
 
 const SaleInvoiceItemPicker = ({
@@ -29,6 +30,7 @@ const SaleInvoiceItemPicker = ({
   onDeleteItem,
   onSaveItems,
   onCloseForm,
+  isEdititng = false,
 }: Props) => {
   const { medicineList } = useContext(MedicineContext);
   const [searchString, setSearchString] = useState('');
@@ -95,7 +97,7 @@ const SaleInvoiceItemPicker = ({
       );
     }
     return [];
-  }, [searchString, invoiceItems]);
+  }, [searchString, invoiceItems, medicineList]);
 
   const disableSelection = useCallback(
     (med: IMedicine) => {
@@ -104,7 +106,7 @@ const SaleInvoiceItemPicker = ({
       }
       return invoiceItems?.map((m) => m.Medicine?.id)?.includes(med.id);
     },
-    [invoiceItems]
+    [invoiceItems, medicineList]
   );
 
   const onSelectMedicine = useCallback(
@@ -123,20 +125,27 @@ const SaleInvoiceItemPicker = ({
 
   const getQuantityOfItemBeforeInInvoice_forDropdown = useCallback(
     (medicine: IMedicine) => {
-      const selected = invoiceItems?.find(
+      const itemInCurrentlyInInvoice = invoiceItems?.find(
         (invoice) => invoice.Medicine?.id === medicine.id
       );
-      if (selected) {
-        return selected.quantity;
+
+      if (itemInCurrentlyInInvoice) {
+        return (
+          (medicine?.quantityInStock ?? 0) -
+          (isEdititng ? 0 : itemInCurrentlyInInvoice.quantity)
+        );
       }
-      return 0;
+      return medicine?.quantityInStock ?? 0;
     },
-    [invoiceItems]
+    [invoiceItems, isEdititng, medicineList]
   );
 
   const getQuanityOfItemAfterInInvoice = useCallback(
     (item: ISaleInvoiceItem) => {
-      return (item?.Medicine?.quantityInStock ?? 0) - (item?.quantity ?? 0) < 0
+      return (item?.Medicine?.quantityInStock ?? 0) -
+        (item?.quantity ?? 0) +
+        (isEdititng ? item.quantity : 0) <
+        0
         ? 'Out of Stock'
         : '';
     },
@@ -234,17 +243,22 @@ const SaleInvoiceItemPicker = ({
                         <div className="text-xs">{med?.type}</div>
                       </div>
                       <div>
-                        {(med?.quantityInStock ?? 0) -
-                          getQuantityOfItemBeforeInInvoice_forDropdown(med)}
+                        {sanitizeNaN(
+                          String(
+                            getQuantityOfItemBeforeInInvoice_forDropdown(med)
+                          )
+                        )}
                       </div>
                     </div>
                   ))}
-                  <div
-                    onClick={() => {}}
-                    className="cursor-pointer hover:bg-gray-100 p-2 min-w-[150pt] rounded-sm"
-                  >
-                    <div className="text-md">Add New</div>
-                  </div>
+                  {!isEdititng && (
+                    <div
+                      onClick={() => {}}
+                      className="cursor-pointer hover:bg-gray-100 p-2 min-w-[150pt] rounded-sm"
+                    >
+                      <div className="text-md">Add New</div>
+                    </div>
+                  )}
                 </Menu>
               </TableCell>
               <TableCell>
@@ -303,15 +317,10 @@ const SaleInvoiceItemPicker = ({
       </div>
       <Divider />
       <div className="flex flex-row gap-3 justify-end pt-4">
-        <Button
-          disabled={outOfStockExistsOnInvoice}
-          size="large"
-          onClick={onCloseForm}
-        >
+        <Button disabled={outOfStockExistsOnInvoice} onClick={onCloseForm}>
           Close
         </Button>
         <Button
-          size="large"
           appearance="primary"
           disabled={
             !invoiceItems || !invoiceItems?.length || outOfStockExistsOnInvoice

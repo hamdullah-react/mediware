@@ -116,8 +116,6 @@ export default async (instance: FastifyInstance) => {
       const result = await Promise.allSettled(tasks);
       return reply.status(200).send(result);
     } catch (error) {
-      console.log(error);
-
       return reply.status(500).send(error);
     }
   });
@@ -136,9 +134,9 @@ export default async (instance: FastifyInstance) => {
         email: requestBody.email,
         saleInvoiceId: requestBody.saleInvoiceId,
         telephone: requestBody.telephone,
-        totalRecieved: requestBody.totalRecieved,
         whatsapp: requestBody.whatsapp,
-        dicountPrice: requestBody.dicountPrice,
+        totalRecieved: parseFloat(String(requestBody.totalRecieved)),
+        dicountPrice: parseFloat(String(requestBody.dicountPrice)),
         updatedAt: new Date(),
       },
     });
