@@ -22,6 +22,15 @@ const SalesViewer = ({ data }: Props) => {
     return [];
   }, [data]);
 
+  const invoiceTotal = useMemo(() => {
+    return (
+      (data?.Items.map((it) => it.quantity * it.unitSalePrice)?.reduce(
+        (a, b) => a + b,
+        0
+      ) ?? 0) - (data?.dicountPrice ?? 0)
+    );
+  }, [data]);
+
   return data ? (
     <div>
       <div className="flex justify-between">
@@ -45,7 +54,7 @@ const SalesViewer = ({ data }: Props) => {
         <table className="flex flex-col gap-1">
           <tbody>
             <tr>
-              <td>Customer: </td>
+              <td>Date: </td>
               <td>
                 {dashIfNull(moment(data.createAt).format(APP_TIME_FORMAT))}
               </td>
@@ -61,8 +70,13 @@ const SalesViewer = ({ data }: Props) => {
           </tbody>
         </table>
       </div>
-      <Divider className="my-4" />
       {invoiceData && <Table minHeight="min-h-[30vh]" data={invoiceData} />}
+      <div className="text-end">
+        <div className="text-md pt-3">Total: {invoiceTotal}</div>
+        <div className="text-md pt-1">Discount: {data.dicountPrice}</div>
+        <div className="text-md pt-1">Recieved: {data.totalRecieved}</div>
+      </div>
+      <Divider className="mt-4" />
     </div>
   ) : (
     <div className="p-6">

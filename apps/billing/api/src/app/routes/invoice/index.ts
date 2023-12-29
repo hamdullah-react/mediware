@@ -237,8 +237,6 @@ export default async function (fastify: FastifyInstance) {
 
       rep.status(200).send({ message: results });
     } catch (error) {
-      console.log(error);
-
       rep.status(400).send({ message: 'Could not update the invoice' });
     }
   });

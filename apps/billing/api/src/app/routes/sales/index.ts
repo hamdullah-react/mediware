@@ -116,20 +116,62 @@ export default async (instance: FastifyInstance) => {
       const result = await Promise.allSettled(tasks);
       return reply.status(200).send(result);
     } catch (error) {
-      console.log(error);
-
       return reply.status(500).send(error);
     }
   });
 
-  instance.put('/:id', (req, reply) => {
+  instance.put('/:id', async (req, reply) => {
     const requestBody = req.body as ISaleInvoice;
     const id = parseInt(req.params['id']);
 
-    console.log(requestBody);
-    console.log(id);
+    const data = await prisma.saleInvoices.update({
+      where: {
+        id: id,
+      },
+      data: {
+        address: requestBody.address,
+        customerName: requestBody.customerName,
+        email: requestBody.email,
+        saleInvoiceId: requestBody.saleInvoiceId,
+        telephone: requestBody.telephone,
+        whatsapp: requestBody.whatsapp,
+        totalRecieved: parseFloat(String(requestBody.totalRecieved)),
+        dicountPrice: parseFloat(String(requestBody.dicountPrice)),
+        updatedAt: new Date(),
+      },
+    });
 
-    reply.status(200).send(requestBody);
+    await prisma.saleInvoiceItems.deleteMany({
+      where: {
+        saleInvoicesId: id,
+      },
+    });
+
+    const tasks = requestBody.Items.map(
+      async (item) =>
+        await prisma.saleInvoiceItems.create({
+          data: {
+            quantitySoldFromPack: parseFloat(String(item.quantitySoldFromPack)),
+            unitSalePrice: parseFloat(String(item.unitSalePrice)),
+            quantity: parseFloat(String(item.quantity)),
+            comments: item.comments,
+            SaleInvoices: {
+              connect: {
+                id: id,
+              },
+            },
+            Medicine: {
+              connect: {
+                id: item.Medicine.id,
+              },
+            },
+          },
+        })
+    );
+
+    await Promise.allSettled(tasks);
+
+    reply.status(200).send(data);
   });
 
   instance.delete('/:id', async (req, reply) => {
@@ -143,10 +185,7 @@ export default async (instance: FastifyInstance) => {
         deletedAt: new Date(),
       },
     });
-    console.log('response');
-    console.log('response');
-    console.log('response');
-    console.log(response);
+
 
     reply.status(200).send(response);
   });
