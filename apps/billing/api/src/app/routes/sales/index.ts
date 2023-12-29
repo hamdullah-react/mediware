@@ -186,6 +186,7 @@ export default async (instance: FastifyInstance) => {
       },
     });
 
+
     reply.status(200).send(response);
   });
 };
