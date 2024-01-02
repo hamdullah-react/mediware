@@ -237,7 +237,7 @@ const InvoiceEditor = ({ invoice, setInvoice }: Props) => {
         </div>
         <div className="text-lg text-gray-500">
           <InputField
-            label="Recieved Amount"
+            label="Paid Amount"
             name="received"
             value={sanitizeNaN(String(invoice.received) ?? '')}
             onChange={handleChange}

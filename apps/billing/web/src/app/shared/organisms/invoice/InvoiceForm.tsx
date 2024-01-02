@@ -370,7 +370,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
               onChange={handleOnChangeInvoice}
               value={String(invoiceData.received)}
               type="number"
-              placeholder="Amount Recieved"
+              placeholder="Amount Paid"
               className="ml-5"
               min={0}
             />
