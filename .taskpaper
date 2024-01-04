@@ -3,6 +3,7 @@ Todo:
   ☐ lastEditedBy, createdBy
   ☐ edit sales
   ☐ show batches of the medicine so and tell how many are expiring in what batch. (batch information)
+  ☐ compute remaining when selling boxed medicine
   ✔ show previous batches for that medicine while selecting batchNumber so its easier @done(23-12-26 04:31)
   ✔ implement login @done(23-12-25 19:16)
   ✔ implement logout @done(23-12-25 19:16)
