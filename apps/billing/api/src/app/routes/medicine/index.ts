@@ -12,9 +12,12 @@ export default async function (fastify: FastifyInstance) {
         brand: true,
         formula: true,
         name: true,
+        suplierCode: true,
         type: true,
         code: true,
         unitTakePrice: true,
+        numStrips: true,
+        numOfUnitsOnStrip: true,
         createdAt: true,
         updatedAt: true,
         packing: true,
@@ -108,7 +111,6 @@ export default async function (fastify: FastifyInstance) {
   fastify.post('/', async function (request, reply) {
     try {
       const requestBody = request.body as IMedicine;
-
       const newMedicine = await prisma.medicines.create({
         data: {
           name: requestBody.name,
@@ -116,8 +118,12 @@ export default async function (fastify: FastifyInstance) {
           formula: requestBody.formula || '',
           type: requestBody.type || '',
           code: requestBody.code || '',
+          suplierCode: requestBody.suplierCode || '',
           packing: requestBody.packing || '',
           unitTakePrice: parseFloat(String(requestBody.unitTakePrice)) || 0,
+          numStrips: parseFloat(String(requestBody.numStrips)) || 0,
+          numOfUnitsOnStrip:
+            parseFloat(String(requestBody.numOfUnitsOnStrip)) || 0,
         },
       });
 
@@ -141,8 +147,11 @@ export default async function (fastify: FastifyInstance) {
         formula: requestBody.formula || '',
         type: requestBody.type || '',
         code: requestBody.code || '',
+        suplierCode: requestBody.suplierCode || '',
         packing: requestBody.packing || '',
         unitTakePrice: parseFloat(String(requestBody.unitTakePrice)),
+        numStrips: parseFloat(String(requestBody.numStrips)),
+        numOfUnitsOnStrip: parseFloat(String(requestBody.numOfUnitsOnStrip)),
         updatedAt: new Date(),
       },
     });

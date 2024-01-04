@@ -31,19 +31,22 @@ model Suppliers {
 }
 
 model Medicines {
-  id               Int                @id @default(autoincrement())
-  name             String
-  code             String?            @unique
-  formula          String?
-  brand            String?
-  type             String?
-  packing          String
-  unitTakePrice    Float
-  InvoiceMedicines InvoiceMedicines[]
-  createdAt        DateTime?          @default(now())
-  updatedAt        DateTime?          @default(now())
-  deletedAt        DateTime?          @default(dbgenerated("NULL"))
-  SaleInvoiceItems SaleInvoiceItems[]
+  id                Int                @id @default(autoincrement())
+  name              String
+  code              String?            @unique
+  suplierCode       String?
+  formula           String?
+  brand             String?
+  type              String?
+  numStrips         Int?               @default(dbgenerated("NULL"))
+  numOfUnitsOnStrip Int?               @default(dbgenerated("NULL"))
+  packing           String
+  unitTakePrice     Float
+  InvoiceMedicines  InvoiceMedicines[]
+  createdAt         DateTime?          @default(now())
+  updatedAt         DateTime?          @default(now())
+  deletedAt         DateTime?          @default(dbgenerated("NULL"))
+  SaleInvoiceItems  SaleInvoiceItems[]
 }
 
 model Invoices {

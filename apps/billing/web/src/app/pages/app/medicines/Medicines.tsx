@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import MedicineForm from '../../../shared/organisms/medicine/MedicineForm';
 import Modal from '../../../shared/organisms/Modal';
 import { useLocation } from 'react-router-dom';
@@ -70,11 +70,13 @@ const Medicines = () => {
     setCurrentlyEditing(undefined);
   }, [currentlyEditing, currentlyViewing]);
 
-  const getFilteredData = useCallback(() => {
+  const filteredData = useMemo(() => {
     if (medicineList) {
       return medicineList
         .map((medicine) => ({
-          Code: medicine.code,
+          Code: `${medicine.name?.slice(0, 3)?.toUpperCase()}-${medicine.type
+            ?.slice(0, 3)
+            ?.toUpperCase()}-${String(medicine.id).padStart(3, '0')}`,
           'Medicine Name': `${medicine.name} (${medicine.type})`,
           Packing: medicine.packing,
           Brand: medicine.brand,
@@ -86,7 +88,9 @@ const Medicines = () => {
             data['Medicine Name']
               ?.toLowerCase()
               .includes(searchQuery?.toLowerCase()) ||
-            data.Brand?.toLowerCase().includes(searchQuery?.toLowerCase())
+            data.Brand?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data.Code?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            data.Packing?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     }
   }, [searchQuery, medicineList]);
@@ -139,7 +143,7 @@ const Medicines = () => {
         <LoaderWrapper isLoading={isLoading}>
           {medicineList && medicineList?.length > 0 && (
             <Table
-              data={getFilteredData() as unknown as []}
+              data={filteredData as unknown as []}
               onViewData={onViewData}
               onEdit={onEditingData}
               onDelete={onDeletingData}

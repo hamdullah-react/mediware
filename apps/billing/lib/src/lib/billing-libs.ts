@@ -56,12 +56,15 @@ export interface IMedicine {
   id?: number;
   name: string;
   code?: string;
+  suplierCode?: string;
   formula?: string;
   brand?: string;
   type?: MedicineTypes;
   packing: string;
   unitTakePrice: number;
   InvoiceMedicines?: IInvoiceMedicine[];
+  numStrips?: number;
+  numOfUnitsOnStrip?: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;

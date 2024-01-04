@@ -14,6 +14,8 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
+  useMemo,
 } from 'react';
 import { MedicineContext } from '../../../state/contexts/MedicineContext';
 import InputField from '../../molecules/InputField';
@@ -57,6 +59,30 @@ const MedicineEditor = ({ medicine, setMedicine }: Props) => {
       setMedicine(undefined);
     }
   }, [medicine]);
+
+  const isBoxedWithStrips = useMemo(() => {
+    if (medicine)
+      return (
+        medicine.type === 'Capsule' ||
+        medicine.type === 'Injections' ||
+        medicine.type === 'Tablets'
+      );
+  }, [medicine]);
+
+  const updatePackingWithStripInfo = useCallback(() => {
+    if (setMedicine && medicine && isBoxedWithStrips) {
+      setMedicine({
+        ...medicine,
+        packing: `${medicine?.numStrips}x${medicine?.numOfUnitsOnStrip}`,
+      });
+    }
+  }, [medicine]);
+
+  useEffect(updatePackingWithStripInfo, [
+    medicine?.numStrips,
+    medicine?.numOfUnitsOnStrip,
+    medicine?.packing,
+  ]);
 
   return (
     <div>
@@ -114,26 +140,46 @@ const MedicineEditor = ({ medicine, setMedicine }: Props) => {
                 />
               </TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell>Medicine Code</TableCell>
-              <TableCell>
-                <InputField
-                  name="code"
-                  value={medicine.code ?? ''}
-                  onChange={handleChange}
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Packing type</TableCell>
-              <TableCell>
-                <InputField
-                  name="packing"
-                  value={medicine.packing ?? ''}
-                  onChange={handleChange}
-                />
-              </TableCell>
-            </TableRow>
+
+            {isBoxedWithStrips ? (
+              <>
+                <TableRow>
+                  <TableCell>Number of Strips</TableCell>
+                  <TableCell>
+                    <InputField
+                      name="numStrips"
+                      value={String(medicine?.numStrips)}
+                      onChange={handleChange}
+                      type="number"
+                      min={1}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Units per strip</TableCell>
+                  <TableCell>
+                    <InputField
+                      name="numOfUnitsOnStrip"
+                      value={String(medicine?.numOfUnitsOnStrip)}
+                      onChange={handleChange}
+                      type="number"
+                      min={1}
+                    />
+                  </TableCell>
+                </TableRow>
+              </>
+            ) : (
+              <TableRow>
+                <TableCell>Packing type</TableCell>
+                <TableCell>
+                  <InputField
+                    name="packing"
+                    value={medicine.packing ?? ''}
+                    onChange={handleChange}
+                  />
+                </TableCell>
+              </TableRow>
+            )}
             <TableRow>
               <TableCell>Formula</TableCell>
               <TableCell>

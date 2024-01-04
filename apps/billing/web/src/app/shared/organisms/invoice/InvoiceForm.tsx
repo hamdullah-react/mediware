@@ -364,7 +364,7 @@ const InvoiceForm = ({ formStateSetter }: Props) => {
             />
           </div>
           <div className="flex flex-row items-end justify-end">
-            <div className="flex-1 text-end py-2.5">Total Amount Recieved</div>
+            <div className="flex-1 text-end py-2.5">Total Amount Paid</div>
             <InputField
               name="received"
               onChange={handleOnChangeInvoice}
