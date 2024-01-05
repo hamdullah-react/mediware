@@ -40,6 +40,9 @@ const SaleInvoiceItemPicker = ({
       name: '',
       packing: '',
       unitTakePrice: 0,
+      numOfUnitsOnStrip: 1,
+      numStrips: 0,
+      suplierCode: '',
       brand: '',
       code: '',
       id: 0,
@@ -60,6 +63,9 @@ const SaleInvoiceItemPicker = ({
         name: '',
         packing: '',
         unitTakePrice: 0,
+        numOfUnitsOnStrip: 1,
+        numStrips: 0,
+        suplierCode: '',
         brand: '',
         code: '',
         id: 0,
@@ -109,20 +115,6 @@ const SaleInvoiceItemPicker = ({
     [invoiceItems, medicineList]
   );
 
-  const onSelectMedicine = useCallback(
-    (data: IMedicine) => {
-      if (data?.name && !disableSelection(data)) {
-        setSearchString(data.name);
-        setNewInvoiceItem({
-          ...newInvoiceItem,
-          Medicine: data,
-          unitSalePrice: data.unitTakePrice,
-        });
-      }
-    },
-    [newInvoiceItem, searchString, newInvoiceItem]
-  );
-
   const getQuantityOfItemBeforeInInvoice_forDropdown = useCallback(
     (medicine: IMedicine) => {
       const itemInCurrentlyInInvoice = invoiceItems?.find(
@@ -158,6 +150,52 @@ const SaleInvoiceItemPicker = ({
       ) !== -1
     );
   }, [invoiceItems]);
+
+  const isBoxedType = useMemo(() => {
+    return (
+      newInvoiceItem.Medicine?.type === 'Capsule' ||
+      newInvoiceItem.Medicine?.type === 'Injections' ||
+      newInvoiceItem.Medicine?.type === 'Tablets'
+    );
+  }, [newInvoiceItem]);
+
+  const unitPriceCalculated = useMemo(() => {
+    return (
+      isBoxedType
+        ? ((newInvoiceItem?.Medicine?.numStrips || 1) *
+            (newInvoiceItem?.Medicine?.numOfUnitsOnStrip || 1)) /
+          (newInvoiceItem.Medicine?.unitTakePrice || 1)
+        : newInvoiceItem.Medicine?.unitTakePrice
+    )?.toFixed(2);
+  }, [newInvoiceItem]);
+
+  const onSelectMedicine = useCallback(
+    (data: IMedicine) => {
+      console.log(unitPriceCalculated);
+
+      if (data?.name && !disableSelection(data)) {
+        let unitPrice = data?.unitTakePrice;
+        if (
+          data.type === 'Capsule' ||
+          data.type === 'Injections' ||
+          data.type === 'Tablets'
+        ) {
+          unitPrice =
+            ((data.numStrips || 1) * (data.numOfUnitsOnStrip || 1)) /
+            data.unitTakePrice;
+        }
+
+        setSearchString(data.name);
+        setNewInvoiceItem({
+          ...newInvoiceItem,
+          Medicine: data,
+          unitSalePrice: parseFloat(unitPrice?.toFixed(2)),
+        });
+      }
+    },
+    [newInvoiceItem, searchString]
+  );
+
   return (
     <div>
       <div>
@@ -165,9 +203,26 @@ const SaleInvoiceItemPicker = ({
           <TableHeader>
             <TableRow>
               <TableCell>Medicine</TableCell>
-              <TableCell>Unit Price</TableCell>
-              <TableCell>Sale Price</TableCell>
               <TableCell>Quantity</TableCell>
+              <TableCell>
+                {isBoxedType
+                  ? `Purchase Price per ${newInvoiceItem?.Medicine?.type?.replace(
+                      /s$/,
+                      ''
+                    )}`
+                  : 'Unit Price'}
+                {isBoxedType && (
+                  <div>Box price {newInvoiceItem.Medicine?.unitTakePrice}</div>
+                )}
+              </TableCell>
+              <TableCell>
+                {isBoxedType
+                  ? `Sale Price per ${newInvoiceItem?.Medicine?.type?.replace(
+                      /s$/,
+                      ''
+                    )}`
+                  : 'Sale Price'}
+              </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHeader>
@@ -180,10 +235,6 @@ const SaleInvoiceItemPicker = ({
                     {item.Medicine?.brand && `(${item.Medicine?.brand})`}
                   </div>
                 </TableCell>
-                <TableCell>${item?.Medicine?.unitTakePrice}</TableCell>
-                <TableCell>
-                  <div>${item?.unitSalePrice}</div>
-                </TableCell>
                 <TableCell>
                   {item && item?.Medicine && (
                     <div>
@@ -193,6 +244,10 @@ const SaleInvoiceItemPicker = ({
                       </span>
                     </div>
                   )}
+                </TableCell>
+                <TableCell>${item?.Medicine?.unitTakePrice}</TableCell>
+                <TableCell>
+                  <div>${item?.unitSalePrice}</div>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -265,10 +320,24 @@ const SaleInvoiceItemPicker = ({
                 <Input
                   size="large"
                   className="w-full my-1"
-                  placeholder="Unit Price"
-                  value={sanitizeNaN(
-                    String(newInvoiceItem.Medicine?.unitTakePrice)
-                  )}
+                  placeholder="Quantity"
+                  name="quantity"
+                  value={sanitizeNaN(String(newInvoiceItem.quantity))}
+                  onChange={handleChange}
+                  type="number"
+                  min={1}
+                />
+              </TableCell>
+              <TableCell>
+                <Input
+                  size="large"
+                  className="w-full my-1"
+                  placeholder={
+                    isBoxedType
+                      ? `Price per ${newInvoiceItem?.Medicine?.type}`
+                      : 'Unit Price'
+                  }
+                  value={sanitizeNaN(String(unitPriceCalculated))}
                   disabled
                 />
               </TableCell>
@@ -276,24 +345,16 @@ const SaleInvoiceItemPicker = ({
                 <Input
                   size="large"
                   className="w-full my-1 text-red-400"
-                  placeholder="Sale Price"
+                  placeholder={
+                    isBoxedType
+                      ? `Sale Price per ${newInvoiceItem?.Medicine?.type}`
+                      : 'Sale Price'
+                  }
                   name="unitSalePrice"
                   value={sanitizeNaN(String(newInvoiceItem.unitSalePrice))}
                   onChange={handleChange}
                   type="number"
                   min={0}
-                />
-              </TableCell>
-              <TableCell>
-                <Input
-                  size="large"
-                  className="w-full my-1"
-                  placeholder="Quantity"
-                  name="quantity"
-                  value={sanitizeNaN(String(newInvoiceItem.quantity))}
-                  onChange={handleChange}
-                  type="number"
-                  min={1}
                 />
               </TableCell>
               <TableCell>
