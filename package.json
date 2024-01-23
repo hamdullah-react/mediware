@@ -29,6 +29,8 @@
     "@fastify/jwt": "^7.2.4",
     "@fastify/sensible": "~5.2.0",
     "@fluentui/react-components": "^9.42.0",
+    "@mui/icons-material": "^5.15.5",
+    "@mui/styled-engine": "^5.15.5",
     "@prisma/client": "^5.7.1",
     "@swc/helpers": "~0.5.2",
     "axios": "^1.6.2",

@@ -11,6 +11,9 @@ import moment from 'moment';
 import Menu from './Menu';
 import clsx from 'clsx';
 import { APP_TIME_FORMAT } from '@billinglib';
+import { FaEye } from 'react-icons/fa';
+import { FaPencilAlt } from 'react-icons/fa';
+import { MdDeleteForever } from 'react-icons/md';
 
 interface Props<Type> {
   data: Type[];
@@ -76,13 +79,32 @@ const Table = <Type,>({
                   })}
                   {(onEdit || onDelete || onViewData) && (
                     <TableCell>
-                      <div className="flex flex-row gap-2">
-                        <Menu button={<Button size="medium">Action</Button>}>
+                      <div className="flex flex-row gap-3">
+                        {onViewData && (
+                          <span  onClick={() => onViewData(row, index)}>
+                            <FaEye color='gray' size={20}/>
+                          </span>
+                        )}
+                        {onEdit && (
+                          <span onClick={() => onEdit(row, index)}>
+                            <FaPencilAlt color='gray' size={20}/>
+                          </span>
+                        )}
+
+                        {onDelete && (
+                          <span onClick={() => onDelete(row, index)}>
+                            <MdDeleteForever color='red' size={20}/>
+                          </span>
+                        )}
+
+                        {/* <Menu button={<Button size="medium">Action</Button>}>
                           {onViewData && (
                             <MenuItem onClick={() => onViewData(row, index)}>
                               View
                             </MenuItem>
-                          )}
+                          )
+
+                          }
                           {onEdit && (
                             <MenuItem onClick={() => onEdit(row, index)}>
                               Edit
@@ -93,7 +115,7 @@ const Table = <Type,>({
                               Delete
                             </MenuItem>
                           )}
-                        </Menu>
+                        </Menu> */}
                       </div>
                     </TableCell>
                   )}

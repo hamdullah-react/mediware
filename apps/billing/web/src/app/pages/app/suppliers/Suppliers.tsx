@@ -16,9 +16,12 @@ const Suppliers = () => {
 
   const { supplierList, isLoading, getSuppliers, deleteSupplier } =
     useContext(SupplierContext);
+    
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentlyViewing, setCurrentlyViewing] = useState<ISupplier>();
+
+ 
 
   const [currentlyEditing, setCurrentlyEditing] = useState<ISupplier>();
 
@@ -32,9 +35,10 @@ const Suppliers = () => {
   );
 
   const onViewData = useCallback(
-    (_: ISupplier, index: number) => {
+    (_: ISupplier,index: number) => {
       if (supplierList) {
         setCurrentlyViewing(supplierList[index]);
+        console.log('list' ,currentlyViewing)
       }
     },
     [currentlyViewing, supplierList]
