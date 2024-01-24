@@ -80,22 +80,7 @@ const Table = <Type,>({
                   {(onEdit || onDelete || onViewData) && (
                     <TableCell>
                       <div className="flex flex-row gap-3">
-                        {onViewData && (
-                          <span  onClick={() => onViewData(row, index)}>
-                            <FaEye color='gray' size={20}/>
-                          </span>
-                        )}
-                        {onEdit && (
-                          <span onClick={() => onEdit(row, index)}>
-                            <FaPencilAlt color='gray' size={20}/>
-                          </span>
-                        )}
-
-                        {onDelete && (
-                          <span onClick={() => onDelete(row, index)}>
-                            <MdDeleteForever color='red' size={20}/>
-                          </span>
-                        )}
+                       
 
                         {/* <Menu button={<Button size="medium">Action</Button>}>
                           {onViewData && (
@@ -116,6 +101,24 @@ const Table = <Type,>({
                             </MenuItem>
                           )}
                         </Menu> */}
+
+
+                        {onViewData && (
+                          <span  onClick={() => onViewData(row, index)}>
+                            <FaEye color='gray' size={20}/>
+                          </span>
+                        )}
+                        {onEdit && (
+                          <span onClick={() => onEdit(row, index)}>
+                            <FaPencilAlt color='gray' size={20}/>
+                          </span>
+                        )}
+
+                        {onDelete && (
+                          <span onClick={() => onDelete(row, index)}>
+                            <MdDeleteForever color='red' size={20}/>
+                          </span>
+                        )}
                       </div>
                     </TableCell>
                   )}
